@@ -1,39 +1,23 @@
 {
   "version": 2,
-  "cleanUrls": true,
-  "trailingSlash": false,
   "builds": [
-    { "src": "**/*", "use": "@vercel/static" }
+    { "src": "api/index.py", "use": "@vercel/python" },
+    { "src": "**/*.html", "use": "@vercel/static" },
+    { "src": "**/*.js", "use": "@vercel/static" },
+    { "src": "**/*.css", "use": "@vercel/static" },
+    { "src": "**/*.png", "use": "@vercel/static" },
+    { "src": "**/*.gif", "use": "@vercel/static" },
+    { "src": "**/*.json", "use": "@vercel/static" },
+    { "src": "**/*.ico", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/api/(.*)", "dest": "/api/index.py" },
     { "src": "/admin-lms", "dest": "/admin-lms.html" },
     { "src": "/admin", "dest": "/admin.html" },
     { "src": "/lms", "dest": "/lms.html" },
     { "src": "/curriculum", "dest": "/curriculum.html" },
     { "src": "/website", "dest": "/website.html" },
+    { "src": "/sw.js", "dest": "/sw.js", "headers": { "Cache-Control": "public, max-age=0" } },
     { "src": "/(.*)", "dest": "/$1" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)\\.js",
-      "headers": [
-        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" },
-        { "key": "Cache-Control", "value": "public, max-age=0" }
-      ]
-    },
-    {
-      "source": "/(.*)\\.css",
-      "headers": [
-        { "key": "Content-Type", "value": "text/css; charset=utf-8" },
-        { "key": "Cache-Control", "value": "public, max-age=0" }
-      ]
-    },
-    {
-      "source": "/sw.js",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
-        { "key": "Service-Worker-Allowed", "value": "/" }
-      ]
-    }
   ]
 }
