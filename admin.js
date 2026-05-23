@@ -121,10 +121,18 @@ document.querySelectorAll('.admin-nav-item').forEach(item => {
 renderAll();
 
 // ===== MASTERCLASSES ADMIN =====
-function getMasterclasses() {
+async function getMasterclasses() {
+  try {
+    const res = await fetch('/api/masterclasses');
+    if (res.ok) {
+      const data = await res.json();
+      localStorage.setItem('lf_masterclasses', JSON.stringify(data));
+      return data;
+    }
+  } catch(e) {}
   return JSON.parse(localStorage.getItem('lf_masterclasses') || '[]');
 }
-function saveMasterclasses(list) {
+async function saveMasterclasses(list) {
   localStorage.setItem('lf_masterclasses', JSON.stringify(list));
 }
 function getMcRegistrations() {
@@ -156,13 +164,13 @@ document.getElementById('btnAddMasterclass').addEventListener('click', () => {
   document.getElementById('mcRating').value = '4.9';
 });
 
-document.getElementById('btnSaveMc').addEventListener('click', () => {
+document.getElementById('btnSaveMc').addEventListener('click', async () => {
   const title = document.getElementById('mcTitle').value.trim();
   const schedule = document.getElementById('mcSchedule').value;
   if (!title) return alert('Title is required.');
   if (!schedule) return alert('Schedule date & time is required.');
-  const list = getMasterclasses();
-  list.push({
+
+  const mc = {
     id: 'mc_' + Date.now(), title,
     tag: document.getElementById('mcTag').value.trim() || 'AI & ML',
     description: document.getElementById('mcDesc').value.trim(),
@@ -171,22 +179,42 @@ document.getElementById('btnSaveMc').addEventListener('click', () => {
     schedule, link: document.getElementById('mcLink').value.trim(),
     rating: parseFloat(document.getElementById('mcRating').value) || 4.9,
     createdAt: new Date().toISOString()
-  });
-  saveMasterclasses(list);
+  };
+
+  // Save to API
+  try {
+    await fetch('/api/masterclasses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(mc)
+    });
+  } catch(e) {}
+
+  // Also save to localStorage
+  const list = JSON.parse(localStorage.getItem('lf_masterclasses') || '[]');
+  list.push(mc);
+  localStorage.setItem('lf_masterclasses', JSON.stringify(list));
+
   document.getElementById('mcForm').style.display = 'none';
   renderMasterclasses();
 });
 
-function deleteMasterclass(id) {
+async function deleteMasterclass(id) {
   if (!confirm('Delete this masterclass?')) return;
-  saveMasterclasses(getMasterclasses().filter(m => m.id !== id));
+  // Delete from API
+  try {
+    await fetch(`/api/masterclasses/${id}`, { method: 'DELETE' });
+  } catch(e) {}
+  // Delete from localStorage
+  const list = JSON.parse(localStorage.getItem('lf_masterclasses') || '[]').filter(m => m.id !== id);
+  localStorage.setItem('lf_masterclasses', JSON.stringify(list));
   document.getElementById('mcRegPanel').style.display = 'none';
   renderMasterclasses();
 }
 
 // ── Analytics overview bar ────────────────────────────────────────────────────
-function renderMcAnalytics() {
-  const list = getMasterclasses();
+async function renderMcAnalytics() {
+  const list = await getMasterclasses();
   const totalRegs = list.reduce((s, m) => s + getRegsForMc(m.id).length, 0);
   const live = list.filter(m => { const d = new Date(m.schedule)-new Date(); return d<=0&&d>-10800000; }).length;
   const upcoming = list.filter(m => new Date(m.schedule) > new Date()).length;
@@ -200,9 +228,9 @@ function renderMcAnalytics() {
 }
 
 // ── Masterclass list ──────────────────────────────────────────────────────────
-function renderMasterclasses() {
+async function renderMasterclasses() {
   renderMcAnalytics();
-  const list = getMasterclasses();
+  const list = await getMasterclasses();
   const el = document.getElementById('mcList');
   if (!list.length) {
     el.innerHTML = '<div class="empty-state">No masterclasses yet. Create one!</div>';
@@ -246,8 +274,9 @@ function renderMasterclasses() {
 }
 
 // ── Open registrations panel ──────────────────────────────────────────────────
-function openMcRegistrations(mcId) {
-  const mc = getMasterclasses().find(m => m.id === mcId);
+async function openMcRegistrations(mcId) {
+  const list = await getMasterclasses();
+  const mc = list.find(m => m.id === mcId);
   const regs = getRegsForMc(mcId);
   const panel = document.getElementById('mcRegPanel');
 

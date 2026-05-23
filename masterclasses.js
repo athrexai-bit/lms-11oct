@@ -1,10 +1,18 @@
 // ===== FREE MASTERCLASSES — Dynamic Frontend Renderer =====
-// Reads from localStorage (set by admin) and renders cards with
-// real-time countdown + LIVE badge
-
 const MC_STORAGE_KEY = 'lf_masterclasses';
 
-function getMasterclasses() {
+async function getMasterclasses() {
+  // Try API first
+  try {
+    const res = await fetch('/api/masterclasses');
+    if (res.ok) {
+      const data = await res.json();
+      // Sync to localStorage as cache
+      localStorage.setItem(MC_STORAGE_KEY, JSON.stringify(data));
+      return data;
+    }
+  } catch(e) {}
+  // Fallback to localStorage
   return JSON.parse(localStorage.getItem(MC_STORAGE_KEY) || '[]');
 }
 
@@ -37,11 +45,11 @@ function starRating(r) {
 }
 
 // ── Render all dynamic masterclass cards ─────────────────────────────────────
-function renderDynamicMasterclasses() {
+async function renderDynamicMasterclasses() {
   const container = document.getElementById('dynamicMasterclasses');
   if (!container) return;
 
-  const list = getMasterclasses().filter(m => getMcStatus(m.schedule) !== 'ended');
+  const list = (await getMasterclasses()).filter(m => getMcStatus(m.schedule) !== 'ended');
   if (!list.length) { container.innerHTML = ''; return; }
 
   container.innerHTML = list.map(m => {
@@ -118,7 +126,7 @@ document.getElementById('mcRegModal').addEventListener('click', e => {
     document.getElementById('mcRegModal').classList.remove('active');
 });
 
-document.getElementById('btnMcRegSubmit').addEventListener('click', () => {
+document.getElementById('btnMcRegSubmit').addEventListener('click', async () => {
   const name    = document.getElementById('mcRegName').value.trim();
   const email   = document.getElementById('mcRegEmail').value.trim();
   const phone   = document.getElementById('mcRegPhone').value.trim();
@@ -147,7 +155,8 @@ document.getElementById('btnMcRegSubmit').addEventListener('click', () => {
 
   // Also save to enrollments for admin visibility
   const enrollments = JSON.parse(localStorage.getItem('lf_enrollments') || '[]');
-  const mc = getMasterclasses().find(m => m.id === _activeMcId);
+  const list = await getMasterclasses();
+  const mc = list.find(m => m.id === _activeMcId);
   enrollments.push({
     id: Date.now(),
     name, email, phone, country,
@@ -167,27 +176,25 @@ document.getElementById('btnMcRegSubmit').addEventListener('click', () => {
   }
 });
 
-function enrollMasterclass(id, title) {
-  const mc = getMasterclasses().find(m => m.id === id);
+async function enrollMasterclass(id, title) {
+  const list = await getMasterclasses();
+  const mc = list.find(m => m.id === id);
   openMcRegModal(id, title, mc?.link || '');
 }
 
-// ── Tick: update countdowns every second + re-render if status changed ────────
+// ── Tick: update countdowns every second ─────────────────────────────────────
 const _prevStatus = {};
-function tickCountdowns() {
-  const list = getMasterclasses();
+async function tickCountdowns() {
+  const list = await getMasterclasses();
   let needsRerender = false;
 
   list.forEach(m => {
     const status = getMcStatus(m.schedule);
-
-    // If status changed since last tick, trigger full re-render
     if (_prevStatus[m.id] !== undefined && _prevStatus[m.id] !== status) {
       needsRerender = true;
     }
     _prevStatus[m.id] = status;
 
-    // Update countdown text only (no full re-render needed)
     const el = document.getElementById(`mccountdown-${m.id}`);
     if (!el) return;
     const countdown = getCountdown(m.schedule);
@@ -204,8 +211,9 @@ function tickCountdowns() {
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderDynamicMasterclasses();
 
-// Seed initial status so first tick doesn't cause unnecessary re-render
-getMasterclasses().forEach(m => { _prevStatus[m.id] = getMcStatus(m.schedule); });
+getMasterclasses().then(list => {
+  list.forEach(m => { _prevStatus[m.id] = getMcStatus(m.schedule); });
+});
 
 setInterval(tickCountdowns, 1000);
 
