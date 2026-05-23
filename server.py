@@ -1,8 +1,7 @@
 """
 Arthrex AI — Backend Server
 Flask + SQLite database
-Run: python3 server.py
-API runs on: http://localhost:5000
+Production: gunicorn server:app
 """
 
 from flask import Flask, request, jsonify, send_from_directory
@@ -11,9 +10,10 @@ import sqlite3, os, json
 from datetime import datetime
 
 app = Flask(__name__, static_folder='.')
-CORS(app)
+CORS(app, origins="*")
 
-DB_PATH = 'arthrex.db'
+# Use /tmp for SQLite on Render (writable directory)
+DB_PATH = os.environ.get('DB_PATH', '/tmp/arthrex.db')
 
 # ─────────────────────────────────────────────
 #  DATABASE INIT
