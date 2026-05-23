@@ -7,7 +7,7 @@ Set env vars in Vercel dashboard:
 """
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import json, os, urllib.request, urllib.error
+import json, os, urllib.request, urllib.error, urllib.parse
 from datetime import datetime
 
 app = Flask(__name__)
@@ -19,29 +19,35 @@ UPSTASH_TOKEN = os.environ.get('UPSTASH_REDIS_REST_TOKEN', '')
 
 def redis_get(key):
     """Get a JSON value from Upstash Redis."""
-    if not UPSTASH_URL:
+    if not UPSTASH_URL or not UPSTASH_TOKEN:
         return None
     try:
+        url = f"{UPSTASH_URL}/get/{urllib.parse.quote(key, safe='')}"
         req = urllib.request.Request(
-            f"{UPSTASH_URL}/get/{key}",
+            url,
             headers={"Authorization": f"Bearer {UPSTASH_TOKEN}"}
         )
-        with urllib.request.urlopen(req, timeout=5) as res:
-            data = json.loads(res.read())
+        with urllib.request.urlopen(req, timeout=10) as res:
+            data = json.loads(res.read().decode())
             val = data.get('result')
-            return json.loads(val) if val else None
+            if val is None:
+                return None
+            return json.loads(val)
     except Exception as e:
-        print(f"Redis GET error: {e}")
+        print(f"Redis GET error for {key}: {e}")
         return None
 
 def redis_set(key, value):
     """Set a JSON value in Upstash Redis."""
-    if not UPSTASH_URL:
+    if not UPSTASH_URL or not UPSTASH_TOKEN:
         return False
     try:
-        body = json.dumps(value).encode()
+        serialized = json.dumps(value, ensure_ascii=False)
+        # Use pipeline/set command via REST
+        url = f"{UPSTASH_URL}/set/{urllib.parse.quote(key, safe='')}"
+        body = serialized.encode('utf-8')
         req = urllib.request.Request(
-            f"{UPSTASH_URL}/set/{key}",
+            url,
             data=body,
             method='POST',
             headers={
@@ -49,10 +55,11 @@ def redis_set(key, value):
                 "Content-Type": "application/json"
             }
         )
-        urllib.request.urlopen(req, timeout=5)
-        return True
+        with urllib.request.urlopen(req, timeout=10) as res:
+            result = json.loads(res.read().decode())
+            return result.get('result') == 'OK'
     except Exception as e:
-        print(f"Redis SET error: {e}")
+        print(f"Redis SET error for {key}: {e}")
         return False
 
 # ── Default seed data ─────────────────────────────────────────────────────────
@@ -222,4 +229,18 @@ def delete_lms(course_id):
     return jsonify({'success': True})
 
 # ── Vercel handler ────────────────────────────────────────────────────────────
+@app.route('/api/debug', methods=['GET'])
+def debug():
+    has_url = bool(UPSTASH_URL)
+    has_token = bool(UPSTASH_TOKEN)
+    test_set = redis_set('arthrex:debug_test', {'ok': True})
+    test_get = redis_get('arthrex:debug_test')
+    return jsonify({
+        'has_url': has_url,
+        'has_token': has_token,
+        'url_prefix': UPSTASH_URL[:30] if UPSTASH_URL else None,
+        'redis_set': test_set,
+        'redis_get': test_get
+    })
+
 handler = app
