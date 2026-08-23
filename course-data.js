@@ -1,5 +1,5 @@
 // Structured course data extracted from dashboard UI
-// This data represents all courses available in the Arthrex AI platform
+// This data represents all courses available in the Athrexai platform
 
 const COURSE_DATABASE = {
   // Generative AI Courses

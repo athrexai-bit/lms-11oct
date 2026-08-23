@@ -1,5 +1,5 @@
 """
-Arthrex AI — Vercel Serverless API
+Athrexai — Vercel Serverless API
 Storage: Upstash Redis (free tier) via REST API
 Set env vars in Vercel dashboard:
   UPSTASH_REDIS_REST_URL
@@ -64,8 +64,8 @@ def redis_set(key, value):
 
 # ── Default seed data ─────────────────────────────────────────────────────────
 DEFAULT_USERS = [
-    {'id': 1, 'name': 'Admin', 'email': 'admin@arthrex.ai', 'password': 'admin123', 'role': 'admin', 'created_at': '2026-01-01'},
-    {'id': 2, 'name': 'User',  'email': 'user@arthrex.ai',  'password': 'user123',  'role': 'user',  'created_at': '2026-01-01'},
+    {'id': 1, 'name': 'Admin', 'email': 'admin@athrexai.com', 'password': 'admin123', 'role': 'admin', 'created_at': '2026-01-01'},
+    {'id': 2, 'name': 'User',  'email': 'user@athrexai.com',  'password': 'user123',  'role': 'user',  'created_at': '2026-01-01'},
 ]
 
 def get_store(key, default=None):
@@ -135,33 +135,51 @@ def delete_signup(uid):
     set_store('users', users)
     return jsonify({'success': True})
 
-# ── ENROLLMENTS ───────────────────────────────────────────────────────────────
+# ── ENROLLMENTS (status: pending | approved | rejected) ───────────────────────
 @app.route('/api/enrollments', methods=['GET'])
 def get_enrollments():
-    return jsonify(get_store('enrollments', []))
+    items = get_store('enrollments', [])
+    email = (request.args.get('email') or '').strip().lower()
+    if email:
+        items = [e for e in items if (e.get('email') or '').lower() == email]
+    return jsonify(items)
 
 @app.route('/api/enrollments', methods=['POST'])
 def add_enrollment():
     d = request.json or {}
     items = get_store('enrollments', [])
+    email = (d.get('email') or '').strip()
+    course_id = str(d.get('courseId') or d.get('course_id') or '')
+    if email and course_id:
+        for e in items:
+            if (e.get('email') or '').lower() == email.lower() and str(e.get('course_id') or e.get('courseId') or '') == course_id:
+                if e.get('status') in ('pending', 'approved'):
+                    return jsonify({'success': True, 'enrollment': e, 'duplicate': True})
     e = {
-        'id': next_id(items), 'name': d.get('name'), 'email': d.get('email'),
+        'id': next_id(items), 'name': d.get('name'), 'email': email,
         'phone': d.get('phone'), 'course': d.get('course'),
-        'course_id': d.get('courseId', ''), 'status': 'pending', 'date': now()
+        'course_id': course_id, 'status': 'pending', 'date': now()
     }
     items.append(e)
     set_store('enrollments', items)
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'enrollment': e})
 
 @app.route('/api/enrollments/<int:eid>', methods=['PATCH'])
 def update_enrollment(eid):
     d = request.json or {}
+    status = (d.get('status') or '').strip().lower()
+    if status not in ('pending', 'approved', 'rejected'):
+        return jsonify({'error': 'status must be pending, approved, or rejected'}), 400
     items = get_store('enrollments', [])
+    found = None
     for e in items:
         if e['id'] == eid:
-            e['status'] = d.get('status', e['status'])
+            e['status'] = status
+            found = e
+    if not found:
+        return jsonify({'error': 'Enrollment not found'}), 404
     set_store('enrollments', items)
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'enrollment': found})
 
 @app.route('/api/enrollments/<int:eid>', methods=['DELETE'])
 def delete_enrollment(eid):

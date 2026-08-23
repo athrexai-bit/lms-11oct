@@ -1,17 +1,17 @@
-// Gradient pool for course cards
+// My Courses — progress for seeded LMS courses; open learning via main-site path
 const gradients = [
-  'linear-gradient(135deg,#7c3aed,#2563eb)',
-  'linear-gradient(135deg,#10b981,#0ea5e9)',
-  'linear-gradient(135deg,#f59e0b,#ef4444)',
-  'linear-gradient(135deg,#ec4899,#8b5cf6)',
-  'linear-gradient(135deg,#06b6d4,#6366f1)',
-  'linear-gradient(135deg,#059669,#0ea5e9)',
-  'linear-gradient(135deg,#f97316,#facc15)',
+  'linear-gradient(135deg,#0b5fff,#2563eb)',
+  'linear-gradient(135deg,#1e40af,#3b82f6)',
+  'linear-gradient(135deg,#0739a8,#0b5fff)',
   'linear-gradient(135deg,#1e3a5f,#2563eb)',
+  'linear-gradient(135deg,#2563eb,#60a5fa)',
+  'linear-gradient(135deg,#0ea5e9,#2563eb)',
 ];
 
 const categoryIcons = {
   'Generative AI': '✨', 'Agentic AI': '🤖', 'Data Science': '🔬',
+  'Data Analytics': '📊', 'AI & Machine Learning': '🧠',
+  'DevOps & AWS': '☁️', 'Software Development': '🛠',
   'Domain AI': '🏭', 'LLM': '🧠', 'RAG': '🔗', 'MCP': '🔌', 'default': '📚'
 };
 
@@ -22,20 +22,22 @@ function loadDashboardCourses() {
   const grid = document.getElementById('myCoursesGrid');
   const empty = document.getElementById('myCoursesEmpty');
   const countBadge = document.getElementById('myCoursesCount');
+  if (!grid) return;
 
   if (!courses.length) {
     grid.innerHTML = '';
-    empty.style.display = 'flex';
-    countBadge.style.display = 'none';
+    if (empty) empty.style.display = 'flex';
+    if (countBadge) countBadge.style.display = 'none';
     updateWelcomeStats(0, 0, 0);
     return;
   }
 
-  empty.style.display = 'none';
-  countBadge.style.display = 'inline-block';
-  countBadge.textContent = courses.length;
+  if (empty) empty.style.display = 'none';
+  if (countBadge) {
+    countBadge.style.display = 'inline-block';
+    countBadge.textContent = courses.length;
+  }
 
-  // Compute stats
   let totalPct = 0, completed = 0;
   courses.forEach(([id, course]) => {
     const totalLessons = (course.topics || []).reduce((s, t) => s + (t.lessons || []).length, 0);
@@ -54,9 +56,13 @@ function loadDashboardCourses() {
     const totalTopics = (course.topics || []).length;
     const progress = JSON.parse(localStorage.getItem(`lf_progress_${id}`) || '[]');
     const pct = totalLessons ? Math.round((progress.length / totalLessons) * 100) : 0;
+    const marketing = typeof findMarketingCourseById === 'function' ? findMarketingCourseById(id) : null;
+    const detailUrl = typeof mainSiteCourseUrl === 'function'
+      ? mainSiteCourseUrl(id)
+      : ((typeof MAIN_SITE_ORIGIN !== 'undefined' ? MAIN_SITE_ORIGIN : location.origin) + `/index.html?course=${encodeURIComponent(id)}`);
 
     return `
-      <div class="master-card dashboard-course-card">
+      <div class="master-card dashboard-course-card" data-main-course="${id}">
         <div class="card-thumb" style="background:${gradient}">${icon}</div>
         <div class="card-body">
           <span class="tag">${course.category || 'Course'}</span>
@@ -74,20 +80,16 @@ function loadDashboardCourses() {
             </div>
           </div>
           <div class="dashboard-course-actions">
-            <a href="lms.html?course=${encodeURIComponent(course.name)}&user=Learner" class="btn-enroll">
-              ${pct > 0 ? '▶ Continue' : '▶ Start Course'}
-            </a>
+            <a href="${detailUrl}" class="btn-enroll">${pct > 0 ? '▶ Continue on Program Page' : 'View Program · Enroll / Learn'}</a>
             <a href="admin-lms" class="btn-edit-course" onclick="localStorage.setItem('lf_active_course','${id}')">✏️ Edit</a>
           </div>
         </div>
       </div>`;
   }).join('');
 
-  // Notify auth module to apply edit button visibility
   if (typeof window.onCoursesRendered === 'function') window.onCoursesRendered();
 }
 
-// Load on page ready
 loadDashboardCourses();
 
 function updateWelcomeStats(enrolled, completed, avgPct) {
@@ -99,10 +101,8 @@ function updateWelcomeStats(enrolled, completed, avgPct) {
   if (p) p.textContent = avgPct + '%';
 }
 
-// Reload when Home nav is clicked
 document.querySelector('.nav-item[data-section="home"]')?.addEventListener('click', loadDashboardCourses);
 
-// Also reload when returning from admin-lms (storage event)
 window.addEventListener('storage', (e) => {
   if (e.key === 'lf_lms') loadDashboardCourses();
 });

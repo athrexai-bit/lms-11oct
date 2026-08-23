@@ -49,8 +49,8 @@ async function renderDynamicMasterclasses() {
   const container = document.getElementById('dynamicMasterclasses');
   if (!container) return;
 
-  const list = (await getMasterclasses()).filter(m => getMcStatus(m.schedule) !== 'ended');
-  if (!list.length) { container.innerHTML = ''; return; }
+  const list = await getMasterclasses();
+  if (!list.length) { container.innerHTML = '<div style="color:rgba(255,255,255,0.4);text-align:center;padding:40px">No masterclasses yet. Check back soon!</div>'; return; }
 
   container.innerHTML = list.map(m => {
     const status = getMcStatus(m.schedule);
@@ -58,12 +58,14 @@ async function renderDynamicMasterclasses() {
     const schedDate = new Date(m.schedule);
 
     return `
-      <div class="master-card mc-dynamic-card" data-mcid="${m.id}">
-        <div class="card-thumb mc-thumb" style="background:linear-gradient(135deg,#7c3aed,#2563eb)">
+      <div class="master-card mc-dynamic-card" data-mcid="${m.id}" onclick="window.location='/masterclass-detail?id=${m.id}'" style="cursor:pointer">
+        <div class="card-thumb mc-thumb" style="background:${m.thumb ? 'url('+JSON.stringify(m.thumb)+') center/cover' : 'linear-gradient(135deg,#7c3aed,#2563eb)'}">
           <div class="mc-thumb-overlay"></div>
           ${status === 'live'
             ? `<span class="mc-live-badge">🔴 LIVE NOW</span>`
-            : `<span class="mc-upcoming-badge">⏰ Upcoming</span>`}
+            : status === 'ended'
+              ? `<span class="mc-upcoming-badge" style="background:rgba(100,100,100,0.8)">✅ Ended</span>`
+              : `<span class="mc-upcoming-badge">⏰ Upcoming</span>`}
           <div class="mc-countdown-wrap" id="mccountdown-${m.id}">
             ${status === 'live'
               ? `<span class="mc-live-text">Join Now</span>`
@@ -84,9 +86,9 @@ async function renderDynamicMasterclasses() {
             <span class="mc-date">📅 ${schedDate.toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})}</span>
             <span class="mc-time">🕐 ${schedDate.toLocaleTimeString('en-IN', {hour:'2-digit',minute:'2-digit'})}</span>
           </div>
-          ${status === 'live'
-            ? `<a href="#" class="btn-enroll mc-join-btn" onclick="openMcRegModal('${m.id}','${m.title.replace(/'/g,"\\'")}','${m.link || ''}');return false;">🔴 Join Live Now</a>`
-            : `<a href="#" class="btn-enroll" onclick="enrollMasterclass('${m.id}','${m.title.replace(/'/g,"\\'")}');return false;">Register Now</a>`}
+          <a href="/masterclass-detail?id=${m.id}" class="btn-enroll" onclick="event.stopPropagation()">
+            ${status === 'live' ? '🔴 Join Live Now' : status === 'ended' ? 'View Details' : 'Register Now →'}
+          </a>
         </div>
       </div>`;
   }).join('');

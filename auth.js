@@ -1,9 +1,9 @@
-// ===== ARTHREX AI — AUTH & ACCESS CONTROL =====
+// ===== ATHREXAI — AUTH & ACCESS CONTROL =====
 
 // Demo credentials
 const DEMO_USERS = {
-  'user@arthrex.ai':  { password: 'user123',  role: 'user',  name: 'User' },
-  'admin@arthrex.ai': { password: 'admin123', role: 'admin', name: 'Admin' },
+  'user@athrexai.com':  { password: 'user123',  role: 'user',  name: 'User' },
+  'admin@athrexai.com': { password: 'admin123', role: 'admin', name: 'Admin' },
 };
 
 let selectedRole = 'user'; // role chosen in login modal
@@ -105,7 +105,7 @@ document.getElementById('btnAuthSubmit').addEventListener('click', async () => {
     return;
   }
 
-  errEl.textContent = '❌ Invalid email or password. If the backend is offline, use admin@arthrex.ai / admin123 or start the server at localhost:8000.';
+  errEl.textContent = '❌ Invalid email or password. If the backend is offline, use admin@athrexai.com / admin123 or start the server at localhost:8000.';
   errEl.style.display = 'block';
 });
 

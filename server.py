@@ -1,5 +1,5 @@
 """
-Arthrex AI — Backend Server
+Athrexai — Backend Server
 Flask + SQLite database
 Production: gunicorn server:app
 """
@@ -63,16 +63,36 @@ def init_db():
 
     # Masterclasses
     c.execute('''CREATE TABLE IF NOT EXISTS masterclasses (
-        id         INTEGER PRIMARY KEY AUTOINCREMENT,
-        title      TEXT,
-        tag        TEXT,
-        instructor TEXT,
-        description TEXT,
-        date       TEXT,
-        duration   TEXT,
-        thumb      TEXT,
-        video_url  TEXT,
-        created_at TEXT DEFAULT (datetime('now','localtime'))
+        id             INTEGER PRIMARY KEY AUTOINCREMENT,
+        title          TEXT,
+        tag            TEXT,
+        instructor     TEXT,
+        instructor_bio TEXT,
+        description    TEXT,
+        schedule       TEXT,
+        duration       TEXT,
+        link           TEXT,
+        rating         REAL DEFAULT 4.9,
+        thumb          TEXT,
+        learn_points   TEXT,
+        for_whom       TEXT,
+        faqs           TEXT,
+        video_url      TEXT,
+        created_at     TEXT DEFAULT (datetime('now','localtime'))
+    )''')
+
+    # Masterclass Registrations
+    c.execute('''CREATE TABLE IF NOT EXISTS mc_registrations (
+        id           INTEGER PRIMARY KEY AUTOINCREMENT,
+        mc_id        TEXT,
+        mc_title     TEXT,
+        name         TEXT,
+        email        TEXT,
+        phone        TEXT,
+        country      TEXT,
+        state        TEXT,
+        profession   TEXT,
+        registered_at TEXT DEFAULT (datetime('now','localtime'))
     )''')
 
     # Live Classes
@@ -93,9 +113,9 @@ def init_db():
 
     # Seed admin user
     c.execute("INSERT OR IGNORE INTO users (name,email,password,role) VALUES (?,?,?,?)",
-              ('Admin', 'admin@arthrex.ai', 'admin123', 'admin'))
+              ('Admin', 'admin@athrexai.com', 'admin123', 'admin'))
     c.execute("INSERT OR IGNORE INTO users (name,email,password,role) VALUES (?,?,?,?)",
-              ('User', 'user@arthrex.ai', 'user123', 'user'))
+              ('User', 'user@athrexai.com', 'user123', 'user'))
 
     conn.commit()
     conn.close()
@@ -103,17 +123,53 @@ def init_db():
 
 # ─────────────────────────────────────────────
 #  SERVE FRONTEND
+#  Marketing site (main.html) is the public homepage.
+#  LMS dashboard lives at /dashboard (legacy index.html).
 # ─────────────────────────────────────────────
 @app.route('/')
 def index():
+    return send_from_directory('.', 'main.html')
+
+@app.route('/index.html')
+def marketing_index():
+    """Deep-links like /index.html?course=1"""
+    return send_from_directory('.', 'main.html')
+
+@app.route('/dashboard')
+@app.route('/app')
+def dashboard():
     return send_from_directory('.', 'index.html')
+
+@app.route('/masterclass-detail')
+def masterclass_detail():
+    return send_from_directory('.', 'masterclass-detail.html')
+
+@app.route('/admin')
+def admin():
+    return send_from_directory('.', 'admin.html')
+
+@app.route('/admin-lms')
+def admin_lms():
+    return send_from_directory('.', 'admin-lms.html')
+
+@app.route('/lms')
+def lms():
+    return send_from_directory('.', 'lms.html')
+
+@app.route('/curriculum')
+def curriculum():
+    return send_from_directory('.', 'curriculum.html')
+
+@app.route('/website')
+def website():
+    return send_from_directory('.', 'website.html')
 
 @app.route('/<path:path>')
 def static_files(path):
     file_path = os.path.join('.', path)
     if os.path.isfile(file_path):
         return send_from_directory('.', path)
-    return send_from_directory('.', 'index.html')
+    return send_from_directory('.', 'main.html')
 
 # ─────────────────────────────────────────────
 #  AUTH ROUTES
@@ -169,29 +225,68 @@ def delete_signup(uid):
 # ─────────────────────────────────────────────
 @app.route('/api/enrollments', methods=['GET'])
 def get_enrollments():
+    """Status values: pending | approved | rejected"""
     conn = get_db()
-    rows = conn.execute("SELECT * FROM enrollments ORDER BY id DESC").fetchall()
+    email = (request.args.get('email') or '').strip().lower()
+    if email:
+        rows = conn.execute(
+            "SELECT * FROM enrollments WHERE lower(email)=? ORDER BY id DESC",
+            (email,)
+        ).fetchall()
+    else:
+        rows = conn.execute("SELECT * FROM enrollments ORDER BY id DESC").fetchall()
     conn.close()
     return jsonify([dict(r) for r in rows])
 
 @app.route('/api/enrollments', methods=['POST'])
 def add_enrollment():
-    d = request.json
+    """Creates enrollment. Demo users are auto-approved; others stay pending until admin approval."""
+    d = request.json or {}
+    email = (d.get('email') or '').strip()
+    course_id = str(d.get('courseId') or d.get('course_id') or '')
+    is_demo = email.lower() == 'demo@athrexai.com'
+    status = 'approved' if is_demo else 'pending'
     conn = get_db()
-    conn.execute("INSERT INTO enrollments (name,email,phone,course,course_id,status) VALUES (?,?,?,?,?,?)",
-                 (d.get('name'), d.get('email'), d.get('phone'), d.get('course'), d.get('courseId',''), 'pending'))
+    # Avoid duplicate pending/approved rows for same user+course
+    if email and course_id:
+        existing = conn.execute(
+            "SELECT * FROM enrollments WHERE lower(email)=? AND course_id=? "
+            "AND status IN ('pending','approved') ORDER BY id DESC LIMIT 1",
+            (email.lower(), course_id)
+        ).fetchone()
+        if existing:
+            # Upgrade demo pending rows to approved
+            if is_demo and (existing['status'] or '').lower() == 'pending':
+                conn.execute("UPDATE enrollments SET status='approved' WHERE id=?", (existing['id'],))
+                conn.commit()
+                row = conn.execute("SELECT * FROM enrollments WHERE id=?", (existing['id'],)).fetchone()
+                conn.close()
+                return jsonify({'success': True, 'enrollment': dict(row) if row else None, 'duplicate': True})
+            conn.close()
+            return jsonify({'success': True, 'enrollment': dict(existing), 'duplicate': True})
+    cur = conn.execute(
+        "INSERT INTO enrollments (name,email,phone,course,course_id,status) VALUES (?,?,?,?,?,?)",
+        (d.get('name'), email, d.get('phone'), d.get('course'), course_id, status)
+    )
     conn.commit()
+    row = conn.execute("SELECT * FROM enrollments WHERE id=?", (cur.lastrowid,)).fetchone()
     conn.close()
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'enrollment': dict(row) if row else None})
 
 @app.route('/api/enrollments/<int:eid>', methods=['PATCH'])
 def update_enrollment(eid):
-    d = request.json
+    d = request.json or {}
+    status = (d.get('status') or '').strip().lower()
+    if status not in ('pending', 'approved', 'rejected'):
+        return jsonify({'error': 'status must be pending, approved, or rejected'}), 400
     conn = get_db()
-    conn.execute("UPDATE enrollments SET status=? WHERE id=?", (d.get('status'), eid))
+    conn.execute("UPDATE enrollments SET status=? WHERE id=?", (status, eid))
     conn.commit()
+    row = conn.execute("SELECT * FROM enrollments WHERE id=?", (eid,)).fetchone()
     conn.close()
-    return jsonify({'success': True})
+    if not row:
+        return jsonify({'error': 'Enrollment not found'}), 404
+    return jsonify({'success': True, 'enrollment': dict(row)})
 
 @app.route('/api/enrollments/<int:eid>', methods=['DELETE'])
 def delete_enrollment(eid):
@@ -258,13 +353,17 @@ def get_masterclasses():
 def add_masterclass():
     d = request.json
     conn = get_db()
-    conn.execute('''INSERT INTO masterclasses (title,tag,instructor,description,date,duration,thumb,video_url)
-                    VALUES (?,?,?,?,?,?,?,?)''',
-                 (d.get('title'), d.get('tag'), d.get('instructor'), d.get('description'),
-                  d.get('date'), d.get('duration'), d.get('thumb'), d.get('videoUrl')))
+    conn.execute('''INSERT INTO masterclasses
+        (title,tag,instructor,instructor_bio,description,schedule,duration,link,rating,thumb,learn_points,for_whom,faqs,video_url)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',
+        (d.get('title'), d.get('tag'), d.get('instructor'), d.get('instructor_bio'),
+         d.get('description'), d.get('schedule'), d.get('duration'), d.get('link'),
+         d.get('rating', 4.9), d.get('thumb'), d.get('learn_points'),
+         d.get('for_whom'), d.get('faqs'), d.get('videoUrl')))
+    new_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
     conn.commit()
     conn.close()
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'id': new_id})
 
 @app.route('/api/masterclasses/<int:mid>', methods=['DELETE'])
 def delete_masterclass(mid):
@@ -273,6 +372,26 @@ def delete_masterclass(mid):
     conn.commit()
     conn.close()
     return jsonify({'success': True})
+
+# ── MASTERCLASS REGISTRATIONS ─────────────────────────────────────────────────
+@app.route('/api/mc-registrations', methods=['POST'])
+def add_mc_registration():
+    d = request.json
+    conn = get_db()
+    conn.execute('''INSERT INTO mc_registrations (mc_id,mc_title,name,email,phone,country,state,profession)
+                    VALUES (?,?,?,?,?,?,?,?)''',
+                 (d.get('mc_id'), d.get('mc_title'), d.get('name'), d.get('email'),
+                  d.get('phone'), d.get('country'), d.get('state'), d.get('profession')))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+@app.route('/api/mc-registrations/<mc_id>', methods=['GET'])
+def get_mc_registrations(mc_id):
+    conn = get_db()
+    rows = conn.execute("SELECT * FROM mc_registrations WHERE mc_id=? ORDER BY id DESC", (mc_id,)).fetchall()
+    conn.close()
+    return jsonify([dict(r) for r in rows])
 
 # ─────────────────────────────────────────────
 #  LIVE CLASSES
@@ -310,5 +429,5 @@ def delete_liveclass(lid):
 # ─────────────────────────────────────────────
 if __name__ == '__main__':
     init_db()
-    print("🚀 Arthrex AI Server running at http://localhost:8000")
+    print("🚀 Athrexai Server running at http://localhost:8000")
     app.run(debug=True, port=8000)

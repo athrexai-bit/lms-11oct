@@ -64,7 +64,7 @@ ss_draw = ImageDraw.Draw(ss)
 ss_draw.rectangle([0, 0, 390, 64], fill=(19, 19, 31))
 try:
     f = ImageFont.truetype('/System/Library/Fonts/Helvetica.ttc', 28)
-    ss_draw.text((20, 18), 'ArthrexAI', fill=(167, 139, 250), font=f)
+    ss_draw.text((20, 18), 'Athrexai', fill=(167, 139, 250), font=f)
 except:
     pass
 ss.save('icons/screenshot-mobile.png', 'PNG')

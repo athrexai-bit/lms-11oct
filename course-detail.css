@@ -103,8 +103,8 @@
 
 .cd-tags { display: flex; gap: 8px; flex-wrap: wrap; }
 .cd-tag-chip {
-  background: rgba(124,58,237,0.2);
-  border: 1px solid rgba(124,58,237,0.35);
+  background: rgba(11,95,255,0.2);
+  border: 1px solid rgba(11,95,255,0.35);
   color: var(--primary-light);
   font-size: 0.74rem;
   font-weight: 700;
@@ -314,8 +314,8 @@
   transition: border-color 0.2s, background 0.2s;
 }
 .cd-related-card:hover {
-  border-color: rgba(124,58,237,0.4);
-  background: rgba(124,58,237,0.06);
+  border-color: rgba(11,95,255,0.4);
+  background: rgba(11,95,255,0.06);
 }
 .cd-related-thumb {
   width: 72px;
@@ -417,26 +417,26 @@
 /* ── Module box ── */
 .cd-module {
   background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(124,58,237,0.2);
+  border: 1px solid rgba(11,95,255,0.2);
   border-radius: 14px;
   margin-bottom: 12px;
   overflow: hidden;
   transition: border-color 0.2s;
 }
-.cd-module:hover { border-color: rgba(124,58,237,0.4); }
+.cd-module:hover { border-color: rgba(11,95,255,0.4); }
 
 .cd-module-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
-  background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(37,99,235,0.08));
+  background: linear-gradient(135deg, rgba(11,95,255,0.12), rgba(37,99,235,0.08));
   cursor: pointer;
   user-select: none;
   transition: background 0.18s;
   gap: 14px;
 }
-.cd-module-header:hover { background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(37,99,235,0.14)); }
+.cd-module-header:hover { background: linear-gradient(135deg, rgba(11,95,255,0.2), rgba(37,99,235,0.14)); }
 
 .cd-module-left {
   display: flex;
@@ -451,8 +451,8 @@
   width: 34px;
   height: 34px;
   border-radius: 10px;
-  background: rgba(124,58,237,0.25);
-  border: 1px solid rgba(124,58,237,0.4);
+  background: rgba(11,95,255,0.25);
+  border: 1px solid rgba(11,95,255,0.4);
   color: var(--primary-light);
   font-size: 0.78rem;
   font-weight: 800;
@@ -495,8 +495,8 @@
   font-size: 0.72rem;
   color: var(--primary-light);
   font-weight: 600;
-  background: rgba(124,58,237,0.12);
-  border: 1px solid rgba(124,58,237,0.25);
+  background: rgba(11,95,255,0.12);
+  border: 1px solid rgba(11,95,255,0.25);
   padding: 3px 10px;
   border-radius: 50px;
 }

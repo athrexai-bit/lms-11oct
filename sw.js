@@ -1,5 +1,5 @@
-// ===== Arthrex AI — Service Worker =====
-const CACHE_NAME = 'arthrex-ai-v1';
+// ===== Athrexai — Service Worker =====
+const CACHE_NAME = 'arthrex-ai-v2';
 
 // Files to cache for offline use
 const STATIC_ASSETS = [
@@ -9,6 +9,7 @@ const STATIC_ASSETS = [
   '/app.js',
   '/auth.js',
   '/enroll.js',
+  '/marketing-courses.js',
   '/masterclasses.js',
   '/liveclasses.js',
   '/trending.js',

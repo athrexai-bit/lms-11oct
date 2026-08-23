@@ -1,5 +1,5 @@
 /**
- * Arthrex AI — API Helper
+ * Athrexai — API Helper
  * Connects frontend to Flask + SQLite backend at http://localhost:5000
  * Falls back to localStorage if server is not running
  */
@@ -61,18 +61,35 @@ async function apiDeleteSignup(id) {
   return res;
 }
 
-// ── ENROLLMENTS ───────────────────────────────────────────────────────────────
-async function apiGetEnrollments() {
-  const res = await apiCall('GET', '/enrollments');
+// ── ENROLLMENTS (status: pending | approved | rejected) ───────────────────────
+async function apiGetEnrollments(email) {
+  const q = email ? `?email=${encodeURIComponent(email)}` : '';
+  const res = await apiCall('GET', '/enrollments' + q);
   if (res.ok) return res.data;
   return JSON.parse(localStorage.getItem('lf_enrollments') || '[]');
 }
 
 async function apiAddEnrollment(data) {
-  const res = await apiCall('POST', '/enrollments', data);
-  if (!res.ok) {
-    const list = JSON.parse(localStorage.getItem('lf_enrollments') || '[]');
-    list.push({ ...data, id: Date.now(), status: 'pending', date: new Date().toLocaleDateString() });
+  const payload = { ...data, status: 'pending' };
+  const res = await apiCall('POST', '/enrollments', payload);
+  const list = JSON.parse(localStorage.getItem('lf_enrollments') || '[]');
+  if (res.ok && res.data?.enrollment) {
+    const e = res.data.enrollment;
+    const normalized = {
+      id: e.id, name: e.name, email: e.email, phone: e.phone,
+      course: e.course, courseId: e.course_id || e.courseId || data.courseId || '',
+      status: e.status || 'pending', date: e.created_at || e.date || new Date().toLocaleDateString()
+    };
+    const idx = list.findIndex(x => x.id === normalized.id);
+    if (idx === -1) list.unshift(normalized);
+    else list[idx] = normalized;
+    localStorage.setItem('lf_enrollments', JSON.stringify(list));
+  } else if (!res.ok) {
+    list.push({
+      ...payload, id: Date.now(), status: 'pending',
+      courseId: data.courseId || '',
+      date: new Date().toLocaleDateString('en-IN')
+    });
     localStorage.setItem('lf_enrollments', JSON.stringify(list));
   }
   return res;
@@ -80,10 +97,11 @@ async function apiAddEnrollment(data) {
 
 async function apiUpdateEnrollment(id, status) {
   const res = await apiCall('PATCH', `/enrollments/${id}`, { status });
-  if (!res.ok) {
-    const list = JSON.parse(localStorage.getItem('lf_enrollments') || '[]');
-    const idx = list.findIndex(e => e.id === id);
-    if (idx !== -1) { list[idx].status = status; localStorage.setItem('lf_enrollments', JSON.stringify(list)); }
+  const list = JSON.parse(localStorage.getItem('lf_enrollments') || '[]');
+  const idx = list.findIndex(e => e.id === id);
+  if (idx !== -1) {
+    list[idx].status = status;
+    localStorage.setItem('lf_enrollments', JSON.stringify(list));
   }
   return res;
 }
@@ -167,4 +185,4 @@ async function apiDeleteLiveClass(id) {
   return res;
 }
 
-console.log('✅ Arthrex AI API helper loaded. Backend: ' + API_BASE);
+console.log('✅ Athrexai API helper loaded. Backend: ' + API_BASE);

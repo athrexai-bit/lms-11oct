@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Masterclass — Athrexai</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="masterclass-detail.css"/>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <img src="logo-cropped.png" alt="Athrexai" class="logo-img"/>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a href="/" class="btn-back">← Back to Dashboard</a>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <div class="mc-detail-page">
+
+    <!-- HERO SECTION -->
+    <div class="mc-hero" id="mcHero">
+      <div class="mc-hero-bg" id="mcHeroBg"></div>
+      <div class="mc-hero-inner">
+        <div class="mc-hero-left">
+          <div class="mc-breadcrumb" id="mcBreadcrumb">Free Masterclass</div>
+          <div class="mc-tag-row" id="mcTagRow"></div>
+          <h1 class="mc-hero-title" id="mcHeroTitle">Loading...</h1>
+          <p class="mc-hero-desc" id="mcHeroDesc"></p>
+          <div class="mc-hero-meta" id="mcHeroMeta"></div>
+          <div class="mc-hero-countdown-wrap">
+            <div class="mc-hero-countdown" id="mcHeroCountdown"></div>
+          </div>
+        </div>
+        <div class="mc-hero-right">
+          <div class="mc-reg-card" id="mcRegCard">
+            <div class="mc-reg-card-header">
+              <span class="mc-reg-free-badge">🎓 FREE</span>
+              <span class="mc-reg-virtual">🌐 Virtual Event</span>
+            </div>
+            <div class="mc-reg-countdown-label">Starts in</div>
+            <div class="mc-reg-countdown" id="mcRegCountdown">--</div>
+            <form class="mc-reg-form" id="mcRegForm" onsubmit="submitRegistration(event)">
+              <div class="mc-reg-field">
+                <label>Full Name <span class="req">*</span></label>
+                <input type="text" id="regName" placeholder="Your full name" required/>
+              </div>
+              <div class="mc-reg-field">
+                <label>Email Id <span class="req">*</span></label>
+                <input type="email" id="regEmail" placeholder="your@email.com" required/>
+              </div>
+              <div class="mc-reg-field">
+                <label>Phone No. <span class="req">*</span></label>
+                <div class="mc-phone-row">
+                  <select id="regPhoneCode">
+                    <option value="+91">🇮🇳 +91</option>
+                    <option value="+1">🇺🇸 +1</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+61">🇦🇺 +61</option>
+                    <option value="+971">🇦🇪 +971</option>
+                    <option value="+65">🇸🇬 +65</option>
+                    <option value="+60">🇲🇾 +60</option>
+                  </select>
+                  <input type="tel" id="regPhone" placeholder="Phone number" required/>
+                </div>
+              </div>
+              <div class="mc-reg-field">
+                <label>Country <span class="req">*</span></label>
+                <select id="regCountry" required>
+                  <option value="">Select country</option>
+                  <option value="India">India</option>
+                  <option value="USA">USA</option>
+                  <option value="UK">UK</option>
+                  <option value="Australia">Australia</option>
+                  <option value="UAE">UAE</option>
+                  <option value="Singapore">Singapore</option>
+                  <option value="Malaysia">Malaysia</option>
+                  <option value="Canada">Canada</option>
+                  <option value="Germany">Germany</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="mc-reg-field">
+                <label>State</label>
+                <input type="text" id="regState" placeholder="Your state"/>
+              </div>
+              <div class="mc-reg-field">
+                <label>Profession / Student</label>
+                <select id="regProfession">
+                  <option value="">Select...</option>
+                  <option value="Student">Student</option>
+                  <option value="Working Professional">Working Professional</option>
+                  <option value="Fresher">Fresher</option>
+                  <option value="Entrepreneur">Entrepreneur</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="mc-reg-error" id="mcRegError" style="display:none"></div>
+              <button type="submit" class="mc-reg-submit" id="mcRegSubmitBtn">Register For Free!</button>
+              <div class="mc-reg-seats">🔥 Limited Seats</div>
+            </form>
+            <!-- Success state -->
+            <div class="mc-reg-success" id="mcRegSuccess" style="display:none">
+              <div class="mc-success-icon">✅</div>
+              <h3>You're Registered!</h3>
+              <p>We'll send the join link to your email. Check back here before the session starts.</p>
+              <button class="mc-join-now-btn" id="mcJoinNowBtn" style="display:none">🔴 Join Now</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="mc-tabs-bar">
+      <div class="mc-tabs-inner">
+        <button class="mc-tab active" onclick="switchTab(this,'overview')">Overview</button>
+        <button class="mc-tab" onclick="switchTab(this,'instructor')">Instructor</button>
+        <button class="mc-tab" onclick="switchTab(this,'faqs')">FAQs</button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="mc-content-wrap">
+
+      <!-- OVERVIEW TAB -->
+      <div class="mc-tab-panel active" id="tab-overview">
+        <div class="mc-section">
+          <h2 class="mc-section-title">OVERVIEW</h2>
+          <h3 class="mc-learn-title">What you'll learn</h3>
+          <ul class="mc-learn-list" id="mcLearnList"></ul>
+        </div>
+
+        <div class="mc-section">
+          <h3 class="mc-learn-title">This Masterclass is for</h3>
+          <div class="mc-for-grid" id="mcForGrid"></div>
+        </div>
+      </div>
+
+      <!-- INSTRUCTOR TAB -->
+      <div class="mc-tab-panel" id="tab-instructor">
+        <div class="mc-section">
+          <h2 class="mc-section-title">INSTRUCTOR</h2>
+          <div class="mc-instructor-card" id="mcInstructorCard"></div>
+        </div>
+      </div>
+
+      <!-- FAQS TAB -->
+      <div class="mc-tab-panel" id="tab-faqs">
+        <div class="mc-section">
+          <h2 class="mc-section-title">FAQS</h2>
+          <div class="mc-faq-list" id="mcFaqList"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // ── Load masterclass data ─────────────────────────────────────────────────
+    const params = new URLSearchParams(location.search);
+    const mcId = params.get('id');
+
+    async function loadMasterclass() {
+      if (!mcId) { document.getElementById('mcHeroTitle').textContent = 'Masterclass not found'; return; }
+
+      let mc = null;
+      try {
+        const res = await fetch('/api/masterclasses');
+        if (res.ok) {
+          const list = await res.json();
+          mc = list.find(m => String(m.id) === String(mcId));
+        }
+      } catch(e) {}
+
+      if (!mc) {
+        // fallback localStorage
+        const list = JSON.parse(localStorage.getItem('lf_masterclasses') || '[]');
+        mc = list.find(m => String(m.id) === String(mcId));
+      }
+
+      if (!mc) { document.getElementById('mcHeroTitle').textContent = 'Masterclass not found'; return; }
+
+      // Set page title
+      document.title = mc.title + ' — Athrexai';
+
+      // Hero background
+      if (mc.thumb) {
+        document.getElementById('mcHeroBg').style.backgroundImage = `url('${mc.thumb}')`;
+        document.getElementById('mcHeroBg').style.backgroundSize = 'cover';
+        document.getElementById('mcHeroBg').style.backgroundPosition = 'center';
+      }
+
+      // Breadcrumb
+      document.getElementById('mcBreadcrumb').textContent = (mc.tag || 'Free Masterclass') + ' Workshop';
+
+      // Tag
+      document.getElementById('mcTagRow').innerHTML = `<span class="mc-detail-tag">${mc.tag || 'AI & ML'}</span><span class="mc-detail-free-tag">FREE</span>`;
+
+      // Title
+      document.getElementById('mcHeroTitle').textContent = mc.title;
+
+      // Description
+      document.getElementById('mcHeroDesc').textContent = mc.description || '';
+
+      // Meta
+      const schedDate = new Date(mc.schedule);
+      document.getElementById('mcHeroMeta').innerHTML = `
+        <span>📅 ${schedDate.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</span>
+        <span>🕐 ${schedDate.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</span>
+        <span>⏱ ${mc.duration || '2 hrs'}</span>
+        <span>⭐ ${mc.rating || 4.9}</span>
+        ${mc.instructor ? `<span>👨‍🏫 ${mc.instructor}</span>` : ''}
+      `;
+
+      // Countdown
+      startCountdown(mc.schedule);
+
+      // What you'll learn
+      const learnItems = mc.learn_points
+        ? JSON.parse(mc.learn_points)
+        : [
+            'Step-by-step 2026 roadmap to become an AI Engineer, Data Scientist, Data Analyst, or Machine Learning Engineer from scratch.',
+            'Essential skills & tools: Python, SQL, Machine Learning, AI, Data Analytics, and real-world project building.',
+            'How to transition into high-paying tech careers in AI, Data Science, and Machine Learning, even from a non-tech background.',
+            'Job-ready strategies including portfolio building, interview preparation, and how to land roles in the AI & Data Science industry.'
+          ];
+      document.getElementById('mcLearnList').innerHTML = learnItems.map(item => `<li>${item}</li>`).join('');
+
+      // This masterclass is for
+      const forItems = mc.for_whom
+        ? JSON.parse(mc.for_whom)
+        : [
+            'Students and fresh graduates exploring AI, Data Science, and Machine Learning careers',
+            'Working professionals looking to switch to high-paying tech roles',
+            'Beginners interested in Python, AI, and Data Analytics',
+            'Anyone curious about future-proof careers in AI and Data Science'
+          ];
+      document.getElementById('mcForGrid').innerHTML = forItems.map((item, i) => `
+        <div class="mc-for-item">
+          <span class="mc-for-num">${i + 1}</span>
+          <span>${item}</span>
+        </div>`).join('');
+
+      // Instructor
+      document.getElementById('mcInstructorCard').innerHTML = `
+        <div class="mc-instructor-avatar">${(mc.instructor || 'I').charAt(0).toUpperCase()}</div>
+        <div class="mc-instructor-info">
+          <h3>${mc.instructor || 'Instructor'}</h3>
+          <p>${mc.instructor_bio || 'Principal Instructor, Athrexai'}</p>
+        </div>`;
+
+      // FAQs
+      const faqs = mc.faqs
+        ? JSON.parse(mc.faqs)
+        : [
+            { q: 'What can I expect to learn in this Masterclass?', a: "You'll learn AI basics, build a beginner-friendly AI agent, understand prompt engineering, explore real-world AI applications, and get a clear roadmap to launch a high-paying AI career in today's fast-growing Artificial Intelligence industry." },
+            { q: 'Is this Masterclass held in person or online?', a: 'This is a fully online virtual event. You can join from anywhere in the world using the link provided after registration.' },
+            { q: 'Is there a fee for attending the Masterclass?', a: 'No, this masterclass is completely free. Just register with your details and join the live session.' }
+          ];
+      document.getElementById('mcFaqList').innerHTML = faqs.map((faq, i) => `
+        <div class="mc-faq-item" id="faq-${i}">
+          <button class="mc-faq-q" onclick="toggleFaq(${i})">
+            ${faq.q}
+            <span class="mc-faq-arrow">▾</span>
+          </button>
+          <div class="mc-faq-a">${faq.a}</div>
+        </div>`).join('');
+
+      // Check if already registered
+      const regs = JSON.parse(localStorage.getItem('lf_mc_registrations') || '{}');
+      if (regs[mcId]) {
+        showSuccess(mc.link);
+      }
+
+      // Store mc globally for form submit
+      window._currentMc = mc;
+    }
+
+    // ── Countdown ─────────────────────────────────────────────────────────────
+    function formatCountdown(scheduleStr) {
+      const diff = new Date(scheduleStr) - new Date();
+      if (diff <= 0) return null;
+      const days = Math.floor(diff / 86400000);
+      const hrs  = Math.floor((diff % 86400000) / 3600000);
+      const mins = Math.floor((diff % 3600000) / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
+      return { days, hrs, mins, secs };
+    }
+
+    function startCountdown(scheduleStr) {
+      function update() {
+        const t = formatCountdown(scheduleStr);
+        const heroEl = document.getElementById('mcHeroCountdown');
+        const regEl  = document.getElementById('mcRegCountdown');
+
+        if (!t) {
+          const diff = new Date() - new Date(scheduleStr);
+          if (diff < 10800000) {
+            heroEl.innerHTML = `<span class="mc-live-now-badge">🔴 LIVE NOW</span>`;
+            regEl.innerHTML  = `<span class="mc-live-now-badge">🔴 LIVE NOW</span>`;
+          } else {
+            heroEl.innerHTML = `<span style="color:rgba(255,255,255,0.4)">Session Ended</span>`;
+            regEl.innerHTML  = `<span style="color:rgba(255,255,255,0.4)">Session Ended</span>`;
+          }
+          return;
+        }
+
+        const html = `
+          <div class="mc-countdown-boxes">
+            <div class="mc-cbox"><strong>${String(t.days).padStart(2,'0')}</strong><span>d</span></div>
+            <div class="mc-cbox-sep">:</div>
+            <div class="mc-cbox"><strong>${String(t.hrs).padStart(2,'0')}</strong><span>h</span></div>
+            <div class="mc-cbox-sep">:</div>
+            <div class="mc-cbox"><strong>${String(t.mins).padStart(2,'0')}</strong><span>m</span></div>
+            <div class="mc-cbox-sep">:</div>
+            <div class="mc-cbox"><strong>${String(t.secs).padStart(2,'0')}</strong><span>s</span></div>
+          </div>`;
+        heroEl.innerHTML = html;
+        regEl.innerHTML  = html;
+      }
+      update();
+      setInterval(update, 1000);
+    }
+
+    // ── Tab switching ─────────────────────────────────────────────────────────
+    function switchTab(btn, tab) {
+      document.querySelectorAll('.mc-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.mc-tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+
+    // ── FAQ accordion ─────────────────────────────────────────────────────────
+    function toggleFaq(i) {
+      const item = document.getElementById('faq-' + i);
+      item.classList.toggle('open');
+    }
+
+    // ── Registration submit ───────────────────────────────────────────────────
+    async function submitRegistration(e) {
+      e.preventDefault();
+      const mc = window._currentMc;
+      const name       = document.getElementById('regName').value.trim();
+      const email      = document.getElementById('regEmail').value.trim();
+      const phoneCode  = document.getElementById('regPhoneCode').value;
+      const phone      = phoneCode + ' ' + document.getElementById('regPhone').value.trim();
+      const country    = document.getElementById('regCountry').value;
+      const state      = document.getElementById('regState').value.trim();
+      const profession = document.getElementById('regProfession').value;
+      const errEl      = document.getElementById('mcRegError');
+
+      if (!name || !email || !phone || !country) {
+        errEl.textContent = 'Please fill all required fields.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('mcRegSubmitBtn');
+      btn.textContent = 'Registering...';
+      btn.disabled = true;
+
+      // Save to API
+      try {
+        await fetch('/api/mc-registrations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            mc_id: mcId,
+            mc_title: mc?.title || '',
+            name, email, phone, country, state, profession,
+            registeredAt: new Date().toISOString()
+          })
+        });
+      } catch(err) {}
+
+      // Save to localStorage
+      const regs = JSON.parse(localStorage.getItem('lf_mc_registrations') || '{}');
+      regs[mcId] = { name, email, phone, country, state, profession, registeredAt: new Date().toISOString() };
+      localStorage.setItem('lf_mc_registrations', JSON.stringify(regs));
+
+      const detail = JSON.parse(localStorage.getItem('lf_mc_registrations_detail') || '{}');
+      if (!detail[mcId]) detail[mcId] = [];
+      if (!detail[mcId].find(r => r.email === email)) {
+        detail[mcId].push({ name, email, phone, country, state, profession, registeredAt: new Date().toISOString() });
+      }
+      localStorage.setItem('lf_mc_registrations_detail', JSON.stringify(detail));
+
+      showSuccess(mc?.link);
+    }
+
+    function showSuccess(link) {
+      document.getElementById('mcRegForm').style.display = 'none';
+      document.getElementById('mcRegSuccess').style.display = 'flex';
+      if (link) {
+        const joinBtn = document.getElementById('mcJoinNowBtn');
+        joinBtn.style.display = 'block';
+        joinBtn.onclick = () => window.open(link, '_blank');
+      }
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    loadMasterclass();
+  </script>
+</body>
+</html>

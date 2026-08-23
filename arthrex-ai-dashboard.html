@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Athrexai — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="arthrex-ai-dashboard.css"/>
+</head>
+<body>
+
+<!-- ===== TOPBAR ===== -->
+<header class="topbar">
+  <div class="topbar-logo">
+    <img src="logo-cropped.png" alt="Athrexai"/>
+  </div>
+  <div class="topbar-center">
+    <button class="hamburger" id="hamburger">☰</button>
+    <span class="topbar-title" id="pageTitle">Dashboard</span>
+  </div>
+  <div class="topbar-right">
+    <button class="topbar-icon-btn" title="Search">🔍</button>
+    <button class="topbar-icon-btn" title="Notifications">
+      🔔<span class="notif-dot"></span>
+    </button>
+    <button class="topbar-icon-btn" title="Help">❓</button>
+    <div class="topbar-user">
+      <div class="topbar-avatar">BS</div>
+      <div class="topbar-user-info">
+        <span class="topbar-user-name">Baishalini</span>
+        <span class="topbar-user-role">Pro Learner</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="nav-section-label">Main</div>
+  <a href="#" class="nav-item active" data-section="home" onclick="switchSection(this,'home','Dashboard')">
+    <span class="nav-icon">🏠</span> Dashboard
+  </a>
+  <a href="#" class="nav-item" data-section="courses" onclick="switchSection(this,'courses','My Courses')">
+    <span class="nav-icon">📚</span> My Courses
+  </a>
+  <a href="#" class="nav-item" data-section="live" onclick="switchSection(this,'live','Upcoming Batches')">
+    <span class="nav-icon">🗓️</span> Upcoming Batches
+    <span class="nav-badge" style="background:rgba(245,158,11,0.3);color:#f59e0b">7</span>
+  </a>
+  <a href="#" class="nav-item" data-section="masterclass" onclick="switchSection(this,'masterclass','Free Masterclasses')">
+    <span class="nav-icon">🎓</span> Masterclasses
+    <span class="nav-badge">3 New</span>
+  </a>
+  <a href="#" class="nav-item" data-section="trending" onclick="switchSection(this,'trending','Trending Topics')">
+    <span class="nav-icon">🔥</span> Trending
+  </a>
+  <div class="sidebar-divider"></div>
+  <div class="nav-section-label">AI Programs</div>
+  <a href="#" class="nav-item" data-section="agentic" onclick="switchSection(this,'agentic','Agentic AI')">
+    <span class="nav-icon">🤖</span> Agentic AI
+  </a>
+  <a href="#" class="nav-item" data-section="genai" onclick="switchSection(this,'genai','Generative AI')">
+    <span class="nav-icon">✨</span> Generative AI
+  </a>
+  <a href="#" class="nav-item" data-section="datascience" onclick="switchSection(this,'datascience','Data Science')">
+    <span class="nav-icon">🔬</span> Data Science
+  </a>
+  <a href="#" class="nav-item" data-section="domainai" onclick="switchSection(this,'domainai','Industry AI')">
+    <span class="nav-icon">🏭</span> Industry AI
+  </a>
+  <div class="sidebar-divider"></div>
+  <a href="admin" class="nav-item" style="color:rgba(255,255,255,0.4)">
+    <span class="nav-icon">🛡️</span> Admin Panel
+  </a>
+</aside>
+
+<!-- ===== MAIN AREA ===== -->
+<div class="dash-layout">
+<div class="main-area">
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content">
+
+  <!-- HOME SECTION -->
+  <section class="content-section active" id="section-home">
+
+    <div class="page-header">
+      <div>
+        <h1>👋 Good Morning, Baishalini!</h1>
+        <p class="page-header-sub">Here's what's happening with your learning today.</p>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon purple">📚</div>
+        <div>
+          <div class="stat-num">4</div>
+          <div class="stat-label">Courses Enrolled</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">✅</div>
+        <div>
+          <div class="stat-num">1</div>
+          <div class="stat-label">Completed</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon yellow">📈</div>
+        <div>
+          <div class="stat-num">62%</div>
+          <div class="stat-label">Avg. Progress</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-banner-left">
+        <div class="hero-banner-title">Agentic AI Learning Path</div>
+        <div class="hero-banner-sub">Personalised AI skill programs with live mentorship and expert guidance</div>
+        <div class="hero-chips">
+          <span class="hero-chip">Build AI Agents</span>
+          <span class="hero-chip">RAG · MCP · LangGraph</span>
+          <span class="hero-chip">Get Certified</span>
+        </div>
+        <button class="btn-hero" onclick="switchSection(document.querySelector('[data-section=agentic]'),'agentic','Agentic AI')">
+          🚀 Start Now
+        </button>
+      </div>
+      <div class="hero-banner-right">
+        <div class="hero-float-icons">
+          <div class="hero-float-icon">🤖</div>
+          <div class="hero-float-icon">✨</div>
+          <div class="hero-float-icon">🔗</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upcoming Alert -->
+    <div class="upcoming-alert">
+      <div class="upcoming-alert-icon">⏰</div>
+      <div class="upcoming-alert-text">
+        <strong>Live Class — Agentic AI Masterclass (Q3)</strong>
+        <span>Assess and build your first AI agent with expert guidance</span>
+      </div>
+      <span class="upcoming-badge">UPCOMING</span>
+    </div>
+
+    <!-- My Courses -->
+    <div class="sec-header">
+      <h2>📚 My Courses</h2>
+      <a class="sec-view-all" onclick="switchSection(document.querySelector('[data-section=courses]'),'courses','My Courses')">View All →</a>
+    </div>
+    <div class="courses-grid">
+      <div class="course-card">
+        <div class="course-card-thumb" style="background:linear-gradient(135deg,#2c3e8c,#3b52c4)">🤖</div>
+        <span class="course-tag">Agentic AI</span>
+        <h3>Professional Agentic AI Engineer</h3>
+        <p>Build autonomous AI agents with LangGraph, CrewAI, AWS Bedrock.</p>
+        <div class="course-meta"><span class="batch-meta-pill date">📅 6 Months</span><span>⭐ 5.0</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+        <div class="progress-label">68% complete</div>
+        <button class="btn-continue">▶ Continue Learning</button>
+      </div>
+      <div class="course-card">
+        <div class="course-card-thumb" style="background:linear-gradient(135deg,#7c3aed,#2563eb)">✨</div>
+        <span class="course-tag">Generative AI</span>
+        <h3>Professional GenAI Engineer</h3>
+        <p>Master LLMs, RAG, prompt engineering & production AI deployment.</p>
+        <div class="course-meta"><span class="batch-meta-pill date">📅 6 Months</span><span>⭐ 4.9</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+        <div class="progress-label">45% complete</div>
+        <button class="btn-continue">▶ Continue Learning</button>
+      </div>
+      <div class="course-card">
+        <div class="course-card-thumb" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">🔬</div>
+        <span class="course-tag">Data Science</span>
+        <h3>Data Science with ML</h3>
+        <p>NumPy, Pandas, Scikit-learn, ML algorithms & real-world projects.</p>
+        <div class="course-meta"><span class="batch-meta-pill time">⏱ 6 hrs</span><span>⭐ 4.9</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+        <div class="progress-label">Completed ✅</div>
+        <button class="btn-continue" style="background:#ecfdf5;color:#10b981;border-color:rgba(16,185,129,0.25)">🏆 Get Certificate</button>
+      </div>
+      <div class="course-card">
+        <div class="course-card-thumb" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">☁️</div>
+        <span class="course-tag">Cloud AI</span>
+        <h3>AWS Bedrock Agents</h3>
+        <p>Build production AI agents on AWS using Bedrock foundation models.</p>
+        <div class="course-meta"><span class="batch-meta-pill time">⏱ 5 hrs</span><span>⭐ 4.9</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+        <div class="progress-label">30% complete</div>
+        <button class="btn-continue">▶ Continue Learning</button>
+      </div>
+    </div>
+
+    <!-- Overview -->
+    <div class="sec-header" style="margin-top:8px">
+      <h2>📊 Learning Overview</h2>
+    </div>
+    <div class="overview-grid">
+      <div class="overview-card">
+        <div class="overview-card-header">
+          <div class="overview-card-title">🎯 Skill Progress</div>
+          <div class="overview-arrow">→</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:4px">
+              <span style="color:var(--text);font-weight:600">Agentic AI</span><span style="color:var(--muted)">68%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:4px">
+              <span style="color:var(--text);font-weight:600">Generative AI</span><span style="color:var(--muted)">45%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:45%;background:linear-gradient(90deg,#7c3aed,#ec4899)"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:4px">
+              <span style="color:var(--text);font-weight:600">Data Science</span><span style="color:var(--muted)">100%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#10b981,#0ea5e9)"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="overview-card">
+        <div class="overview-card-header">
+          <div class="overview-card-title">🏆 Certificates</div>
+          <div class="overview-arrow">→</div>
+        </div>
+        <div class="overview-empty">
+          <div class="overview-empty-icon">🎖️</div>
+          <p>Complete a course to earn your first certificate</p>
+          <button class="btn-continue" style="margin-top:6px;font-size:0.72rem">Data Science Cert →</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- UPCOMING BATCHES SECTION -->
+  <section class="content-section" id="section-live">
+    <div class="page-header">
+      <div>
+        <h1>🗓️ Upcoming Batches</h1>
+        <p class="page-header-sub">Enroll in a upcoming cohort or book a free demo session</p>
+      </div>
+    </div>
+
+    <!-- filter chips -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px">
+      <button class="batch-filter active" onclick="filterBatch(this,'all')">All Batches</button>
+      <button class="batch-filter" onclick="filterBatch(this,'genai')">Generative AI Architect</button>
+      <button class="batch-filter" onclick="filterBatch(this,'agents')">GenAI &amp; Agents Engineering</button>
+      <button class="batch-filter" onclick="filterBatch(this,'data')">Data Science &amp; Analytics</button>
+    </div>
+
+    <div class="batch-grid" id="batchGrid">
+
+      <!-- 1: Aug 15 — Gen AI Architect -->
+      <div class="batch-card" data-cat="genai">
+        <div class="batch-card-top" style="background:linear-gradient(135deg,#2c3e8c,#3b52c4)">
+          <img src="https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80" class="batch-card-img" alt="GenAI Architect"/>
+          <div class="batch-img-overlay"></div>
+          <div class="batch-img-meta"><span class="bim-date">📅 Aug 15, 2026</span><span class="bim-time">⏱ 10:00 AM IST</span></div>
+          <div class="batch-soon-pill">🔥 Next Batch</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-tag" style="color:#2c3e8c;background:rgba(44,62,140,0.1)">Generative AI Architect</div>
+          <h3 class="batch-title">Generative AI Architect</h3>
+          
+          <div class="batch-meta-row">
+            <span class="batch-meta-pill duration">🕔 5 Months</span>
+            <span class="batch-meta-pill schedule">📆 Weekend — Sat &amp; Sun</span>
+          </div>
+          <div class="batch-price-row">
+            <span class="batch-emi">✅ EMI starts from ₹8,000/mo</span>
+          </div>
+          <div class="batch-actions">
+            <button class="btn-batch-enroll" onclick="openBatchModal('Generative AI Architect','Aug 15, 2026')">🚀 Enroll Now</button>
+            <button class="btn-batch-demo" onclick="openDemoModal('Generative AI Architect')">📹 Book Demo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: Aug 25 — GenAI & Agents -->
+      <div class="batch-card" data-cat="agents">
+        <div class="batch-card-top" style="background:linear-gradient(135deg,#7c3aed,#2563eb)">
+          <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=80" class="batch-card-img" alt="AI Agents"/>
+          <div class="batch-img-overlay"></div>
+          <div class="batch-img-meta"><span class="bim-date">📅 Aug 25, 2026</span><span class="bim-time">⏱ 7:00 PM IST</span></div>
+          <div class="batch-soon-pill" style="background:rgba(124,58,237,0.8)">🔥 Filling Fast</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-tag" style="color:#7c3aed;background:rgba(124,58,237,0.1)">GenAI &amp; Agents Engineering</div>
+          <h3 class="batch-title">GenAI &amp; Agents Engineering</h3>
+          
+          <div class="batch-meta-row">
+            <span class="batch-meta-pill duration">🕔 4 Months</span>
+            <span class="batch-meta-pill schedule">📆 Weekend — Sat &amp; Sun</span>
+          </div>
+          <div class="batch-price-row">
+            <span class="batch-emi">✅ EMI starts from ₹8,000/mo</span>
+          </div>
+          <div class="batch-actions">
+            <button class="btn-batch-enroll" style="background:linear-gradient(135deg,#7c3aed,#2563eb)" onclick="openBatchModal('GenAI &amp; Agents Engineering','Aug 25, 2026')">🚀 Enroll Now</button>
+            <button class="btn-batch-demo" onclick="openDemoModal('GenAI &amp; Agents Engineering')">📹 Book Demo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: Sep 30 — GenAI & Agents -->
+      <div class="batch-card" data-cat="agents">
+        <div class="batch-card-top" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">
+          <img src="https://images.unsplash.com/photo-1655635949212-1d8f4f103ea1?w=600&q=80" class="batch-card-img" alt="GenAI"/>
+          <div class="batch-img-overlay"></div>
+          <div class="batch-img-meta"><span class="bim-date">📅 Sep 30, 2026</span><span class="bim-time">⏱ 7:00 PM IST</span></div>
+          <div class="batch-soon-pill" style="background:rgba(236,72,153,0.8)">📅 Sep Batch</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-tag" style="color:#ec4899;background:rgba(236,72,153,0.1)">GenAI &amp; Agents Engineering</div>
+          <h3 class="batch-title">GenAI &amp; Agents Engineering</h3>
+          
+          <div class="batch-meta-row">
+            <span class="batch-meta-pill duration">🕔 4 Months</span>
+            <span class="batch-meta-pill schedule">📆 Weekend — Sat &amp; Sun</span>
+          </div>
+          <div class="batch-price-row">
+            <span class="batch-emi">✅ EMI starts from ₹8,000/mo</span>
+          </div>
+          <div class="batch-actions">
+            <button class="btn-batch-enroll" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)" onclick="openBatchModal('GenAI &amp; Agents Engineering','Sep 30, 2026')">🚀 Enroll Now</button>
+            <button class="btn-batch-demo" onclick="openDemoModal('GenAI &amp; Agents Engineering')">📹 Book Demo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: Oct 12 — Data Science -->
+      <div class="batch-card" data-cat="data">
+        <div class="batch-card-top" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" class="batch-card-img" alt="Data Science"/>
+          <div class="batch-img-overlay"></div>
+          <div class="batch-img-meta"><span class="bim-date">📅 Oct 12, 2026</span><span class="bim-time">⏱ 8:00 PM IST</span></div>
+          <div class="batch-soon-pill" style="background:rgba(16,185,129,0.8)">📅 Oct Batch</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-tag" style="color:#10b981;background:rgba(16,185,129,0.1)">Data Science &amp; Analytics</div>
+          <h3 class="batch-title">Data Science &amp; Analytics</h3>
+          
+          <div class="batch-meta-row">
+            <span class="batch-meta-pill duration">🕔 4 Months</span>
+            <span class="batch-meta-pill schedule">📆 Weekend — Sat &amp; Sun</span>
+          </div>
+          <div class="batch-price-row">
+            <span class="batch-emi">✅ EMI starts from ₹8,000/mo</span>
+          </div>
+          <div class="batch-actions">
+            <button class="btn-batch-enroll" style="background:linear-gradient(135deg,#10b981,#0ea5e9)" onclick="openBatchModal('Data Science &amp; Analytics','Oct 12, 2026')">🚀 Enroll Now</button>
+            <button class="btn-batch-demo" onclick="openDemoModal('Data Science &amp; Analytics')">📹 Book Demo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5: Nov 1 — Gen AI Architect -->
+      <div class="batch-card" data-cat="genai">
+        <div class="batch-card-top" style="background:linear-gradient(135deg,#1a2660,#2c3e8c)">
+          <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80" class="batch-card-img" alt="Enterprise AI"/>
+          <div class="batch-img-overlay"></div>
+          <div class="batch-img-meta"><span class="bim-date">📅 Nov 1, 2026</span><span class="bim-time">⏱ 10:00 AM IST</span></div>
+          <div class="batch-soon-pill" style="background:rgba(44,62,140,0.8)">📅 Nov Batch</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-tag" style="color:#2c3e8c;background:rgba(44,62,140,0.1)">Generative AI Architect</div>
+          <h3 class="batch-title">Generative AI Architect</h3>
+          
+          <div class="batch-meta-row">
+            <span class="batch-meta-pill duration">🕔 5 Months</span>
+            <span class="batch-meta-pill schedule">📆 Weekend — Sat &amp; Sun</span>
+          </div>
+          <div class="batch-price-row">
+            <span class="batch-emi">✅ EMI starts from ₹8,000/mo</span>
+          </div>
+          <div class="batch-actions">
+            <button class="btn-batch-enroll" onclick="openBatchModal('Generative AI Architect','Nov 1, 2026')">🚀 Enroll Now</button>
+            <button class="btn-batch-demo" onclick="openDemoModal('Generative AI Architect')">📹 Book Demo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6: Nov 20 — GenAI & Agents -->
+      <div class="batch-card" data-cat="agents">
+        <div class="batch-card-top" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+          <img src="https://images.unsplash.com/photo-1676277791608-ac54525aa94d?w=600&q=80" class="batch-card-img" alt="AI Engineering"/>
+          <div class="batch-img-overlay"></div>
+          <div class="batch-img-meta"><span class="bim-date">📅 Nov 20, 2026</span><span class="bim-time">⏱ 7:00 PM IST</span></div>
+          <div class="batch-soon-pill" style="background:rgba(99,102,241,0.8)">📅 Nov Batch</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-tag" style="color:#6366f1;background:rgba(99,102,241,0.1)">GenAI &amp; Agents Engineering</div>
+          <h3 class="batch-title">GenAI &amp; Agents Engineering</h3>
+          
+          <div class="batch-meta-row">
+            <span class="batch-meta-pill duration">🕔 4 Months</span>
+            <span class="batch-meta-pill schedule">📆 Weekend — Sat &amp; Sun</span>
+          </div>
+          <div class="batch-price-row">
+            <span class="batch-emi">✅ EMI starts from ₹8,000/mo</span>
+          </div>
+          <div class="batch-actions">
+            <button class="btn-batch-enroll" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)" onclick="openBatchModal('GenAI &amp; Agents Engineering','Nov 20, 2026')">🚀 Enroll Now</button>
+            <button class="btn-batch-demo" onclick="openDemoModal('GenAI &amp; Agents Engineering')">📹 Book Demo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7: Dec 1 — GenAI & Agents -->
+      <div class="batch-card" data-cat="agents">
+        <div class="batch-card-top" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">
+          <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&q=80" class="batch-card-img" alt="AI Agents"/>
+          <div class="batch-img-overlay"></div>
+          <div class="batch-img-meta"><span class="bim-date">📅 Dec 1, 2026</span><span class="bim-time">⏱ 7:00 PM IST</span></div>
+          <div class="batch-soon-pill" style="background:rgba(245,158,11,0.85)">📅 Dec Batch</div>
+        </div>
+        <div class="batch-card-body">
+          <div class="batch-tag" style="color:#f59e0b;background:rgba(245,158,11,0.1)">GenAI &amp; Agents Engineering</div>
+          <h3 class="batch-title">GenAI &amp; Agents Engineering</h3>
+          
+          <div class="batch-meta-row">
+            <span class="batch-meta-pill duration">🕔 4 Months</span>
+            <span class="batch-meta-pill schedule">📆 Weekend — Sat &amp; Sun</span>
+          </div>
+          <div class="batch-price-row">
+            <span class="batch-emi">✅ EMI starts from ₹8,000/mo</span>
+          </div>
+          <div class="batch-actions">
+            <button class="btn-batch-enroll" style="background:linear-gradient(135deg,#f59e0b,#ef4444)" onclick="openBatchModal('GenAI &amp; Agents Engineering','Dec 1, 2026')">🚀 Enroll Now</button>
+            <button class="btn-batch-demo" onclick="openDemoModal('GenAI &amp; Agents Engineering')">📹 Book Demo</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /batch-grid -->
+
+    <!-- ENROLL MODAL -->
+    <div class="batch-modal-overlay" id="batchEnrollModal">
+      <div class="batch-modal-box">
+        <button class="batch-modal-close" onclick="closeBatchModal('batchEnrollModal')">✕</button>
+        <div id="batchEnrollForm">
+          <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:4px">🚀 Enroll — <span id="batchCourseName"></span></div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:20px">Batch starts: <strong id="batchDate"></strong> · Our team will confirm within 24 hrs</div>
+          <div class="batch-form-group"><label>Full Name</label><input type="text" id="be_name" class="batch-input" placeholder="Your full name"/></div>
+          <div class="batch-form-group"><label>Email Address</label><input type="email" id="be_email" class="batch-input" placeholder="you@example.com"/></div>
+          <div class="batch-form-group"><label>Phone Number</label><input type="tel" id="be_phone" class="batch-input" placeholder="+91 XXXXX XXXXX"/></div>
+          <div class="batch-form-group"><label>Current Role</label><input type="text" id="be_role" class="batch-input" placeholder="e.g. Software Engineer, Student"/></div>
+          <div class="batch-form-group">
+            <label>Payment Preference</label>
+            <select id="be_payment" class="batch-input">
+              <option>Full Payment</option>
+              <option>EMI — 0% interest</option>
+              <option>Need counselling first</option>
+            </select>
+          </div>
+          <button class="btn-batch-submit" onclick="submitBatchEnroll()">Confirm Enrollment →</button>
+        </div>
+        <div id="batchEnrollSuccess" style="display:none;text-align:center;padding:20px 0">
+          <div style="font-size:3rem;margin-bottom:12px">🎉</div>
+          <div style="font-size:1rem;font-weight:800;color:var(--text);margin-bottom:8px">Enrollment Submitted!</div>
+          <div style="font-size:0.82rem;color:var(--muted)">Our counsellor will reach out within 24 hours to confirm your seat and share next steps.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOK DEMO MODAL -->
+    <div class="batch-modal-overlay" id="batchDemoModal">
+      <div class="batch-modal-box">
+        <button class="batch-modal-close" onclick="closeBatchModal('batchDemoModal')">✕</button>
+        <div id="batchDemoForm">
+          <div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:4px">📹 Book a Free Demo — <span id="demoCourse"></span></div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-bottom:20px">30-minute 1-on-1 session with an AI mentor · Completely free</div>
+          <div class="batch-form-group"><label>Full Name</label><input type="text" id="bd_name" class="batch-input" placeholder="Your full name"/></div>
+          <div class="batch-form-group"><label>Email Address</label><input type="email" id="bd_email" class="batch-input" placeholder="you@example.com"/></div>
+          <div class="batch-form-group"><label>Phone Number</label><input type="tel" id="bd_phone" class="batch-input" placeholder="+91 XXXXX XXXXX"/></div>
+          <div class="batch-form-group">
+            <label>Preferred Demo Slot</label>
+            <select id="bd_slot" class="batch-input">
+              <option>Morning — 10:00 AM to 12:00 PM IST</option>
+              <option>Afternoon — 2:00 PM to 5:00 PM IST</option>
+              <option>Evening — 6:00 PM to 9:00 PM IST</option>
+            </select>
+          </div>
+          <div class="batch-form-group"><label>What do you want to learn? (optional)</label><textarea id="bd_goal" class="batch-input" rows="2" placeholder="e.g. switch to AI, upskill, build a product..."></textarea></div>
+          <button class="btn-batch-submit" style="background:linear-gradient(135deg,#10b981,#0ea5e9)" onclick="submitDemo()">Book My Free Demo →</button>
+        </div>
+        <div id="batchDemoSuccess" style="display:none;text-align:center;padding:20px 0">
+          <div style="font-size:3rem;margin-bottom:12px">✅</div>
+          <div style="font-size:1rem;font-weight:800;color:var(--text);margin-bottom:8px">Demo Booked!</div>
+          <div style="font-size:0.82rem;color:var(--muted)">Check your email for the calendar invite. Our mentor will join you at the selected time.</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- MY COURSES SECTION -->
+  <section class="content-section" id="section-courses">
+    <div class="page-header">
+      <div><h1>📚 My Courses</h1><p class="page-header-sub">Track your enrolled programs</p></div>
+    </div>
+    <div class="courses-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="course-card">
+        <div class="course-card-thumb" style="background:linear-gradient(135deg,#2c3e8c,#3b52c4)">🤖</div>
+        <span class="course-tag">Agentic AI</span>
+        <h3>Professional Agentic AI Engineer</h3>
+        <p>Build autonomous AI agents with LangGraph, CrewAI & AWS Bedrock.</p>
+        <div class="course-meta"><span class="batch-meta-pill date">📅 6 Months</span><span>⭐ 5.0</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:68%"></div></div>
+        <div class="progress-label">68% complete</div>
+        <button class="btn-continue">▶ Continue</button>
+      </div>
+      <div class="course-card">
+        <div class="course-card-thumb" style="background:linear-gradient(135deg,#7c3aed,#2563eb)">✨</div>
+        <span class="course-tag">Generative AI</span>
+        <h3>Professional GenAI Engineer</h3>
+        <p>LLMs, RAG, prompt engineering & production AI deployment.</p>
+        <div class="course-meta"><span class="batch-meta-pill date">📅 6 Months</span><span>⭐ 4.9</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+        <div class="progress-label">45% complete</div>
+        <button class="btn-continue">▶ Continue</button>
+      </div>
+      <div class="course-card">
+        <div class="course-card-thumb" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">🔬</div>
+        <span class="course-tag">Data Science</span>
+        <h3>Data Science with ML</h3>
+        <p>NumPy, Pandas, Scikit-learn & real-world ML projects.</p>
+        <div class="course-meta"><span class="batch-meta-pill time">⏱ 6 hrs</span><span>⭐ 4.9</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+        <div class="progress-label">Completed ✅</div>
+        <button class="btn-continue" style="background:#ecfdf5;color:#10b981;border-color:rgba(16,185,129,0.25)">🏆 Certificate</button>
+      </div>
+      <div class="course-card">
+        <div class="course-card-thumb" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">☁️</div>
+        <span class="course-tag">Cloud AI</span>
+        <h3>AWS Bedrock Agents</h3>
+        <p>Production AI agents on AWS Bedrock foundation models.</p>
+        <div class="course-meta"><span class="batch-meta-pill time">⏱ 5 hrs</span><span>⭐ 4.9</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:30%"></div></div>
+        <div class="progress-label">30% complete</div>
+        <button class="btn-continue">▶ Continue</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MASTERCLASSES SECTION -->
+  <section class="content-section" id="section-masterclass">
+    <div class="page-header">
+      <div><h1>🎓 Free Masterclasses</h1><p class="page-header-sub">Free live sessions — register and join</p></div>
+    </div>
+    <div class="programs-grid">
+      <div class="prog-card">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#2c3e8c,#3b52c4)">🤖</div>
+        <div class="prog-body">
+          <span class="prog-badge">FREE · LIVE</span>
+          <h3>Agentic AI Masterclass</h3>
+          <p>Build your first AI agent — LangGraph, tool use & memory systems.</p>
+          <div class="prog-meta"><span>🔴 Live Today</span><span>👥 3K registered</span></div>
+          <button class="btn-enroll">Register Free →</button>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#7c3aed,#ec4899)">🔗</div>
+        <div class="prog-body">
+          <span class="prog-badge">FREE · UPCOMING</span>
+          <h3>RAG + MCP Workshop</h3>
+          <p>End-to-end RAG pipeline with Model Context Protocol integrations.</p>
+          <div class="prog-meta"><span class="batch-meta-pill date">📅 Aug 5</span><span>👥 1.8K registered</span></div>
+          <button class="btn-enroll">Register Free →</button>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">🧠</div>
+        <div class="prog-body">
+          <span class="prog-badge">FREE · UPCOMING</span>
+          <h3>LLM Fine-Tuning Bootcamp</h3>
+          <p>LoRA, QLoRA & PEFT for domain-specific LLM customisation.</p>
+          <div class="prog-meta"><span class="batch-meta-pill date">📅 Aug 8</span><span>👥 2.2K registered</span></div>
+          <button class="btn-enroll">Register Free →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRENDING SECTION -->
+  <section class="content-section" id="section-trending">
+    <div class="page-header">
+      <div><h1>🔥 Trending Topics</h1><p class="page-header-sub">Top AI skills people are learning right now</p></div>
+    </div>
+    <div class="programs-grid">
+
+      <!-- #1 — Enterprise AI Architect (new, high demand) -->
+      <div class="prog-card" style="border:2px solid rgba(44,62,140,0.25);position:relative;overflow:visible">
+        <div style="position:absolute;top:-12px;left:16px;background:linear-gradient(135deg,#2c3e8c,#3b52c4);color:#fff;font-size:0.65rem;font-weight:800;padding:4px 12px;border-radius:50px;letter-spacing:0.5px;box-shadow:0 4px 12px rgba(44,62,140,0.35)">
+          🔥 #1 HIGHEST DEMAND
+        </div>
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#1e3a5f,#2c3e8c,#3b52c4)">🏢</div>
+        <div class="prog-body">
+          <span class="course-tag" style="background:rgba(44,62,140,0.12);color:#2c3e8c">Trending #1 · New</span>
+          <h3 style="font-size:1rem;margin-top:4px">Enterprise AI Architect</h3>
+          <p>Design, build & deploy scalable enterprise AI systems — foundation models, orchestration, cloud AI infrastructure & governance.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <span style="background:#fff8e6;color:#f59e0b;border:1px solid rgba(245,158,11,0.3);font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:50px">💰 Salary up to ₹80 LPA</span>
+            <span style="background:#ecfdf5;color:#10b981;border:1px solid rgba(16,185,129,0.3);font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:50px">🚀 High Demand</span>
+          </div>
+          <div class="prog-meta"><span>🔥 42K searches</span><span>📈 +680%</span><span class="batch-meta-pill date">📅 6 Months</span></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:1.2rem;font-weight:900;color:#2c3e8c">₹59,000</span>
+            <span style="font-size:0.72rem;color:#10b981;font-weight:700;background:#ecfdf5;padding:3px 8px;border-radius:50px;border:1px solid rgba(16,185,129,0.25)">EMI available</span>
+          </div>
+          <button class="btn-enroll" style="background:linear-gradient(135deg,#2c3e8c,#3b52c4);color:#fff;border:none;padding:9px 18px;font-size:0.8rem" onclick="window.location.href='enterprise-ai-architect.html'">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- #2 — GenAI & Agents -->
+      <div class="prog-card" style="border:2px solid rgba(124,58,237,0.22);position:relative;overflow:visible">
+        <div style="position:absolute;top:-12px;left:16px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;font-size:0.65rem;font-weight:800;padding:4px 12px;border-radius:50px;letter-spacing:0.5px;box-shadow:0 4px 12px rgba(124,58,237,0.35)">
+          ⚡ #2 TRENDING
+        </div>
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#7c3aed,#2563eb)">🤖✨</div>
+        <div class="prog-body">
+          <span class="course-tag" style="background:rgba(124,58,237,0.1);color:#7c3aed">Trending #2 · Hot</span>
+          <h3 style="font-size:1rem;margin-top:4px">GenAI & Agents</h3>
+          <p>Master Generative AI + Agentic systems — LLMs, RAG, autonomous agents & production deployment.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <span style="background:#fff8e6;color:#f59e0b;border:1px solid rgba(245,158,11,0.3);font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:50px">💰 Salary up to ₹48 LPA</span>
+            <span style="background:#f5f3ff;color:#7c3aed;border:1px solid rgba(124,58,237,0.25);font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:50px">🚀 High Demand</span>
+          </div>
+          <div class="prog-meta"><span>🔥 28K searches</span><span>📈 +340%</span><span class="batch-meta-pill date">📅 5 Months</span></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:1.2rem;font-weight:900;color:#7c3aed">₹49,000</span>
+            <span style="font-size:0.72rem;color:#10b981;font-weight:700;background:#ecfdf5;padding:3px 8px;border-radius:50px;border:1px solid rgba(16,185,129,0.25)">EMI available</span>
+          </div>
+          <button class="btn-enroll" style="background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;padding:9px 18px;font-size:0.8rem">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- #3 — MCP -->
+      <div class="prog-card" style="border:2px solid rgba(236,72,153,0.22);position:relative;overflow:visible">
+        <div style="position:absolute;top:-12px;left:16px;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;font-size:0.65rem;font-weight:800;padding:4px 12px;border-radius:50px;letter-spacing:0.5px;box-shadow:0 4px 12px rgba(236,72,153,0.3)">
+          🔌 #3 TRENDING
+        </div>
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">🔌</div>
+        <div class="prog-body">
+          <span class="course-tag" style="background:rgba(236,72,153,0.1);color:#ec4899">Trending #3 · Rising</span>
+          <h3 style="font-size:1rem;margin-top:4px">Model Context Protocol (MCP)</h3>
+          <p>The emerging standard for connecting AI models to real-world tools & enterprise integrations.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <span style="background:#fff8e6;color:#f59e0b;border:1px solid rgba(245,158,11,0.3);font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:50px">💰 Salary up to ₹35 LPA</span>
+            <span style="background:#fdf2f8;color:#ec4899;border:1px solid rgba(236,72,153,0.25);font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:50px">📈 +520%</span>
+          </div>
+          <div class="prog-meta"><span>🔥 18K searches</span><span>📈 +520%</span><span class="batch-meta-pill time">⏱ 3 Weeks</span></div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:1.2rem;font-weight:900;color:#ec4899">₹19,000</span>
+            <span style="font-size:0.72rem;color:#10b981;font-weight:700;background:#ecfdf5;padding:3px 8px;border-radius:50px;border:1px solid rgba(16,185,129,0.25)">EMI available</span>
+          </div>
+          <button class="btn-enroll" style="background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;border:none;padding:9px 18px;font-size:0.8rem">Enroll Now →</button>
+        </div>
+      </div>
+
+
+
+    </div>
+  </section>
+
+  <!-- AGENTIC AI SECTION -->
+  <section class="content-section" id="section-agentic">
+    <div class="page-header">
+      <div><h1>🤖 Agentic AI Programs</h1><p class="page-header-sub">Build autonomous AI agents from scratch</p></div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="prog-filter-row">
+      <button class="prog-filter active" onclick="filterProg(this,'all')">All</button>
+      <button class="prog-filter" onclick="filterProg(this,'agentic')">🤖 Agentic AI</button>
+      <button class="prog-filter" onclick="filterProg(this,'aws')">☁️ AWS</button>
+      <button class="prog-filter" onclick="filterProg(this,'azure')">🔵 Azure</button>
+      <button class="prog-filter" onclick="filterProg(this,'anthropic')">🟠 Anthropic</button>
+      <button class="prog-filter" onclick="filterProg(this,'gemini')">💎 Gemini</button>
+      <button class="prog-filter" onclick="filterProg(this,'nvidia')">🟢 NVIDIA</button>
+    </div>
+
+    <div class="programs-grid" id="agenticGrid">
+
+      <!-- Agentic AI Program -->
+      <div class="prog-card" data-prog="agentic">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#2c3e8c,#3b52c4)">🚀</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(44,62,140,0.1);color:#2c3e8c">🤖 Agentic AI</span>
+          <span class="prog-badge">2 Weeks · 15 hrs</span>
+          <h3>Agentic AI Program</h3>
+          <p>Build AI agents from scratch — planning, memory, tool calling, LangGraph & production deployment.</p>
+          <div class="prog-detail-chips">
+            <span>🧠 LangGraph</span><span>🛠️ Tool Calling</span><span>💾 Memory</span><span>🚀 Deployment</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 15 hrs</span><span>⭐ 5.0</span><span>👥 5K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Multi-Agent Program -->
+      <div class="prog-card" data-prog="agentic">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">🤖</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(236,72,153,0.1);color:#ec4899">🤖 Agentic AI</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">2 Weeks · 10 hrs</span>
+          <h3>Multi-Agent Program</h3>
+          <p>Design & orchestrate complex multi-agent systems — supervisor, critic, planner & reviewer agents.</p>
+          <div class="prog-detail-chips">
+            <span>👥 CrewAI</span><span>🕸️ AutoGen</span><span>📋 Orchestration</span><span>🔄 State Machines</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 10 hrs</span><span>⭐ 4.9</span><span>👥 3.5K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- AWS — Amazon Bedrock & Agentcore -->
+      <div class="prog-card" data-prog="aws">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">☁️</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(245,158,11,0.1);color:#b45309">☁️ AWS</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">25 hrs</span>
+          <h3>Amazon Bedrock &amp; Agentcore</h3>
+          <p>Build enterprise AI agents on AWS — Bedrock foundation models, Agentcore, Knowledge Bases, Guardrails & production deployment.</p>
+          <div class="prog-detail-chips">
+            <span>🟠 AWS Bedrock</span><span>⚙️ Agentcore</span><span>📚 Knowledge Bases</span><span>🛡️ Guardrails</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 25 hrs</span><span>⭐ 4.9</span><span>👥 10K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Azure — Azure Agentic Platform -->
+      <div class="prog-card" data-prog="azure">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#0078d4,#00bcf2)">🔵</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(0,120,212,0.1);color:#0078d4">🔵 Azure</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#0078d4,#00bcf2)">25 hrs</span>
+          <h3>Azure Agentic Platform</h3>
+          <p>Build intelligent agents with Azure OpenAI, AutoGen, Semantic Kernel, AI Studio & enterprise-grade deployment on Azure.</p>
+          <div class="prog-detail-chips">
+            <span>🔵 Azure OpenAI</span><span>🤝 AutoGen</span><span>🧩 Semantic Kernel</span><span>🏭 AI Studio</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 25 hrs</span><span>⭐ 4.8</span><span>👥 8K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Anthropic — Anthropic AI -->
+      <div class="prog-card" data-prog="anthropic">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#c97c3a,#e8a87c)">🟠</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(201,124,58,0.1);color:#c97c3a">🟠 Anthropic</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#c97c3a,#e8a87c)">15 hrs</span>
+          <h3>Anthropic AI — Claude Engineering</h3>
+          <p>Master Claude API, tool use, vision, long context, prompt engineering & building production apps with Anthropic's AI platform.</p>
+          <div class="prog-detail-chips">
+            <span>🤖 Claude API</span><span>🔧 Tool Use</span><span>👁️ Vision</span><span>📝 Long Context</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 15 hrs</span><span>⭐ 4.9</span><span>👥 6K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Gemini -->
+      <div class="prog-card" data-prog="gemini">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#4285f4,#34a853)">💎</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(66,133,244,0.1);color:#4285f4">💎 Gemini</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#4285f4,#34a853)">20 hrs</span>
+          <h3>Gemini Enterprise Agent Platform</h3>
+          <p>Build enterprise-grade AI agents using Google Gemini on Vertex AI — multimodal, Grounding & ADK.</p>
+          <div class="prog-detail-chips">
+            <span>💎 Gemini</span><span>☁️ Vertex AI</span><span>🔌 ADK</span><span>🌐 Grounding</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 20 hrs</span><span>⭐ 4.9</span><span>👥 9K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- NVIDIA -->
+      <div class="prog-card" data-prog="nvidia">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#76b900,#1a1a2e)">🟢</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(118,185,0,0.12);color:#4a7c00">🟢 NVIDIA</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#76b900,#1a1a2e)">20 hrs</span>
+          <h3>NVIDIA AI Agents &amp; NIM</h3>
+          <p>Build accelerated AI agents using NVIDIA NIM, NeMo, CUDA, Triton Inference Server & NVIDIA AI Enterprise platform.</p>
+          <div class="prog-detail-chips">
+            <span>⚡ NIM</span><span>🧠 NeMo</span><span>🖥️ Triton</span><span>🔧 CUDA</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 20 hrs</span><span>⭐ 4.9</span><span>👥 4K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- GENAI SECTION -->
+  <section class="content-section" id="section-genai">
+    <div class="page-header">
+      <div><h1>✨ Generative AI Programs</h1><p class="page-header-sub">Master LLMs, RAG, prompt engineering & more</p></div>
+    </div>
+
+    <div class="prog-filter-row">
+      <button class="prog-filter active" onclick="filterProg(this,'all')">All</button>
+      <button class="prog-filter" onclick="filterProg(this,'genai')">✨ Generative AI</button>
+      <button class="prog-filter" onclick="filterProg(this,'llm')">🧠 LLMs</button>
+      <button class="prog-filter" onclick="filterProg(this,'rag')">🔗 RAG</button>
+      <button class="prog-filter" onclick="filterProg(this,'mcp')">🔌 MCP</button>
+      <button class="prog-filter" onclick="filterProg(this,'governance')">🛡️ AI Governance</button>
+    </div>
+
+    <div class="programs-grid">
+
+      <!-- Generative AI -->
+      <div class="prog-card" data-prog="genai">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#7c3aed,#2563eb)">✨</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(124,58,237,0.1);color:#7c3aed">✨ Generative AI</span>
+          <span class="prog-badge">6 hrs</span>
+          <h3>Intro to Generative AI</h3>
+          <p>What is GenAI, how it works, key models, use cases & how to build your first GenAI application.</p>
+          <div class="prog-detail-chips">
+            <span>🧠 LLMs</span><span>🎨 Image Gen</span><span>🔊 Audio AI</span><span>🚀 First App</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.9</span><span>👥 22K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- LLMs -->
+      <div class="prog-card" data-prog="llm">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">🧠</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(16,185,129,0.1);color:#10b981">🧠 LLMs</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">6 hrs</span>
+          <h3>LLMs — Models Deep Dive</h3>
+          <p>Deep dive into Claude, OpenAI GPT, Gemini AI, Hugging Face models, Chinese models (DeepSeek, Qwen) & NVIDIA models.</p>
+          <div class="prog-detail-chips">
+            <span>🤖 Claude</span><span>💬 GPT</span><span>💎 Gemini</span><span>🤗 HuggingFace</span><span>🟢 NVIDIA</span><span>🇨🇳 DeepSeek</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.9</span><span>👥 18K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- RAG -->
+      <div class="prog-card" data-prog="rag">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🔗</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(245,158,11,0.1);color:#b45309">🔗 RAG</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">8 hrs</span>
+          <h3>Advanced RAG</h3>
+          <p>Production-grade RAG systems — hybrid search, re-ranking, HyDE, multi-query, parent-child chunking & evaluation.</p>
+          <div class="prog-detail-chips">
+            <span>🔍 Hybrid Search</span><span>📊 Re-ranking</span><span>🧩 HyDE</span><span>📈 RAGAS Eval</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 8 hrs</span><span>⭐ 4.9</span><span>👥 14K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- MCP -->
+      <div class="prog-card" data-prog="mcp">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">🔌</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(236,72,153,0.1);color:#ec4899">🔌 MCP</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">6 hrs</span>
+          <h3>MCP &amp; Tool Calling</h3>
+          <p>Model Context Protocol from scratch — build MCP servers, tool definitions, tool calling chains & AI integrations.</p>
+          <div class="prog-detail-chips">
+            <span>🔌 MCP Server</span><span>🛠️ Tool Calling</span><span>🔗 API Integration</span><span>⚡ Claude MCP</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.9</span><span>👥 8K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- AI Governance -->
+      <div class="prog-card" data-prog="governance">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#1e3a5f,#2c3e8c)">🛡️</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(44,62,140,0.1);color:#2c3e8c">🛡️ AI Governance</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#1e3a5f,#2c3e8c)">3 hrs</span>
+          <h3>AI Governance</h3>
+          <p>Responsible AI, bias detection, hallucination mitigation, GDPR compliance, audit trails & enterprise AI risk frameworks.</p>
+          <div class="prog-detail-chips">
+            <span>⚖️ Responsible AI</span><span>🔍 Bias Detection</span><span>📋 GDPR</span><span>🛡️ Guardrails</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 3 hrs</span><span>⭐ 4.8</span><span>👥 5K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- LLM Fine-Tuning (existing, tagged as llm) -->
+      <div class="prog-card" data-prog="llm">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#7c3aed,#ec4899)">🎯</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(124,58,237,0.1);color:#7c3aed">🧠 LLMs</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#7c3aed,#ec4899)">6 hrs</span>
+          <h3>LLM Fine-Tuning Engineering</h3>
+          <p>Fine-tune LLMs using LoRA, QLoRA, PEFT &amp; RLHF for domain-specific tasks.</p>
+          <div class="prog-detail-chips">
+            <span>🎯 LoRA</span><span>⚡ QLoRA</span><span>🔧 PEFT</span><span>🔁 RLHF</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.9</span><span>👥 9K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DATA SCIENCE SECTION -->
+  <section class="content-section" id="section-datascience">
+    <div class="page-header">
+      <div><h1>🔬 Data Science & Analytics</h1><p class="page-header-sub">From data to insights to AI</p></div>
+    </div>
+    <div class="programs-grid">
+      <div class="prog-card">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#7c3aed,#2563eb)">🔬</div>
+        <div class="prog-body">
+          <span class="prog-badge">6 hrs</span>
+          <h3>Data Science with Machine Learning</h3>
+          <p>NumPy, Pandas, Scikit-learn, ML algorithms & real-world projects.</p>
+          <div class="prog-meta"><span>⭐ 4.9</span><span>👥 38K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">📊</div>
+        <div class="prog-body">
+          <span class="prog-badge">4 hrs</span>
+          <h3>Data Analytics & AI Tools</h3>
+          <p>Turn raw data into business insights using Power BI & Tableau.</p>
+          <div class="prog-meta"><span>⭐ 4.8</span><span>👥 29K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#7c3aed,#ec4899)">🧠</div>
+        <div class="prog-body">
+          <span class="prog-badge">7 hrs</span>
+          <h3>Deep Learning & NLP</h3>
+          <p>Neural networks, CNNs, RNNs & NLP using TensorFlow, PyTorch & Hugging Face.</p>
+          <div class="prog-meta"><span>⭐ 4.9</span><span>👥 22K enrolled</span></div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INDUSTRY AI SECTION -->
+  <section class="content-section" id="section-domainai">
+    <div class="page-header">
+      <div><h1>🏭 Industry AI</h1><p class="page-header-sub">Domain-specific AI for every industry</p></div>
+    </div>
+
+    <div class="prog-filter-row">
+      <button class="prog-filter active" onclick="filterProg(this,'all')">All</button>
+      <button class="prog-filter" onclick="filterProg(this,'healthcare')">🏥 Healthcare</button>
+      <button class="prog-filter" onclick="filterProg(this,'finance')">💹 Finance</button>
+      <button class="prog-filter" onclick="filterProg(this,'aiops')">🛠️ IT / AIOps</button>
+      <button class="prog-filter" onclick="filterProg(this,'retail')">🛍️ Retail</button>
+      <button class="prog-filter" onclick="filterProg(this,'banking')">🏦 Banking</button>
+      <button class="prog-filter" onclick="filterProg(this,'hr')">👥 HR</button>
+      <button class="prog-filter" onclick="filterProg(this,'legal')">⚖️ Legal</button>
+      <button class="prog-filter" onclick="filterProg(this,'telecom')">📶 Telecom</button>
+      <button class="prog-filter" onclick="filterProg(this,'devops')">⚙️ DevOps</button>
+      <button class="prog-filter" onclick="filterProg(this,'infra')">🏗️ Infra</button>
+      <button class="prog-filter" onclick="filterProg(this,'bpo')">🏢 BPO</button>
+      <button class="prog-filter" onclick="filterProg(this,'itsupport')">💻 IT Support</button>
+      <button class="prog-filter" onclick="filterProg(this,'qa')">🧪 QA</button>
+    </div>
+
+    <div class="programs-grid">
+
+      <!-- Healthcare -->
+      <div class="prog-card" data-prog="healthcare">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">🏥</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(16,185,129,0.1);color:#065f46">🏥 Healthcare</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#10b981,#0ea5e9)">8 hrs</span>
+          <h3>AI in Healthcare &amp; Diagnostics</h3>
+          <p>Medical imaging, patient data analysis &amp; clinical decision support.</p>
+          <div class="prog-detail-chips">
+            <span>🩺 Medical Imaging</span><span>📊 Patient Analytics</span><span>🤖 Clinical AI</span><span>📋 EHR Integration</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 8 hrs</span><span>⭐ 4.9</span><span>👥 14K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>X-Ray Classifier</span>
+              <span>Patient Risk Predictor</span>
+              <span>Medical Chatbot</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Finance -->
+      <div class="prog-card" data-prog="finance">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">💹</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(236,72,153,0.1);color:#9d174d">💹 Finance</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">8 hrs</span>
+          <h3>AI in Finance &amp; Risk Analytics</h3>
+          <p>Fraud detection, algorithmic trading &amp; credit scoring with ML.</p>
+          <div class="prog-detail-chips">
+            <span>🔍 Fraud Detection</span><span>📈 Algo Trading</span><span>💳 Credit Scoring</span><span>📉 Risk Models</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 8 hrs</span><span>⭐ 4.9</span><span>👥 16K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>Fraud Detection System</span>
+              <span>Stock Price Predictor</span>
+              <span>Credit Risk Model</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- IT / AIOps -->
+      <div class="prog-card" data-prog="aiops">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#f97316,#facc15)">🛠️</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(249,115,22,0.1);color:#c2410c">🛠️ IT / AIOps</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#f97316,#facc15)">6 hrs</span>
+          <h3>AI for IT Support &amp; AIOps</h3>
+          <p>Automate ticketing, root cause analysis &amp; incident resolution with AI.</p>
+          <div class="prog-detail-chips">
+            <span>🎫 Auto-Ticketing</span><span>🔎 Root Cause AI</span><span>📟 Incident Response</span><span>📊 Log Analysis</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.8</span><span>👥 9K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>AI Ticket Classifier</span>
+              <span>Log Anomaly Detector</span>
+              <span>Incident Chatbot</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Retail -->
+      <div class="prog-card" data-prog="retail">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">🛍️</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(245,158,11,0.1);color:#b45309">🛍️ Retail</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#f59e0b,#ef4444)">6 hrs</span>
+          <h3>AI for Retail &amp; E-Commerce</h3>
+          <p>Recommendation engines, demand forecasting, dynamic pricing &amp; personalised shopping.</p>
+          <div class="prog-detail-chips">
+            <span>🎯 Recommendations</span><span>📦 Demand Forecast</span><span>💰 Dynamic Pricing</span><span>🛒 Personalisation</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.8</span><span>👥 11K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>Product Recommender</span>
+              <span>Demand Forecasting App</span>
+              <span>Price Optimiser</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Banking -->
+      <div class="prog-card" data-prog="banking">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#10b981,#7c3aed)">🏦</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(16,185,129,0.1);color:#065f46">🏦 Banking</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#10b981,#7c3aed)">6 hrs</span>
+          <h3>AI in Banking &amp; FinTech</h3>
+          <p>KYC automation, loan underwriting, conversational banking &amp; AML with AI.</p>
+          <div class="prog-detail-chips">
+            <span>🪪 KYC Automation</span><span>📝 Loan Underwriting</span><span>💬 Banking Chatbot</span><span>🚨 AML Detection</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.8</span><span>👥 12K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>KYC Verifier</span>
+              <span>Loan Approval Model</span>
+              <span>AML Transaction Monitor</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- HR -->
+      <div class="prog-card" data-prog="hr">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#6366f1,#0ea5e9)">👥</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(99,102,241,0.1);color:#4338ca">👥 HR</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#6366f1,#0ea5e9)">5 hrs</span>
+          <h3>AI for HR &amp; Talent Intelligence</h3>
+          <p>Resume screening, candidate ranking, employee attrition prediction &amp; HR chatbots.</p>
+          <div class="prog-detail-chips">
+            <span>📄 Resume Screening</span><span>📊 Attrition Prediction</span><span>🤖 HR Chatbot</span><span>🎯 Talent Matching</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 5 hrs</span><span>⭐ 4.8</span><span>👥 7K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>Resume Ranker</span>
+              <span>Attrition Predictor</span>
+              <span>HR Assistant Bot</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Legal -->
+      <div class="prog-card" data-prog="legal">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#1e3a5f,#2c3e8c)">⚖️</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(44,62,140,0.1);color:#2c3e8c">⚖️ Legal</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#1e3a5f,#2c3e8c)">5 hrs</span>
+          <h3>AI for Legal &amp; Compliance</h3>
+          <p>Contract analysis, legal document search, compliance monitoring &amp; case summarisation with AI.</p>
+          <div class="prog-detail-chips">
+            <span>📜 Contract Analysis</span><span>🔍 Legal Search</span><span>✅ Compliance AI</span><span>📋 Case Summary</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 5 hrs</span><span>⭐ 4.9</span><span>👥 5K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>Contract Reviewer</span>
+              <span>Legal Q&amp;A RAG Bot</span>
+              <span>Compliance Checker</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Telecom -->
+      <div class="prog-card" data-prog="telecom">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#06b6d4,#3b52c4)">📶</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(6,182,212,0.1);color:#0e7490">📶 Telecom</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#06b6d4,#3b52c4)">6 hrs</span>
+          <h3>AI for Telecom Networks</h3>
+          <p>Network optimisation, churn prediction, fault detection &amp; AI-driven customer experience for telecom.</p>
+          <div class="prog-detail-chips">
+            <span>📡 Network Optimisation</span><span>📉 Churn Prediction</span><span>🔔 Fault Detection</span><span>🎯 CX AI</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.8</span><span>👥 7K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>Churn Predictor</span>
+              <span>Network Fault Classifier</span>
+              <span>Telecom Chatbot</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- DevOps -->
+      <div class="prog-card" data-prog="devops">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#f97316,#7c3aed)">⚙️</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(249,115,22,0.1);color:#c2410c">⚙️ DevOps</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#f97316,#7c3aed)">7 hrs</span>
+          <h3>AI for DevOps &amp; CI/CD</h3>
+          <p>AI-powered pipelines, automated code review, intelligent deployment, incident prediction &amp; DevOps copilot.</p>
+          <div class="prog-detail-chips">
+            <span>🚀 AI Pipelines</span><span>🔍 Code Review AI</span><span>📊 Deploy Intelligence</span><span>🤖 DevOps Copilot</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 7 hrs</span><span>⭐ 4.9</span><span>👥 8K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>AI Code Reviewer</span>
+              <span>Deploy Risk Predictor</span>
+              <span>DevOps AI Copilot</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- Infra -->
+      <div class="prog-card" data-prog="infra">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#374151,#6366f1)">🏗️</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(99,102,241,0.1);color:#4338ca">🏗️ Infra</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#374151,#6366f1)">6 hrs</span>
+          <h3>AI for Cloud Infrastructure</h3>
+          <p>Intelligent infrastructure management, cost optimisation, auto-scaling, anomaly detection &amp; FinOps with AI.</p>
+          <div class="prog-detail-chips">
+            <span>☁️ Cloud AI</span><span>💰 FinOps</span><span>📈 Auto-Scaling</span><span>🔔 Anomaly Detection</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.8</span><span>👥 6K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>Cost Optimiser AI</span>
+              <span>Infra Anomaly Detector</span>
+              <span>Auto-Scaling Agent</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- BPO -->
+      <div class="prog-card" data-prog="bpo">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#10b981,#f59e0b)">🏢</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(16,185,129,0.1);color:#065f46">🏢 BPO</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#10b981,#f59e0b)">5 hrs</span>
+          <h3>AI for BPO &amp; Process Automation</h3>
+          <p>Automate BPO workflows — data entry, document processing, call summarisation &amp; intelligent routing.</p>
+          <div class="prog-detail-chips">
+            <span>📄 Doc Processing</span><span>📞 Call Summary AI</span><span>🔀 Smart Routing</span><span>🤖 RPA + AI</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 5 hrs</span><span>⭐ 4.8</span><span>👥 5K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>Document Extractor</span>
+              <span>Call Summariser</span>
+              <span>Process Automation Bot</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- IT Support -->
+      <div class="prog-card" data-prog="itsupport">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#2563eb,#06b6d4)">💻</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(37,99,235,0.1);color:#1d4ed8">💻 IT Support</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#2563eb,#06b6d4)">5 hrs</span>
+          <h3>AI for IT Support &amp; Helpdesk</h3>
+          <p>AI-powered helpdesk, self-healing IT, knowledge base bots &amp; automated L1/L2 resolution.</p>
+          <div class="prog-detail-chips">
+            <span>🎫 Smart Ticketing</span><span>🔧 Self-Healing IT</span><span>📚 KB Bot</span><span>⚡ Auto-Resolution</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 5 hrs</span><span>⭐ 4.8</span><span>👥 8K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>Helpdesk AI Bot</span>
+              <span>Ticket Auto-Router</span>
+              <span>Knowledge Base Agent</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+      <!-- QA -->
+      <div class="prog-card" data-prog="qa">
+        <div class="prog-thumb" style="background:linear-gradient(135deg,#7c3aed,#10b981)">🧪</div>
+        <div class="prog-body">
+          <span class="prog-filter-tag" style="background:rgba(124,58,237,0.1);color:#7c3aed">🧪 QA</span>
+          <span class="prog-badge" style="background:linear-gradient(135deg,#7c3aed,#10b981)">6 hrs</span>
+          <h3>AI for QA &amp; Test Automation</h3>
+          <p>AI-driven test generation, visual regression testing, bug prediction &amp; intelligent QA copilot.</p>
+          <div class="prog-detail-chips">
+            <span>🤖 Test Generation</span><span>👁️ Visual Testing</span><span>🐛 Bug Prediction</span><span>🧠 QA Copilot</span>
+          </div>
+          <div class="prog-meta"><span>⏱ 6 hrs</span><span>⭐ 4.9</span><span>👥 6K enrolled</span></div>
+          <div class="prog-projects">
+            <div class="proj-label">🛠️ Projects</div>
+            <div class="proj-chips">
+              <span>AI Test Generator</span>
+              <span>Bug Predictor</span>
+              <span>QA Automation Agent</span>
+            </div>
+          </div>
+          <button class="btn-enroll">Enroll Now →</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+
+
+</div><!-- /main-area -->
+</div><!-- /dash-layout -->
+
+<!-- ===== QUICK ACTIONS RAIL (Prosperr-style right edge) ===== -->
+<div class="quick-actions-rail">
+  <button class="qa-btn qa-chat" title="AI Chat">
+    <span class="qa-btn-icon">💬</span> Chat
+  </button>
+  <button class="qa-btn qa-book" title="Book a Call">
+    <span class="qa-btn-icon">📹</span> Book Call
+  </button>
+  <div class="qa-divider"></div>
+  <button class="qa-btn qa-history" title="Call History">
+    <span class="qa-btn-icon">📞</span> History
+  </button>
+  <button class="qa-btn qa-support" title="Support">
+    <span class="qa-btn-icon">🎧</span> Support
+  </button>
+</div>
+
+<script>
+  function switchSection(el, section, title) {
+    // Update nav active state
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    if (el && el.classList) el.classList.add('active');
+
+    // Switch visible section
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById('section-' + section);
+    if (target) target.classList.add('active');
+
+    // Update page title
+    document.getElementById('pageTitle').textContent = title || '';
+
+    // Close sidebar on mobile
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.remove('open');
+    }
+
+    return false;
+  }
+
+  // Mobile hamburger
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+  });
+
+  function filterProg(btn, cat) {
+    const section = btn.closest('section');
+    section.querySelectorAll('.prog-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    section.querySelectorAll('.prog-card').forEach(card => {
+      card.style.display = (cat === 'all' || card.dataset.prog === cat) ? '' : 'none';
+    });
+  }
+
+  function filterBatch(btn, cat) {
+    document.querySelectorAll('.batch-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.batch-card').forEach(card => {
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+    });
+  }
+
+  function openBatchModal(course, date) {
+    document.getElementById('batchCourseName').textContent = course;
+    document.getElementById('batchDate').textContent = date;
+    document.getElementById('batchEnrollForm').style.display = 'block';
+    document.getElementById('batchEnrollSuccess').style.display = 'none';
+    document.getElementById('batchEnrollModal').classList.add('active');
+  }
+
+  function openDemoModal(course) {
+    document.getElementById('demoCourse').textContent = course;
+    document.getElementById('batchDemoForm').style.display = 'block';
+    document.getElementById('batchDemoSuccess').style.display = 'none';
+    document.getElementById('batchDemoModal').classList.add('active');
+  }
+
+  function closeBatchModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+
+  function submitBatchEnroll() {
+    const name  = document.getElementById('be_name').value.trim();
+    const email = document.getElementById('be_email').value.trim();
+    const phone = document.getElementById('be_phone').value.trim();
+    if (!name || !email || !phone) { alert('Please fill in Name, Email and Phone.'); return; }
+    document.getElementById('batchEnrollForm').style.display = 'none';
+    document.getElementById('batchEnrollSuccess').style.display = 'block';
+  }
+
+  function submitDemo() {
+    const name  = document.getElementById('bd_name').value.trim();
+    const email = document.getElementById('bd_email').value.trim();
+    const phone = document.getElementById('bd_phone').value.trim();
+    if (!name || !email || !phone) { alert('Please fill in Name, Email and Phone.'); return; }
+    document.getElementById('batchDemoForm').style.display = 'none';
+    document.getElementById('batchDemoSuccess').style.display = 'block';
+  }
+
+  // close modals on overlay click
+  document.getElementById('batchEnrollModal').addEventListener('click', function(e){ if(e.target===this) closeBatchModal('batchEnrollModal'); });
+  document.getElementById('batchDemoModal').addEventListener('click', function(e){ if(e.target===this) closeBatchModal('batchDemoModal'); });
+  document.addEventListener('click', (e) => {
+    const sidebar = document.getElementById('sidebar');
+    const hamburger = document.getElementById('hamburger');
+    if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+      if (!sidebar.contains(e.target) && !hamburger.contains(e.target)) {
+        sidebar.classList.remove('open');
+      }
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin Panel — Arthrex AI</title>
+  <title>Admin Panel — Athrexai</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="styles.css"/>
   <link rel="stylesheet" href="admin.css"/>
@@ -13,7 +13,7 @@
   <header class="topbar">
     <div class="topbar-left">
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu" style="display:none">☰</button>
-      <div class="logo">Arthrex<span>AI</span> <span class="admin-badge">Admin</span></div>
+      <div class="logo">Athrex<span>ai</span> <span class="admin-badge">Admin</span></div>
     </div>
     <div class="topbar-right">
       <a href="admin-lms" class="btn-back" style="background:linear-gradient(135deg,#7c3aed,#2563eb);color:white;border:none">📚 LMS Admin</a>
@@ -81,37 +81,53 @@
         <div class="mc-form-card" id="mcForm" style="display:none">
           <h3>New Masterclass</h3>
           <div class="mc-form-grid">
-            <div class="mc-form-group">
-              <label>Title</label>
-              <input type="text" id="mcTitle" placeholder="e.g. Intro to Agentic AI"/>
+            <div class="mc-form-group" style="grid-column:1/-1">
+              <label>Title *</label>
+              <input type="text" id="mcTitle" placeholder="e.g. Career Roadmap 2026: How to Become an AI Engineer"/>
             </div>
             <div class="mc-form-group">
               <label>Category / Tag</label>
-              <input type="text" id="mcTag" placeholder="e.g. AI & ML"/>
-            </div>
-            <div class="mc-form-group">
-              <label>Description</label>
-              <input type="text" id="mcDesc" placeholder="Short description..."/>
+              <input type="text" id="mcTag" placeholder="e.g. Data Science"/>
             </div>
             <div class="mc-form-group">
               <label>Duration</label>
               <input type="text" id="mcDuration" placeholder="e.g. 2 hrs"/>
             </div>
             <div class="mc-form-group">
-              <label>Instructor</label>
-              <input type="text" id="mcInstructor" placeholder="Instructor name"/>
+              <label>Instructor Name</label>
+              <input type="text" id="mcInstructor" placeholder="e.g. Akanksha Agarwal"/>
             </div>
             <div class="mc-form-group">
-              <label>Scheduled Date & Time</label>
+              <label>Instructor Bio / Title</label>
+              <input type="text" id="mcInstructorBio" placeholder="e.g. Principal Instructor, Data Science"/>
+            </div>
+            <div class="mc-form-group">
+              <label>Scheduled Date & Time *</label>
               <input type="datetime-local" id="mcSchedule"/>
             </div>
             <div class="mc-form-group">
-              <label>Join Link (optional)</label>
+              <label>Join Link (Zoom / Meet)</label>
               <input type="url" id="mcLink" placeholder="https://meet.google.com/..."/>
             </div>
             <div class="mc-form-group">
               <label>Rating</label>
               <input type="number" id="mcRating" placeholder="4.9" min="1" max="5" step="0.1"/>
+            </div>
+            <div class="mc-form-group" style="grid-column:1/-1">
+              <label>Thumbnail Image URL</label>
+              <input type="url" id="mcThumb" placeholder="https://images.unsplash.com/... or paste any image URL"/>
+            </div>
+            <div class="mc-form-group" style="grid-column:1/-1">
+              <label>Description</label>
+              <textarea id="mcDesc" placeholder="Short description of the masterclass..." rows="2" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 13px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;resize:vertical;width:100%;box-sizing:border-box"></textarea>
+            </div>
+            <div class="mc-form-group" style="grid-column:1/-1">
+              <label>What You'll Learn (one point per line)</label>
+              <textarea id="mcLearnPoints" placeholder="Step-by-step 2026 roadmap to become an AI Engineer...&#10;Essential skills & tools: Python, SQL, Machine Learning...&#10;How to transition into high-paying tech careers..." rows="4" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 13px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;resize:vertical;width:100%;box-sizing:border-box"></textarea>
+            </div>
+            <div class="mc-form-group" style="grid-column:1/-1">
+              <label>This Masterclass is For (one per line)</label>
+              <textarea id="mcForWhom" placeholder="Students and fresh graduates exploring AI careers&#10;Working professionals looking to switch to tech roles&#10;Beginners interested in Python and AI" rows="3" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 13px;color:#fff;font-size:0.85rem;font-family:inherit;outline:none;resize:vertical;width:100%;box-sizing:border-box"></textarea>
             </div>
           </div>
           <div class="mc-form-actions">
@@ -245,6 +261,7 @@
   </div>
 
   <script src="api.js"></script>
+  <script src="marketing-courses.js"></script>
   <script src="admin.js"></script>
   <script>
     // Mobile sidebar toggle

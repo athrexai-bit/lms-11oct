@@ -6,26 +6,15 @@ const urlCourseId = params.get('cid')  || '';
 document.getElementById('topCourseTitle').textContent = courseName;
 document.getElementById('userInitials').textContent = userName.slice(0,2).toUpperCase();
 
-// Find matching course — prefer courseId from URL
-const lmsData = JSON.parse(localStorage.getItem('lf_lms') || '{}');
 let courseData = null;
-let courseId = null;
+let courseId = urlCourseId || null;
+const completed = new Set();
+let currentLesson = { topicIdx: 0, lessonIdx: 0 };
+let activeQuiz = null;
+let quizTimer = null;
 
-if (urlCourseId && lmsData[urlCourseId]) {
-  courseId = urlCourseId;
-  courseData = lmsData[urlCourseId];
-} else {
-  Object.entries(lmsData).forEach(([id, c]) => {
-    if (c.name.toLowerCase() === courseName.toLowerCase() ||
-        courseName.toLowerCase().includes(c.name.toLowerCase().split(' ')[0])) {
-      courseData = c; courseId = id;
-    }
-  });
-}
-
-// Fallback demo data if no admin data
-if (!courseData) {
-  courseData = {
+function demoCourseData() {
+  return {
     name: courseName,
     topics: [
       { id: 't1', title: 'Module 1: Foundations', order: 1, lessons: [
@@ -47,11 +36,57 @@ if (!courseData) {
   };
 }
 
-// Progress tracking
-const completed = new Set(JSON.parse(localStorage.getItem(`lf_progress_${courseId}`) || '[]'));
-let currentLesson = { topicIdx: 0, lessonIdx: 0 };
-let activeQuiz = null;
-let quizTimer = null;
+function pickFromLocalStore() {
+  const lmsData = JSON.parse(localStorage.getItem('lf_lms') || '{}');
+  if (urlCourseId && lmsData[urlCourseId]) {
+    courseId = urlCourseId;
+    return lmsData[urlCourseId];
+  }
+  let found = null;
+  Object.entries(lmsData).forEach(([id, c]) => {
+    if (!c || !c.name) return;
+    if (c.name.toLowerCase() === courseName.toLowerCase() ||
+        (courseName && courseName.toLowerCase().includes(c.name.toLowerCase().split(' ')[0]))) {
+      found = c; courseId = id;
+    }
+  });
+  return found;
+}
+
+async function loadCourseData() {
+  let data = pickFromLocalStore();
+  if (!data && urlCourseId) {
+    try {
+      const res = await fetch('/api/lms');
+      if (res.ok) {
+        const all = await res.json();
+        if (all[urlCourseId]) {
+          data = all[urlCourseId];
+          courseId = urlCourseId;
+          // Mirror into localStorage on LMS origin for progress tools
+          const store = JSON.parse(localStorage.getItem('lf_lms') || '{}');
+          store[urlCourseId] = data;
+          localStorage.setItem('lf_lms', JSON.stringify(store));
+        }
+      }
+    } catch (e) {
+      console.warn('Could not fetch LMS API', e);
+    }
+  }
+  courseData = data || demoCourseData();
+  if (!courseId) courseId = urlCourseId || 'demo';
+
+  const saved = JSON.parse(localStorage.getItem(`lf_progress_${courseId}`) || '[]');
+  saved.forEach(id => completed.add(id));
+
+  renderModuleTree();
+  updateProgress();
+  if (courseData.topics && courseData.topics[0] && courseData.topics[0].lessons.length) {
+    loadLesson(0, 0);
+  }
+}
+
+loadCourseData();
 
 // ===== SIDEBAR NAV =====
 document.querySelectorAll('.lms-nav-item').forEach(item => {
@@ -73,6 +108,10 @@ document.querySelectorAll('.lms-nav-item').forEach(item => {
 // ===== MODULE TREE =====
 function renderModuleTree() {
   const el = document.getElementById('moduleTree');
+  if (!courseData || !courseData.topics) {
+    el.innerHTML = '<div class="empty-lms">Loading course…</div>';
+    return;
+  }
   const topics = courseData.topics || [];
   el.innerHTML = topics.sort((a,b) => a.order - b.order).map((t, ti) => `
     <div class="tree-module">
@@ -276,27 +315,65 @@ document.getElementById('prevBtn').addEventListener('click', () => {
 });
 
 // ===== ASSIGNMENTS =====
+function getSubmissions() {
+  return JSON.parse(localStorage.getItem(`lf_submissions_${courseId}`) || '{}');
+}
+function saveSubmission(id, payload) {
+  const all = getSubmissions();
+  all[id] = payload;
+  localStorage.setItem(`lf_submissions_${courseId}`, JSON.stringify(all));
+}
+
 function renderAssignments() {
   const el = document.getElementById('assignmentsContent');
   const items = courseData.assignments || [];
   if (!items.length) { el.innerHTML = '<div class="empty-lms">No assignments yet.</div>'; return; }
-  el.innerHTML = items.map(a => `
-    <div class="lms-card">
+  const subs = getSubmissions();
+  el.innerHTML = items.map(a => {
+    const sub = subs[a.id];
+    return `
+    <div class="lms-card" id="assign-card-${a.id}">
       <div class="lms-card-top">
         <span class="lms-badge assign-b">📝 Assignment</span>
+        ${sub ? '<span class="lms-badge" style="background:#dcfce7;color:#166534;margin-left:8px">✅ Submitted</span>' : ''}
         <h3>${a.title}</h3>
         <p>${a.description}</p>
       </div>
       <div class="lms-card-meta">
         <span>⏰ Due in ${a.due} days</span>
         <span>🏆 ${a.marks} marks</span>
-        <button class="btn-start" onclick="submitAssignment('${a.id}')">📤 Submit</button>
+        <button class="btn-start" onclick="toggleAssignForm('${a.id}')">${sub ? '✏️ Edit submission' : '📤 Submit work'}</button>
       </div>
-    </div>`).join('');
+      <div id="assign-form-${a.id}" style="display:none;padding:16px;border-top:1px solid #e2e8f0;margin-top:8px">
+        <label style="display:block;font-size:12px;font-weight:700;color:#475569;margin-bottom:6px">Your response / notes</label>
+        <textarea id="assign-text-${a.id}" rows="4" style="width:100%;padding:10px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box" placeholder="Describe what you built, key findings, or paste notes...">${sub?.text || ''}</textarea>
+        <label style="display:block;font-size:12px;font-weight:700;color:#475569;margin:12px 0 6px">Work link (Drive / GitHub / Notion)</label>
+        <input id="assign-link-${a.id}" type="url" value="${sub?.link || ''}" placeholder="https://..." style="width:100%;padding:10px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:inherit;font-size:13px;box-sizing:border-box"/>
+        <div style="display:flex;gap:10px;margin-top:14px;align-items:center">
+          <button class="btn-start" onclick="submitAssignment('${a.id}')">Save submission</button>
+          ${sub ? `<span style="font-size:12px;color:#64748b">Last saved ${new Date(sub.at).toLocaleString()}</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleAssignForm(id) {
+  const form = document.getElementById(`assign-form-${id}`);
+  if (!form) return;
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
 
 function submitAssignment(id) {
-  alert('📤 Assignment submission feature — upload your file here.\n(Connect to backend to enable file uploads)');
+  const text = (document.getElementById(`assign-text-${id}`)?.value || '').trim();
+  const link = (document.getElementById(`assign-link-${id}`)?.value || '').trim();
+  if (!text && !link) {
+    alert('Add notes or a work link before submitting.');
+    return;
+  }
+  saveSubmission(id, { text, link, at: Date.now() });
+  renderAssignments();
+  alert('✅ Assignment submitted! Your mentor can review this from the LMS.');
 }
 
 // ===== QUIZZES =====
@@ -410,10 +487,7 @@ function renderResources() {
     </div>`).join('');
 }
 
-// ===== INIT =====
-renderModuleTree();
-if (courseData.topics?.length && courseData.topics[0].lessons?.length) loadLesson(0, 0);
-updateProgress();
+// ===== INIT (async load in loadCourseData) =====
 
 // Edit Course button — opens admin-lms with this course selected
 document.getElementById('editCourseBtn').addEventListener('click', (e) => {

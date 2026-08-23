@@ -1,12 +1,41 @@
-function getEnrollments() {
-  return JSON.parse(localStorage.getItem('lf_enrollments') || '[]');
+function normalizeEnrollment(e) {
+  return {
+    id: e.id,
+    name: e.name || '',
+    email: e.email || '',
+    phone: e.phone || '—',
+    course: e.course || '',
+    courseId: e.courseId || e.course_id || '',
+    status: (e.status || 'pending').toLowerCase(),
+    date: e.date || e.created_at || ''
+  };
+}
+
+function getEnrollmentsLocal() {
+  return JSON.parse(localStorage.getItem('lf_enrollments') || '[]').map(normalizeEnrollment);
 }
 function saveEnrollments(list) {
   localStorage.setItem('lf_enrollments', JSON.stringify(list));
 }
 
-function renderAll() {
-  const all = getEnrollments();
+async function loadEnrollments() {
+  try {
+    if (typeof apiGetEnrollments === 'function') {
+      const raw = await apiGetEnrollments();
+      if (Array.isArray(raw)) {
+        const list = raw.map(normalizeEnrollment);
+        saveEnrollments(list);
+        return list;
+      }
+    }
+  } catch (err) {
+    console.warn('Enrollment API unavailable, using localStorage', err);
+  }
+  return getEnrollmentsLocal();
+}
+
+async function renderAll() {
+  const all = await loadEnrollments();
   const pending  = all.filter(e => e.status === 'pending');
   const approved = all.filter(e => e.status === 'approved');
   const rejected = all.filter(e => e.status === 'rejected');
@@ -50,29 +79,56 @@ function renderList(containerId, list, showActions) {
   `;
 }
 
-function updateStatus(id, status) {
-  const list = getEnrollments();
+async function updateStatus(id, status) {
+  const list = getEnrollmentsLocal();
   const idx = list.findIndex(e => e.id === id);
   if (idx === -1) return;
+
+  if (typeof apiUpdateEnrollment === 'function') {
+    await apiUpdateEnrollment(id, status);
+  }
+
   list[idx].status = status;
-  saveEnrollments(list);
   if (status === 'approved') {
     const e = list[idx];
-    const courseId = ensureCourseExists(e.course);
-    list[idx].courseId = courseId;
-    saveEnrollments(list);
-    window.open(`lms.html?course=${encodeURIComponent(e.course)}&user=${encodeURIComponent(e.name)}&cid=${courseId}`, '_blank');
+    // Prefer explicit courseId from marketing enrollment; else resolve by title
+    if (e.courseId && String(e.courseId).match(/^\d+$/)) {
+      // already a marketing course id — keep it
+    } else if (!e.courseId) {
+      const courseId = ensureCourseExists(e.course);
+      list[idx].courseId = courseId;
+    } else {
+      list[idx].courseId = ensureCourseExists(e.course) || e.courseId;
+    }
   }
-  renderAll();
+  saveEnrollments(list);
+  await renderAll();
 }
 
-// Auto-create course in LMS if not exists
+// Auto-create / resolve course in LMS — prefer marketing catalog ids (1–8)
 function ensureCourseExists(courseName) {
   const lms = JSON.parse(localStorage.getItem('lf_lms') || '{}');
-  // Check if course already exists
   const existing = Object.entries(lms).find(([, c]) => c.name.toLowerCase() === courseName.toLowerCase());
   if (existing) return existing[0];
-  // Create new empty course
+
+  // Map known marketing titles → stable course ids (same as main site COURSES)
+  if (typeof findMarketingCourseByTitle === 'function') {
+    const m = findMarketingCourseByTitle(courseName);
+    if (m) {
+      if (!lms[m.id]) {
+        lms[m.id] = {
+          id: m.id,
+          name: m.title,
+          category: m.category,
+          duration: m.duration || 'Self-paced',
+          topics: [], assignments: [], quizzes: [], projects: [], resources: []
+        };
+        localStorage.setItem('lf_lms', JSON.stringify(lms));
+      }
+      return m.id;
+    }
+  }
+
   const id = 'course_' + Date.now();
   lms[id] = {
     name: courseName,
@@ -114,7 +170,14 @@ document.querySelectorAll('.admin-nav-item').forEach(item => {
     document.querySelectorAll('.admin-nav-item').forEach(i => i.classList.remove('active'));
     document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
     item.classList.add('active');
-    document.getElementById('panel-' + item.getAttribute('data-panel')).classList.add('active');
+    const panel = item.getAttribute('data-panel');
+    document.getElementById('panel-' + panel).classList.add('active');
+
+    // Reload data when switching panels
+    if (panel === 'masterclasses') renderMasterclasses();
+    if (panel === 'liveclasses') renderLiveClasses();
+    if (panel === 'signups') renderSignups();
+    if (panel === 'enrollments' || panel === 'approved' || panel === 'rejected') renderAll();
   });
 });
 
@@ -126,10 +189,12 @@ async function getMasterclasses() {
     const res = await fetch('/api/masterclasses');
     if (res.ok) {
       const data = await res.json();
+      // Always sync localStorage with the authoritative API data
       localStorage.setItem('lf_masterclasses', JSON.stringify(data));
       return data;
     }
   } catch(e) {}
+  // Fallback to localStorage if API is unreachable
   return JSON.parse(localStorage.getItem('lf_masterclasses') || '[]');
 }
 async function saveMasterclasses(list) {
@@ -159,9 +224,14 @@ document.getElementById('btnAddMasterclass').addEventListener('click', () => {
   document.getElementById('mcDesc').value = '';
   document.getElementById('mcDuration').value = '';
   document.getElementById('mcInstructor').value = '';
+  document.getElementById('mcInstructorBio').value = '';
   document.getElementById('mcSchedule').value = '';
   document.getElementById('mcLink').value = '';
+  document.getElementById('mcThumb').value = '';
   document.getElementById('mcRating').value = '4.9';
+  document.getElementById('mcLearnPoints').value = '';
+  document.getElementById('mcForWhom').value = '';
+  document.getElementById('mcForm').scrollIntoView({ behavior: 'smooth' });
 });
 
 document.getElementById('btnSaveMc').addEventListener('click', async () => {
@@ -171,29 +241,53 @@ document.getElementById('btnSaveMc').addEventListener('click', async () => {
   if (!schedule) return alert('Schedule date & time is required.');
 
   const mc = {
-    id: 'mc_' + Date.now(), title,
+    title,
     tag: document.getElementById('mcTag').value.trim() || 'AI & ML',
     description: document.getElementById('mcDesc').value.trim(),
     duration: document.getElementById('mcDuration').value.trim() || '2 hrs',
     instructor: document.getElementById('mcInstructor').value.trim(),
+    instructor_bio: document.getElementById('mcInstructorBio').value.trim(),
     schedule, link: document.getElementById('mcLink').value.trim(),
+    thumb: document.getElementById('mcThumb').value.trim(),
     rating: parseFloat(document.getElementById('mcRating').value) || 4.9,
+    learn_points: JSON.stringify(
+      document.getElementById('mcLearnPoints').value.trim()
+        .split('\n').map(s => s.trim()).filter(Boolean)
+    ),
+    for_whom: JSON.stringify(
+      document.getElementById('mcForWhom').value.trim()
+        .split('\n').map(s => s.trim()).filter(Boolean)
+    ),
     createdAt: new Date().toISOString()
   };
 
-  // Save to API
+  // Save to API and sync localStorage with the server response (which has the real id)
+  let savedMc = null;
   try {
-    await fetch('/api/masterclasses', {
+    const res = await fetch('/api/masterclasses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(mc)
     });
+    if (res.ok) {
+      const result = await res.json();
+      // Fetch the updated list from API so localStorage stays in sync
+      const listRes = await fetch('/api/masterclasses');
+      if (listRes.ok) {
+        const updatedList = await listRes.json();
+        localStorage.setItem('lf_masterclasses', JSON.stringify(updatedList));
+        savedMc = updatedList.find(m => m.id === result.id) || updatedList[updatedList.length - 1];
+      }
+    }
   } catch(e) {}
 
-  // Also save to localStorage
-  const list = JSON.parse(localStorage.getItem('lf_masterclasses') || '[]');
-  list.push(mc);
-  localStorage.setItem('lf_masterclasses', JSON.stringify(list));
+  // Fallback: save to localStorage with a numeric timestamp id if API failed
+  if (!savedMc) {
+    const list = JSON.parse(localStorage.getItem('lf_masterclasses') || '[]');
+    savedMc = { ...mc, id: Date.now() };
+    list.push(savedMc);
+    localStorage.setItem('lf_masterclasses', JSON.stringify(list));
+  }
 
   document.getElementById('mcForm').style.display = 'none';
   renderMasterclasses();
@@ -204,9 +298,18 @@ async function deleteMasterclass(id) {
   // Delete from API
   try {
     await fetch(`/api/masterclasses/${id}`, { method: 'DELETE' });
+    // Re-sync localStorage from API after deletion
+    const listRes = await fetch('/api/masterclasses');
+    if (listRes.ok) {
+      const updatedList = await listRes.json();
+      localStorage.setItem('lf_masterclasses', JSON.stringify(updatedList));
+      document.getElementById('mcRegPanel').style.display = 'none';
+      renderMasterclasses();
+      return;
+    }
   } catch(e) {}
-  // Delete from localStorage
-  const list = JSON.parse(localStorage.getItem('lf_masterclasses') || '[]').filter(m => m.id !== id);
+  // Fallback: remove from localStorage only
+  const list = JSON.parse(localStorage.getItem('lf_masterclasses') || '[]').filter(m => String(m.id) !== String(id));
   localStorage.setItem('lf_masterclasses', JSON.stringify(list));
   document.getElementById('mcRegPanel').style.display = 'none';
   renderMasterclasses();
@@ -356,9 +459,10 @@ function renderMcRegChart(regs) {
 }
 
 // ── Export to Excel (CSV) ─────────────────────────────────────────────────────
-document.getElementById('btnExportExcel').addEventListener('click', () => {
+document.getElementById('btnExportExcel').addEventListener('click', async () => {
   const mcId = document.getElementById('mcRegPanel').dataset.mcid;
-  const mc = getMasterclasses().find(m => m.id === mcId);
+  const list = await getMasterclasses();
+  const mc = list.find(m => String(m.id) === String(mcId));
   const regs = getRegsForMc(mcId);
 
   if (!regs.length) return alert('No registrations to export.');
@@ -597,7 +701,7 @@ function exportSignups() {
   const blob = new Blob([csv], { type: 'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'arthrex-signups.csv';
+  a.download = 'athrexai-signups.csv';
   a.click();
 }
 
