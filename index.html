@@ -1419,11 +1419,11 @@ footer{background:#07111f;color:#e2e8f0;padding-top:52px}
     <div class="footer-col">
       <h4>Top Courses</h4>
       <ul>
-        <li><a href="#" onclick="showDetailById('1')">AI & ML Bootcamp</a></li>
-        <li><a href="#" onclick="showDetailById('2')">Full Stack Development</a></li>
-        <li><a href="#" onclick="showDetailById('3')">PMP® Certification</a></li>
-        <li><a href="#" onclick="showDetailById('5')">Data Science Masterclass</a></li>
-        <li><a href="#" onclick="showDetailById('6')">AWS Cloud Computing</a></li>
+        <li><a href="#" onclick="showDetailById('2')">Generative AI with Agents</a></li>
+        <li><a href="#" onclick="showDetailById('3')">Enterprise AI Architect</a></li>
+        <li><a href="#" onclick="showDetailById('4')">AI & Machine Learning Mastery</a></li>
+        <li><a href="#" onclick="showDetailById('5')">Power BI & SQL for Data Analysts</a></li>
+        <li><a href="#" onclick="showDetailById('6')">AI with DevOps & AWS</a></li>
       </ul>
     </div>
     <div class="footer-col">
@@ -2052,48 +2052,6 @@ const COURSES = [
     ]}
   ]},
 
-  { id:'8', title:'Full Stack Software Development', slug:'full-stack-software-development', category:'Software Development', instructor:{name:'Rahul Verma',avatar:'https://ui-avatars.com/api/?name=Rahul+Verma&background=16a34a&color=fff&size=40',title:'Senior Full Stack Engineer',bio:'8 years building scalable web apps. Ex-Flipkart & Zomato engineer.',rating:4.7,students:25000,courses:12}, thumbnail:'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=600&q=80', price:39999, originalPrice:79999, discount:50, rating:4.7, reviewCount:7200, enrolledCount:25000, duration:'5 months', level:'Beginner', badge:'Hot', featured:true, trending:false, cohortStartDate:'12th Aug 2026', skills:['HTML/CSS','JavaScript','React','Node.js','MongoDB','REST APIs'], highlights:['Build 20+ real-world projects','React + Node.js + MongoDB stack','Job guarantee program','1:1 mentorship sessions','Interview preparation kit'], description:'Become a job-ready Full Stack Developer. Learn frontend with React, backend with Node.js and Express, databases with MongoDB — and deploy real projects to production.',
-  curriculum:[
-    {section:'MONTH 1 — Frontend Foundations',lessons:[{title:'',duration:'',type:'divider'}]},
-    {section:'Week 1 — HTML5, CSS3 & JavaScript (6 hrs)',lessons:[
-      {title:'Semantic HTML & Modern CSS Layouts',duration:'45m',type:'video'},
-      {title:'JavaScript Essentials: DOM, Async, Modules',duration:'45m',type:'video'},
-      {title:'🛠 Lab: Responsive landing page',duration:'2h',type:'project'},
-      {title:'📝 Assignment: Interactive UI widget',duration:'1h',type:'assignment'}
-    ]},
-    {section:'Week 2 — React Fundamentals (6 hrs)',lessons:[
-      {title:'Components, Props, State & Hooks',duration:'45m',type:'video'},
-      {title:'Routing, Forms & Fetch Patterns',duration:'45m',type:'video'},
-      {title:'🛠 Lab: Multi-page React app',duration:'2h',type:'project'},
-      {title:'📝 Assignment: Component library starter',duration:'1h',type:'assignment'}
-    ]},
-    {section:'MONTH 2 — Backend',lessons:[{title:'',duration:'',type:'divider'}]},
-    {section:'Week 3 — Node.js & Express APIs (6 hrs)',lessons:[
-      {title:'REST Design, Middleware & Auth Basics',duration:'45m',type:'video'},
-      {title:'Error Handling & Validation',duration:'30m',type:'video'},
-      {title:'🛠 Lab: Build a CRUD API',duration:'2h',type:'project'},
-      {title:'📋 Case Study: API for a marketplace',duration:'30m',type:'casestudy'},
-      {title:'📝 Assignment: OpenAPI-style route docs',duration:'1h',type:'assignment'}
-    ]},
-    {section:'Week 4 — MongoDB & Data Layer (6 hrs)',lessons:[
-      {title:'Schemas, Indexes & Aggregation',duration:'45m',type:'video'},
-      {title:'Mongoose Models & Relationships',duration:'45m',type:'video'},
-      {title:'🛠 Lab: Persist API data in MongoDB',duration:'2h',type:'project'},
-      {title:'📝 Mid-term: Data model design',duration:'1h',type:'assignment'}
-    ]},
-    {section:'MONTH 3 — Full Stack Integration',lessons:[{title:'',duration:'',type:'divider'}]},
-    {section:'Week 5 — Connecting React + API (6 hrs)',lessons:[
-      {title:'Auth Flows, Protected Routes & State',duration:'45m',type:'video'},
-      {title:'🛠 Lab: Full stack feature slice',duration:'3h',type:'project'},
-      {title:'📝 Assignment: E2E happy-path checklist',duration:'1h',type:'assignment'}
-    ]},
-    {section:'Week 6 — Deploy & Capstone (6 hrs)',lessons:[
-      {title:'Deploy Frontend + Backend to Production',duration:'45m',type:'video'},
-      {title:'🛠 Capstone Lab: Ship a real full-stack app',duration:'3h',type:'project'},
-      {title:'📋 Final Demo, Interview Prep Kit Overview',duration:'1h',type:'casestudy'},
-      {title:'🏆 Certification Award',duration:'30m',type:'video'}
-    ]}
-  ]}
 ];
 
 const CATEGORIES = [
@@ -2102,8 +2060,7 @@ const CATEGORIES = [
   {name:'AI & Machine Learning',icon:'🧠', count:24, color:'#2563EB', bg:'#DBEAFE'},
   {name:'Data Science',        icon:'📊', count:16, color:'#0891B2', bg:'#ECFEFF'},
   {name:'Data Analytics',      icon:'📈', count:14, color:'#059669', bg:'#ECFDF5'},
-  {name:'Programming',         icon:'💻', count:20, color:'#4F46E5', bg:'#EEF2FF'},
-  {name:'Software Development', icon:'🛠', count:28, color:'#16A34A', bg:'#F0FDF4'},
+
   {name:'Data Structures',     icon:'🗂', count:10, color:'#DC2626', bg:'#FEF2F2'},
   {name:'DevOps & AWS',        icon:'☁️', count:15, color:'#EA580C', bg:'#FFF7ED'},
   {name:'Robotics & AI',       icon:'🦾', count:8,  color:'#6D28D9', bg:'#F3E8FF'},
@@ -2113,7 +2070,7 @@ const CATEGORIES = [
 const TESTIMONIALS = [
   {name:'Karthik Reddy',role:'ML Engineer at Google',avatar:'https://ui-avatars.com/api/?name=Karthik+Reddy&background=4285F4&color=fff&size=56',text:'The AI & ML Bootcamp transformed my career. Within 3 months of completing the course, I landed a role at Google. The hands-on projects and mentorship were invaluable.',course:'AI & ML Bootcamp',rating:5},
   {name:'Preethi Sundaram',role:'Product Manager at Amazon',avatar:'https://ui-avatars.com/api/?name=Preethi+Sundaram&background=FF9900&color=fff&size=56',text:'PMP certification through this platform was a game-changer. The structured approach, mock tests, and expert instructors helped me pass on the first attempt!',course:'PMP® Certification',rating:5},
-  {name:'Aditya Kapoor',role:'Full Stack Developer at Swiggy',avatar:'https://ui-avatars.com/api/?name=Aditya+Kapoor&background=FC8019&color=fff&size=56',text:'From zero coding knowledge to a full-time dev role in 9 months — the Full Stack program is genuinely life-changing. The job placement team is top-notch.',course:'Full Stack Development',rating:5}
+  {name:'Aditya Kapoor',role:'Data Scientist at Swiggy',avatar:'https://ui-avatars.com/api/?name=Aditya+Kapoor&background=FC8019&color=fff&size=56',text:'The Data Science program gave me exactly the practical skills I needed. Within months of completing it I landed a data scientist role. The mentorship and projects are top-notch.',course:'Data Science with Python',rating:5}
 ];
 
 // ── STATE ───────────────────────────────────────────────────────────
