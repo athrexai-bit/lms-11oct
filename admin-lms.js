@@ -1,6 +1,119 @@
 // ===== DATA HELPERS =====
+const API_BASE = location.protocol === 'file:'
+  ? 'http://127.0.0.1:8000'
+  : location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+  ? `${location.protocol}//${location.hostname}:8000`
+  : '';
 const getData = () => JSON.parse(localStorage.getItem('lf_lms') || '{}');
-const saveData = d => localStorage.setItem('lf_lms', JSON.stringify(d));
+const storeData = d => localStorage.setItem('lf_lms', JSON.stringify(d));
+
+async function putLmsCourse(courseId, courseData) {
+  const res = await fetch(`${API_BASE}/api/lms/${encodeURIComponent(courseId)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(courseData)
+  });
+  if (!res.ok) throw new Error(`LMS save failed (${res.status})`);
+}
+
+const saveData = data => {
+  const previous = getData();
+  Object.entries(data).forEach(([id, course]) => {
+    if (JSON.stringify(previous[id]) !== JSON.stringify(course)) {
+      course.updatedAt = new Date().toISOString();
+      putLmsCourse(id, course).catch(error => console.warn('Could not save course to API:', error));
+    }
+  });
+  storeData(data);
+};
+
+// ── Load LMS data from API or localStorage ────────────────────────────────────
+async function loadLmsData() {
+  try {
+    const res = await fetch(`${API_BASE}/api/lms`);
+    if (res.ok) {
+      const apiData = await res.json();
+      const localData = getData();
+      const data = { ...apiData };
+      Object.entries(localData).forEach(([id, localCourse]) => {
+        const remoteCourse = apiData[id];
+        if (!remoteCourse || (localCourse.updatedAt && localCourse.updatedAt > (remoteCourse.updatedAt || ''))) {
+          data[id] = localCourse;
+          if (remoteCourse) putLmsCourse(id, localCourse).catch(error => console.warn('Could not sync local course to API:', error));
+        }
+      });
+      storeData(data);
+      return data;
+    }
+  } catch (e) {
+    console.warn('Could not load from API, using localStorage:', e);
+  }
+  return getData();
+}
+
+// ── Save LMS data to API and localStorage ────────────────────────────────────
+async function saveLmsData(courseId, courseData) {
+  courseData.updatedAt = new Date().toISOString();
+  const allData = getData();
+  allData[courseId] = courseData;
+  storeData(allData);
+  try {
+    await putLmsCourse(courseId, courseData);
+  } catch (e) {
+    console.warn('Could not save to API:', e);
+  }
+}
+
+function normalizeCategory(category) {
+  const value = String(category || '').toLowerCase();
+  if (value.includes('agentic')) return 'agentic';
+  if (value.includes('generative') || value === 'genai' || value.includes('llm')) return 'genai';
+  if (value.includes('data science') || value === 'datascience') return 'datascience';
+  if (value.includes('industry') || value.includes('domain')) return 'domainai';
+  if (value.includes('programming')) return 'programming';
+  return value;
+}
+
+async function syncCatalogCourses() {
+  if (typeof COURSE_DATABASE === 'undefined') return;
+  const data = getData();
+  const changed = new Set();
+
+  Object.entries(COURSE_DATABASE).forEach(([category, categoryData]) => {
+    Object.values(categoryData.subcategories || {}).forEach(subcategory => {
+      (subcategory.courses || []).forEach(catalogCourse => {
+        const match = Object.entries(data).find(([id, course]) =>
+          id === catalogCourse.id || course.name?.toLowerCase() === catalogCourse.name.toLowerCase()
+        );
+        const id = match?.[0] || catalogCourse.id;
+        const course = match?.[1] || {
+          name: catalogCourse.name,
+          category,
+          tag: catalogCourse.tag || subcategory.name,
+          duration: catalogCourse.duration || '',
+          price: catalogCourse.price || '',
+          topics: [], assignments: [], quizzes: [], projects: [], resources: []
+        };
+        let needsSave = !match;
+        [['category', category], ['tag', catalogCourse.tag || subcategory.name],
+          ['duration', catalogCourse.duration || ''], ['price', catalogCourse.price || '']]
+          .forEach(([key, value]) => {
+            if (!course[key] && value) { course[key] = value; needsSave = true; }
+          });
+        ['topics', 'assignments', 'quizzes', 'projects', 'resources'].forEach(key => {
+          if (!Array.isArray(course[key])) { course[key] = []; needsSave = true; }
+        });
+        data[id] = course;
+        if (needsSave) changed.add(id);
+      });
+    });
+  });
+
+  if (changed.size) {
+    storeData(data);
+    await Promise.all([...changed].map(id => saveLmsData(id, data[id])));
+  }
+}
 
 // ── Clear stale localStorage courses that don't match COURSE_DATABASE ─────────
 function cleanStaleLmsData() {
@@ -32,16 +145,19 @@ let activeTopicId = null;
 let qCount = 1;
 let selectedCategory = 'all';   // program key: all | agentic | genai | datascience | domainai
 let selectedSubcat = 'all';     // subcategory tag filter
+let attendanceSessions = [];
+let activeAttendanceSessionId = null;
 
 // ===== INIT =====
-function init() {
-  cleanStaleLmsData();
+async function init() {
+  await loadLmsData();
+  await syncCatalogCourses();
   setupProgramButtons();
   renderSubcatFilter();
   populateCourseSelect();
   renderCourseCards();
   const last = localStorage.getItem('lf_active_course');
-  if (last) { document.getElementById('courseSelect').value = last; selectCourse(last); }
+  if (last) { selectCourse(last); }
 }
 
 // ===== PROGRAM BUTTONS (step 1) =====
@@ -73,21 +189,16 @@ function renderSubcatFilter() {
   }
 
   // Build unique tags from COURSE_DATABASE subcategories
-  const catData = typeof COURSE_DATABASE !== 'undefined' ? COURSE_DATABASE[selectedCategory] : null;
-  if (!catData) { filterEl.style.display = 'none'; return; }
-
-  // Collect subcategory tags
+  const courses = Object.values(getData()).filter(course => normalizeCategory(course.category) === selectedCategory);
   const tags = [{ key: 'all', label: 'All' }];
-  Object.values(catData.subcategories).forEach(sub => {
-    // Use the tag from first course, or subcategory name
-    const sampleTag = sub.courses[0]?.tag;
-    const label = sampleTag && sampleTag !== 'All' ? sampleTag : sub.name;
+  courses.forEach(course => {
+    const label = course.tag || 'Other';
     if (!tags.find(t => t.label === label)) {
       tags.push({ key: label, label });
     }
   });
 
-  labelEl.textContent = catData.name + ' — Filter';
+  labelEl.textContent = getCategoryLabel(selectedCategory) + ' — Filter';
   chipsEl.innerHTML = tags.map(t => `
     <button class="subcat-chip ${selectedSubcat === t.key ? 'active' : ''}"
             onclick="selectSubcat('${t.key}')">${t.label}</button>
@@ -111,77 +222,56 @@ function renderCourseCards() {
   if (!grid) return;
 
   const lmsData = getData();
-  let cards = [];
+  const courses = Object.entries(lmsData);
 
-  if (typeof COURSE_DATABASE === 'undefined') {
-    grid.innerHTML = '<div class="no-courses-msg">Course database not loaded.</div>';
+  if (!courses.length) {
+    grid.innerHTML = '<div class="no-courses-msg">No courses yet. Click "+ New Course" to create one.</div>';
     return;
   }
 
-  const categoriesToShow = selectedCategory === 'all'
-    ? Object.keys(COURSE_DATABASE)
-    : [selectedCategory];
+  // Filter courses by category if selected
+  const filteredCourses = courses.filter(([, course]) =>
+    (selectedCategory === 'all' || normalizeCategory(course.category) === selectedCategory) &&
+    (selectedSubcat === 'all' || (course.tag || 'Other') === selectedSubcat)
+  );
 
-  categoriesToShow.forEach(catKey => {
-    const catData = COURSE_DATABASE[catKey];
-    if (!catData || !catData.subcategories) return;
-
-    Object.values(catData.subcategories).forEach(sub => {
-      if (!sub.courses) return;
-      sub.courses.forEach(course => {
-        try {
-          const tag = (course.tag && course.tag !== 'All') ? course.tag : sub.name;
-          if (selectedCategory !== 'all' && selectedSubcat !== 'all' && selectedSubcat !== tag) return;
-
-          const lmsEntry = Object.entries(lmsData).find(([, c]) => c.name && c.name.toLowerCase() === course.name.toLowerCase());
-          cards.push({
-            id: lmsEntry ? lmsEntry[0] : null,
-            catalogId: course.id,
-            name: course.name,
-            tag,
-            duration: course.duration || '',
-            price: course.price || '',
-            catKey,
-            isLms: !!lmsEntry
-          });
-        } catch(e) { console.warn('Card error:', e); }
-      });
-    });
-  });
-
-  // Custom LMS courses not in COURSE_DATABASE
-  Object.keys(lmsData).forEach(id => {
-    const c = lmsData[id];
-    if (!cards.find(card => card.id === id)) {
-      const catKey = c.category || '';
-      if (selectedCategory === 'all' || catKey === selectedCategory) {
-        cards.push({ id, name: c.name, tag: getCategoryLabel(catKey), isLms: true, duration: c.duration || '', price: '' });
-      }
-    }
-  });
-
-  if (!cards.length) {
-    grid.innerHTML = '<div class="no-courses-msg">No courses found.</div>';
+  if (!filteredCourses.length) {
+    grid.innerHTML = '<div class="no-courses-msg">No courses in this category yet.</div>';
     return;
   }
 
-  grid.innerHTML = cards.map(c => {
-    const safeName = encodeURIComponent(c.name || '');
-    const safeId = (c.id || '').replace(/'/g, '');
+  grid.innerHTML = filteredCourses.map(([id, course]) => {
+    const totalLessons = (course.topics || []).reduce((sum, t) => sum + (t.lessons || []).length, 0);
+    const categoryColors = {
+      agentic: '#1e40af',
+      genai: '#7c3aed',
+      datascience: '#0891b2',
+      domainai: '#059669',
+      programming: '#ea580c'
+    };
+    const bgColor = categoryColors[course.category] || '#0b5fff';
+    
     return `
-      <div class="course-card-item ${activeCourse === c.id ? 'active' : ''}"
-           onclick="selectCourseFromCard('${safeId}', '${safeName}')">
+      <div class="course-card-item ${activeCourse === id ? 'active' : ''}" onclick="selectCourseFromCard('${encodeURIComponent(id)}')" data-course-id="${encodeURIComponent(id)}">
         <div class="course-card-top">
-          <h4>${c.name}</h4>
-          ${c.isLms ? '<span class="lms-dot" title="Has LMS content">●</span>' : ''}
+          <h4>${escapeHtml(course.name || 'Untitled course')}</h4>
+          <span class="lms-dot" title="Saved in LMS">●</span>
         </div>
         <div class="course-card-meta">
-          <span class="course-tag-chip">${c.tag}</span>
-          ${c.duration ? `<span class="course-dur">⏱ ${c.duration}</span>` : ''}
-          ${c.price ? `<span class="course-dur" style="color:#facc15">${c.price}</span>` : ''}
+          <span class="course-tag-chip" style="background:${bgColor}">${escapeHtml(course.tag || course.category || 'Course')}</span>
+          <span class="course-dur">⏱ ${escapeHtml(course.duration || 'N/A')}</span>
+          <span class="course-dur">📚 ${totalLessons} lessons</span>
+          ${course.price ? `<span class="course-dur">${escapeHtml(course.price)}</span>` : ''}
         </div>
-      </div>`;
+      </div>
+    `;
   }).join('');
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  })[character]);
 }
 
 function getCategoryLabel(cat) {
@@ -195,14 +285,11 @@ function getCategoryLabel(cat) {
   return labels[cat] || cat;
 }
 
-function selectCourseFromCard(id, encodedName) {
-  const name = decodeURIComponent(encodedName);
+function selectCourseFromCard(id) {
+  id = decodeURIComponent(id);
   const lmsData = getData();
 
-  // If no LMS id yet, create the course entry
-  if (!id || !lmsData[id]) {
-    id = ensureCourseLmsEntry(name);
-  }
+  if (!lmsData[id]) return;
 
   document.getElementById('courseSelect').value = id;
   selectCourse(id);
@@ -246,7 +333,7 @@ function populateCourseSelect() {
     const course = data[id];
     const courseCategory = course.category || 'genai';
     
-    if (selectedCategory === 'all' || courseCategory === selectedCategory) {
+    if (selectedCategory === 'all' || normalizeCategory(courseCategory) === selectedCategory) {
       const opt = document.createElement('option');
       opt.value = id;
       opt.textContent = course.name;
@@ -266,12 +353,38 @@ function selectCourse(id) {
   localStorage.setItem('lf_active_course', id || '');
   document.getElementById('noCourse').style.display = id ? 'none' : 'flex';
   document.getElementById('btnSaveCourse').style.display = id ? 'block' : 'none';
+  document.getElementById('courseDetailsForm').style.display = id ? 'block' : 'none';
   renderCourseCards();
   if (id) {
+    const course = getData()[id];
+    document.getElementById('courseEditName').value = course.name || '';
+    document.getElementById('courseEditCategory').value = normalizeCategory(course.category);
+    document.getElementById('courseEditTag').value = course.tag || '';
+    document.getElementById('courseEditDuration').value = course.duration || '';
+    document.getElementById('courseEditPrice').value = course.price || '';
     showTab('topics');
     renderTopics(); renderAssignments(); renderQuizzes(); renderProjects(); renderResources();
   }
 }
+
+document.getElementById('saveCourseDetailsBtn').addEventListener('click', async () => {
+  if (!activeCourse) return;
+  const name = document.getElementById('courseEditName').value.trim();
+  if (!name) return alert('Enter a course name.');
+  const data = getData();
+  Object.assign(data[activeCourse], {
+    name,
+    category: document.getElementById('courseEditCategory').value,
+    tag: document.getElementById('courseEditTag').value.trim(),
+    duration: document.getElementById('courseEditDuration').value.trim(),
+    price: document.getElementById('courseEditPrice').value.trim()
+  });
+  await saveLmsData(activeCourse, data[activeCourse]);
+  populateCourseSelect();
+  renderSubcatFilter();
+  renderCourseCards();
+  showToast(`Course details saved for "${name}".`);
+});
 
 // New course
 ['btnNewCourse','btnNewCourse2'].forEach(id => {
@@ -282,18 +395,32 @@ function selectCourse(id) {
 document.getElementById('closeCourseModal').addEventListener('click', () => document.getElementById('courseModal').classList.remove('active'));
 document.getElementById('cancelCourseBtn').addEventListener('click', () => document.getElementById('courseModal').classList.remove('active'));
 
-document.getElementById('saveCourseBtn').addEventListener('click', () => {
+document.getElementById('saveCourseBtn').addEventListener('click', async () => {
   const name = document.getElementById('newCourseName').value.trim();
   if (!name) return alert('Enter course name');
   const data = getData();
   const id = 'course_' + Date.now();
-  data[id] = { name, category: document.getElementById('newCourseCategory').value, duration: document.getElementById('newCourseDuration').value, topics: [], assignments: [], quizzes: [], projects: [], resources: [] };
-  saveData(data);
-  populateCourseSelect();
-  document.getElementById('courseSelect').value = id;
+  const newCourse = { 
+    name, 
+    category: document.getElementById('newCourseCategory').value, 
+    tag: document.getElementById('newCourseCategory').value,
+    duration: document.getElementById('newCourseDuration').value, 
+    topics: [], 
+    assignments: [], 
+    quizzes: [], 
+    projects: [], 
+    resources: [] 
+  };
+  data[id] = newCourse;
+  
+  // Save to API and localStorage
+  await saveLmsData(id, newCourse);
+  
+  renderCourseCards();
   selectCourse(id);
   document.getElementById('courseModal').classList.remove('active');
   document.getElementById('newCourseName').value = '';
+  showToast(`✓ Course "${name}" created!`);
 });
 
 // ===== TABS =====
@@ -304,6 +431,7 @@ document.querySelectorAll('.alms-nav-item').forEach(item => {
     document.querySelectorAll('.alms-nav-item').forEach(i => i.classList.remove('active'));
     item.classList.add('active');
     showTab(item.getAttribute('data-tab'));
+    if (item.getAttribute('data-tab') === 'attendance') renderAttendance();
   });
 });
 
@@ -315,6 +443,161 @@ function showTab(tab) {
     if (i.getAttribute('data-tab') === tab) i.classList.add('active');
     else i.classList.remove('active');
   });
+}
+
+document.getElementById('btnCreateAttendanceSession').addEventListener('click', () => {
+  document.getElementById('attendanceSessionTitle').value = '';
+  const date = new Date();
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+  document.getElementById('attendanceSessionAt').value = date.toISOString().slice(0, 16);
+  document.getElementById('attendanceSessionForm').style.display = 'block';
+});
+
+document.getElementById('cancelAttendanceSession').addEventListener('click', () => {
+  document.getElementById('attendanceSessionForm').style.display = 'none';
+});
+
+document.getElementById('saveAttendanceSession').addEventListener('click', async () => {
+  if (!activeCourse) return;
+  const title = document.getElementById('attendanceSessionTitle').value.trim();
+  const sessionAt = document.getElementById('attendanceSessionAt').value;
+  if (!title || !sessionAt) return alert('Enter a session name and date/time.');
+  const response = await fetch(`${API_BASE}/api/lms/${encodeURIComponent(activeCourse)}/attendance/sessions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title, session_at: sessionAt })
+  });
+  const result = await response.json();
+  if (!response.ok) return alert(result.error || 'Could not create attendance session.');
+  activeAttendanceSessionId = result.session.id;
+  document.getElementById('attendanceSessionForm').style.display = 'none';
+  await renderAttendance();
+  showToast(`Attendance session "${title}" created.`);
+});
+
+async function renderAttendance() {
+  if (!activeCourse) return;
+  const sessionsEl = document.getElementById('attendanceSessions');
+  const registerEl = document.getElementById('attendanceRegister');
+  sessionsEl.innerHTML = '<div class="empty-card">Loading attendance...</div>';
+  try {
+    const response = await fetch(`${API_BASE}/api/lms/${encodeURIComponent(activeCourse)}/attendance`);
+    const sessions = await response.json();
+    if (!response.ok) throw new Error(sessions.error || 'Could not load attendance.');
+    attendanceSessions = sessions;
+    if (!sessions.some(session => session.id === activeAttendanceSessionId)) {
+      activeAttendanceSessionId = sessions[0]?.id || null;
+    }
+    if (!sessions.length) {
+      sessionsEl.innerHTML = '';
+      registerEl.innerHTML = '<div class="empty-card">No attendance sessions yet. Create one to take a register.</div>';
+      return;
+    }
+    sessionsEl.innerHTML = sessions.map(session => `
+      <div class="attendance-session ${session.id === activeAttendanceSessionId ? 'active' : ''}">
+        <button class="attendance-session-select" onclick="selectAttendanceSession(${session.id})">
+          <strong>${escapeHtml(session.title)}</strong><br>
+          <small>${formatAttendanceDate(session.session_at)}</small>
+        </button>
+        <button class="attendance-session-delete" onclick="deleteAttendanceSession(${session.id})" title="Delete session">✕</button>
+      </div>`).join('');
+    renderAttendanceRegister();
+  } catch (error) {
+    sessionsEl.innerHTML = '';
+    registerEl.innerHTML = `<div class="empty-card">${escapeHtml(error.message)}</div>`;
+  }
+}
+
+function formatAttendanceDate(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
+}
+
+function selectAttendanceSession(sessionId) {
+  activeAttendanceSessionId = sessionId;
+  renderAttendance();
+}
+
+async function deleteAttendanceSession(sessionId) {
+  if (!confirm('Delete this session and its attendance records?')) return;
+  const response = await fetch(`${API_BASE}/api/lms/attendance/sessions/${sessionId}`, { method: 'DELETE' });
+  const result = await response.json();
+  if (!response.ok) return alert(result.error || 'Could not delete session.');
+  activeAttendanceSessionId = null;
+  await renderAttendance();
+}
+
+function renderAttendanceRegister() {
+  const session = attendanceSessions.find(item => item.id === activeAttendanceSessionId);
+  const registerEl = document.getElementById('attendanceRegister');
+  if (!session) { registerEl.innerHTML = ''; return; }
+  const totals = session.learners.reduce((counts, learner) => {
+    counts[learner.status] = (counts[learner.status] || 0) + 1;
+    return counts;
+  }, {});
+  const marked = session.learners.length - (totals.unmarked || 0);
+  registerEl.innerHTML = `
+    <div class="attendance-summary">
+      <span>Enrolled <strong>${session.learners.length}</strong></span>
+      <span>Marked <strong>${marked}</strong></span>
+      <span>Present <strong>${totals.present || 0}</strong></span>
+      <span>Late <strong>${totals.late || 0}</strong></span>
+      <span>Absent <strong>${totals.absent || 0}</strong></span>
+      <span>Excused <strong>${totals.excused || 0}</strong></span>
+    </div>
+    ${session.learners.length ? `
+      <div class="attendance-table-wrap">
+        <table class="attendance-table">
+          <thead><tr><th>Learner</th><th>Email</th><th>Status</th><th>Note</th><th>Save</th></tr></thead>
+          <tbody>${session.learners.map(learner => `
+            <tr data-enrollment-id="${learner.enrollment_id}">
+              <td>${escapeHtml(learner.name || 'Learner')}</td>
+              <td>${escapeHtml(learner.email || '')}</td>
+              <td><select class="attendance-status">
+                <option value="unmarked" ${learner.status === 'unmarked' ? 'selected' : ''}>Unmarked</option>
+                <option value="present" ${learner.status === 'present' ? 'selected' : ''}>Present</option>
+                <option value="late" ${learner.status === 'late' ? 'selected' : ''}>Late</option>
+                <option value="absent" ${learner.status === 'absent' ? 'selected' : ''}>Absent</option>
+                <option value="excused" ${learner.status === 'excused' ? 'selected' : ''}>Excused</option>
+              </select></td>
+              <td><input class="attendance-note" type="text" value="${escapeHtml(learner.note || '')}" placeholder="Optional note"/></td>
+              <td><button class="btn-view" onclick="saveLearnerAttendance(${session.id}, ${learner.enrollment_id}, this)">Save</button> <span class="attendance-save-state"></span></td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>` : '<div class="empty-card">No approved enrollments found for this course.</div>'}`;
+}
+
+async function saveLearnerAttendance(sessionId, enrollmentId, button) {
+  const row = button.closest('tr');
+  const statusEl = row.querySelector('.attendance-status');
+  const state = row.querySelector('.attendance-save-state');
+  if (statusEl.value === 'unmarked') {
+    state.textContent = 'Choose a status';
+    state.classList.remove('saved');
+    return;
+  }
+  button.disabled = true;
+  state.textContent = 'Saving...';
+  state.classList.remove('saved');
+  try {
+    const response = await fetch(`${API_BASE}/api/lms/attendance/sessions/${sessionId}/learners/${enrollmentId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: statusEl.value, note: row.querySelector('.attendance-note').value })
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || 'Could not save attendance.');
+    state.textContent = 'Saved';
+    state.classList.add('saved');
+    const session = attendanceSessions.find(item => item.id === sessionId);
+    const learner = session?.learners.find(item => item.enrollment_id === enrollmentId);
+    if (learner) { learner.status = statusEl.value; learner.note = row.querySelector('.attendance-note').value; }
+    renderAttendanceRegister();
+  } catch (error) {
+    state.textContent = error.message;
+  } finally {
+    button.disabled = false;
+  }
 }
 
 // ===== TOPICS & LESSONS =====
@@ -338,7 +621,7 @@ document.getElementById('saveTopicBtn').addEventListener('click', () => {
   const data = getData();
   const topic = { id: 'topic_' + Date.now(), title, order: parseInt(document.getElementById('topicOrder').value) || 1, lessons: [] };
   data[activeCourse].topics.push(topic);
-  saveData(data);
+  saveLmsData(activeCourse, data[activeCourse]);
   document.getElementById('topicTitle').value = '';
   document.getElementById('topicForm').style.display = 'none';
   renderTopics();
@@ -407,6 +690,7 @@ function renderMaterialRows(t) {
           <span class="lesson-name">${m.title}</span>
           <span class="lesson-dur">${m.type}</span>
           ${m.url ? `<a href="${m.url}" target="_blank" class="btn-preview-lesson" title="Open">🔗</a>` : ''}
+          <button class="btn-edit-lesson" onclick="editMaterial('${t.id}','${m.id}')" title="Edit">✏️</button>
           <button class="btn-del-sm" onclick="deleteMaterial('${t.id}','${m.id}')">✕</button>
         </div>`).join('')}
     </div>`;
@@ -414,12 +698,61 @@ function renderMaterialRows(t) {
 
 function openMaterialModal(topicId, topicName) {
   window._materialTopicId = topicId;
+  window._materialId = null;
   document.getElementById('materialTopicName').textContent = topicName;
   document.getElementById('materialTitle').value = '';
   document.getElementById('materialUrl').value = '';
   document.getElementById('materialType').value = 'PDF';
+  document.getElementById('materialFile').value = '';
+  document.getElementById('materialUploadStatus').textContent = 'Maximum file size: 25 MB.';
+  document.getElementById('saveMaterialBtn').textContent = '📎 Add Material';
   document.getElementById('materialModal').classList.add('active');
 }
+
+function editMaterial(topicId, materialId) {
+  const topic = getData()[activeCourse]?.topics.find(item => item.id === topicId);
+  const material = topic?.materials?.find(item => item.id === materialId);
+  if (!material) return;
+  window._materialTopicId = topicId;
+  window._materialId = materialId;
+  document.getElementById('materialTopicName').textContent = topic.title;
+  document.getElementById('materialTitle').value = material.title || '';
+  document.getElementById('materialUrl').value = material.url || '';
+  document.getElementById('materialType').value = material.type || 'PDF';
+  document.getElementById('materialFile').value = '';
+  document.getElementById('materialUploadStatus').textContent = 'Maximum file size: 25 MB.';
+  document.getElementById('saveMaterialBtn').textContent = 'Update Material';
+  document.getElementById('materialModal').classList.add('active');
+}
+
+async function uploadLmsFile(inputId, urlInputId, statusId) {
+  const input = document.getElementById(inputId);
+  const file = input.files?.[0];
+  if (!file) return;
+  const status = document.getElementById(statusId);
+  if (file.size > 25 * 1024 * 1024) {
+    status.textContent = 'File is larger than 25 MB.';
+    input.value = '';
+    return;
+  }
+
+  status.textContent = `Uploading ${file.name}...`;
+  const body = new FormData();
+  body.append('file', file);
+  try {
+    const base = API_BASE || 'http://127.0.0.1:8000';
+    const response = await fetch(`${base}/api/lms/uploads`, { method: 'POST', body });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || 'Upload failed.');
+    document.getElementById(urlInputId).value = result.url.startsWith('/') ? `${base}${result.url}` : result.url;
+    status.textContent = `Uploaded: ${file.name}`;
+  } catch (error) {
+    status.textContent = error.message || 'Upload failed.';
+  }
+}
+
+document.getElementById('materialFile').addEventListener('change', () =>
+  uploadLmsFile('materialFile', 'materialUrl', 'materialUploadStatus'));
 
 function deleteMaterial(topicId, materialId) {
   const data = getData();
@@ -916,15 +1249,45 @@ document.getElementById('saveLessonBtn').addEventListener('click', () => {
 });
 
 // ===== ASSIGNMENTS =====
-document.getElementById('btnAddAssignment').addEventListener('click', () => document.getElementById('assignmentForm').style.display = 'block');
+let editingAssignmentId = null;
+let editingProjectId = null;
+let editingResourceId = null;
+
+document.getElementById('btnAddAssignment').addEventListener('click', () => {
+  editingAssignmentId = null;
+  document.getElementById('assignTitle').value = '';
+  document.getElementById('assignDesc').value = '';
+  document.getElementById('assignDue').value = '';
+  document.getElementById('assignMarks').value = '';
+  document.getElementById('saveAssignBtn').textContent = 'Save Assignment';
+  document.getElementById('assignmentForm').style.display = 'block';
+});
+
+function editAssignment(id) {
+  const assignment = getData()[activeCourse]?.assignments.find(item => item.id === id);
+  if (!assignment) return;
+  editingAssignmentId = id;
+  document.getElementById('assignTitle').value = assignment.title || '';
+  document.getElementById('assignDesc').value = assignment.description || '';
+  document.getElementById('assignDue').value = assignment.due || 7;
+  document.getElementById('assignMarks').value = assignment.marks || 100;
+  document.getElementById('saveAssignBtn').textContent = 'Update Assignment';
+  document.getElementById('assignmentForm').style.display = 'block';
+  document.getElementById('assignmentForm').scrollIntoView({ behavior: 'smooth' });
+}
 
 document.getElementById('saveAssignBtn').addEventListener('click', () => {
   const title = document.getElementById('assignTitle').value.trim();
   if (!title || !activeCourse) return;
   const data = getData();
-  data[activeCourse].assignments.push({ id: 'assign_' + Date.now(), title, description: document.getElementById('assignDesc').value, due: document.getElementById('assignDue').value || 7, marks: document.getElementById('assignMarks').value || 100 });
+  const assignment = { id: editingAssignmentId || 'assign_' + Date.now(), title, description: document.getElementById('assignDesc').value, due: document.getElementById('assignDue').value || 7, marks: document.getElementById('assignMarks').value || 100 };
+  const index = data[activeCourse].assignments.findIndex(item => item.id === editingAssignmentId);
+  if (index < 0) data[activeCourse].assignments.push(assignment);
+  else data[activeCourse].assignments[index] = assignment;
   saveData(data);
+  editingAssignmentId = null;
   document.getElementById('assignmentForm').style.display = 'none';
+  document.getElementById('saveAssignBtn').textContent = 'Save Assignment';
   document.getElementById('assignTitle').value = '';
   document.getElementById('assignDesc').value = '';
   renderAssignments();
@@ -940,12 +1303,13 @@ function renderAssignments() {
       <div class="content-card-header">
         <div>
           <span class="content-type-badge assign-badge">📝 Assignment</span>
-          <h3>${a.title}</h3>
-          <p>${a.description}</p>
+          <h3>${escapeHtml(a.title)}</h3>
+          <p>${escapeHtml(a.description || '')}</p>
         </div>
         <div class="content-meta">
           <span>⏰ Due in ${a.due} days</span>
           <span>🏆 ${a.marks} marks</span>
+          <button class="btn-view" onclick="editAssignment('${a.id}')">✏️ Edit</button>
           <button class="btn-del" onclick="deleteItem('assignments','${a.id}')">🗑</button>
         </div>
       </div>
@@ -953,15 +1317,14 @@ function renderAssignments() {
 }
 
 // ===== QUIZZES =====
-document.getElementById('btnAddQuiz').addEventListener('click', () => { document.getElementById('quizForm').style.display = 'block'; qCount = 1; });
+let editingQuizId = null;
 
-document.getElementById('addQuestionBtn').addEventListener('click', () => {
-  qCount++;
+function appendQuizQuestion(question = {}) {
   const block = document.createElement('div');
   block.className = 'question-block';
-  block.id = `q-${qCount-1}`;
+  block.id = `q-${qCount}`;
   block.innerHTML = `
-    <div class="form-group"><label>Question ${qCount}</label><input type="text" class="q-text" placeholder="Enter question..."/></div>
+    <div class="form-group"><label>Question ${qCount + 1}</label><input type="text" class="q-text" placeholder="Enter question..."/></div>
     <div class="options-grid">
       <input type="text" class="q-opt" placeholder="Option A"/>
       <input type="text" class="q-opt" placeholder="Option B"/>
@@ -971,22 +1334,63 @@ document.getElementById('addQuestionBtn').addEventListener('click', () => {
     <div class="form-group"><label>Correct Answer</label>
       <select class="q-answer"><option>A</option><option>B</option><option>C</option><option>D</option></select>
     </div>`;
+  block.querySelector('.q-text').value = question.question || '';
+  block.querySelectorAll('.q-opt').forEach((input, index) => input.value = question.options?.[index] || '');
+  block.querySelector('.q-answer').value = question.answer || 'A';
   document.getElementById('quizQuestions').appendChild(block);
+  qCount++;
+}
+
+function resetQuizQuestions(questions = [{}]) {
+  qCount = 0;
+  document.getElementById('quizQuestions').innerHTML = '';
+  questions.forEach(appendQuizQuestion);
+}
+
+document.getElementById('btnAddQuiz').addEventListener('click', () => {
+  editingQuizId = null;
+  document.getElementById('quizTitle').value = '';
+  document.getElementById('quizTime').value = '';
+  document.getElementById('saveQuizBtn').textContent = 'Save Quiz';
+  resetQuizQuestions();
+  document.getElementById('quizForm').style.display = 'block';
 });
+
+document.getElementById('addQuestionBtn').addEventListener('click', () => appendQuizQuestion());
+
+function editQuiz(id) {
+  const quiz = getData()[activeCourse]?.quizzes.find(item => item.id === id);
+  if (!quiz) return;
+  editingQuizId = id;
+  document.getElementById('quizTitle').value = quiz.title || '';
+  document.getElementById('quizTime').value = quiz.time || 30;
+  document.getElementById('saveQuizBtn').textContent = 'Update Quiz';
+  resetQuizQuestions(quiz.questions?.length ? quiz.questions : [{}]);
+  document.getElementById('quizForm').style.display = 'block';
+  document.getElementById('quizForm').scrollIntoView({ behavior: 'smooth' });
+}
 
 document.getElementById('saveQuizBtn').addEventListener('click', () => {
   const title = document.getElementById('quizTitle').value.trim();
   if (!title || !activeCourse) return;
   const questions = [];
-  document.querySelectorAll('.question-block').forEach(block => {
+  document.querySelectorAll('#quizQuestions .question-block').forEach(block => {
     const opts = [...block.querySelectorAll('.q-opt')].map(o => o.value);
-    questions.push({ question: block.querySelector('.q-text').value, options: opts, answer: block.querySelector('.q-answer').value });
+    const question = block.querySelector('.q-text').value.trim();
+    if (question) questions.push({ question, options: opts, answer: block.querySelector('.q-answer').value });
   });
+  if (!questions.length) return alert('Add at least one question.');
   const data = getData();
-  data[activeCourse].quizzes.push({ id: 'quiz_' + Date.now(), title, time: document.getElementById('quizTime').value || 30, questions });
+  const quiz = { id: editingQuizId || 'quiz_' + Date.now(), title, time: document.getElementById('quizTime').value || 30, questions };
+  const index = data[activeCourse].quizzes.findIndex(item => item.id === editingQuizId);
+  if (index < 0) data[activeCourse].quizzes.push(quiz);
+  else data[activeCourse].quizzes[index] = quiz;
   saveData(data);
+  editingQuizId = null;
   document.getElementById('quizForm').style.display = 'none';
   document.getElementById('quizTitle').value = '';
+  document.getElementById('saveQuizBtn').textContent = 'Save Quiz';
+  resetQuizQuestions();
   renderQuizzes();
 });
 
@@ -1000,10 +1404,12 @@ function renderQuizzes() {
       <div class="content-card-header">
         <div>
           <span class="content-type-badge quiz-badge">🧠 Quiz</span>
-          <h3>${q.title}</h3>
-          <p>${q.questions.length} questions · ⏱ ${q.time} mins</p>
+          <h3>${escapeHtml(q.title)}</h3>
+          <p>${q.questions?.length || 0} questions · ⏱ ${q.time} mins</p>
         </div>
         <div class="content-meta">
+          <button class="btn-view" onclick="editQuiz('${q.id}')">✏️ Edit</button>
+          <button class="btn-view" onclick="editQuiz('${q.id}')">✏️ Edit</button>
           <button class="btn-view" onclick="previewQuiz('${q.id}')">👁 Preview</button>
           <button class="btn-del" onclick="deleteItem('quizzes','${q.id}')">🗑</button>
         </div>
@@ -1018,15 +1424,43 @@ function previewQuiz(qid) {
 }
 
 // ===== PROJECTS =====
-document.getElementById('btnAddProject').addEventListener('click', () => document.getElementById('projectForm').style.display = 'block');
+document.getElementById('btnAddProject').addEventListener('click', () => {
+  editingProjectId = null;
+  document.getElementById('projectTitle').value = '';
+  document.getElementById('projectDesc').value = '';
+  document.getElementById('projectDiff').value = 'Beginner';
+  document.getElementById('projectStack').value = '';
+  document.getElementById('projectDays').value = '';
+  document.getElementById('saveProjectBtn').textContent = 'Save Project';
+  document.getElementById('projectForm').style.display = 'block';
+});
+
+function editProject(id) {
+  const project = getData()[activeCourse]?.projects.find(item => item.id === id);
+  if (!project) return;
+  editingProjectId = id;
+  document.getElementById('projectTitle').value = project.title || '';
+  document.getElementById('projectDesc').value = project.description || '';
+  document.getElementById('projectDiff').value = project.difficulty || 'Beginner';
+  document.getElementById('projectStack').value = project.stack || '';
+  document.getElementById('projectDays').value = project.days || 14;
+  document.getElementById('saveProjectBtn').textContent = 'Update Project';
+  document.getElementById('projectForm').style.display = 'block';
+  document.getElementById('projectForm').scrollIntoView({ behavior: 'smooth' });
+}
 
 document.getElementById('saveProjectBtn').addEventListener('click', () => {
   const title = document.getElementById('projectTitle').value.trim();
   if (!title || !activeCourse) return;
   const data = getData();
-  data[activeCourse].projects.push({ id: 'proj_' + Date.now(), title, description: document.getElementById('projectDesc').value, difficulty: document.getElementById('projectDiff').value, stack: document.getElementById('projectStack').value, days: document.getElementById('projectDays').value || 14 });
+  const project = { id: editingProjectId || 'proj_' + Date.now(), title, description: document.getElementById('projectDesc').value, difficulty: document.getElementById('projectDiff').value, stack: document.getElementById('projectStack').value, days: document.getElementById('projectDays').value || 14 };
+  const index = data[activeCourse].projects.findIndex(item => item.id === editingProjectId);
+  if (index < 0) data[activeCourse].projects.push(project);
+  else data[activeCourse].projects[index] = project;
   saveData(data);
+  editingProjectId = null;
   document.getElementById('projectForm').style.display = 'none';
+  document.getElementById('saveProjectBtn').textContent = 'Save Project';
   document.getElementById('projectTitle').value = '';
   document.getElementById('projectDesc').value = '';
   renderProjects();
@@ -1043,12 +1477,13 @@ function renderProjects() {
         <div>
           <span class="content-type-badge project-badge">🚀 Project</span>
           <span class="diff-badge diff-${p.difficulty.toLowerCase()}">${p.difficulty}</span>
-          <h3>${p.title}</h3>
-          <p>${p.description}</p>
-          <p class="stack-info">🛠 ${p.stack}</p>
+          <h3>${escapeHtml(p.title)}</h3>
+          <p>${escapeHtml(p.description || '')}</p>
+          <p class="stack-info">🛠 ${escapeHtml(p.stack || '')}</p>
         </div>
         <div class="content-meta">
           <span>📅 ${p.days} days</span>
+          <button class="btn-view" onclick="editProject('${p.id}')">✏️ Edit</button>
           <button class="btn-del" onclick="deleteItem('projects','${p.id}')">🗑</button>
         </div>
       </div>
@@ -1056,16 +1491,48 @@ function renderProjects() {
 }
 
 // ===== RESOURCES =====
-document.getElementById('btnAddResource').addEventListener('click', () => document.getElementById('resourceForm').style.display = 'block');
+document.getElementById('btnAddResource').addEventListener('click', () => {
+  editingResourceId = null;
+  document.getElementById('resourceTitle').value = '';
+  document.getElementById('resourceUrl').value = '';
+  document.getElementById('resourceFile').value = '';
+  document.getElementById('resourceUploadStatus').textContent = 'Maximum file size: 25 MB.';
+  document.getElementById('saveResourceBtn').textContent = 'Save Resource';
+  document.getElementById('resourceForm').style.display = 'block';
+});
+
+function editResource(id) {
+  const resource = getData()[activeCourse]?.resources.find(item => item.id === id);
+  if (!resource) return;
+  editingResourceId = id;
+  document.getElementById('resourceTitle').value = resource.title || '';
+  document.getElementById('resourceType').value = resource.type || 'Link';
+  document.getElementById('resourceUrl').value = resource.url || '';
+  document.getElementById('resourceFile').value = '';
+  document.getElementById('resourceUploadStatus').textContent = 'Maximum file size: 25 MB.';
+  document.getElementById('saveResourceBtn').textContent = 'Update Resource';
+  document.getElementById('resourceForm').style.display = 'block';
+  document.getElementById('resourceForm').scrollIntoView({ behavior: 'smooth' });
+}
+
+document.getElementById('resourceFile').addEventListener('change', () =>
+  uploadLmsFile('resourceFile', 'resourceUrl', 'resourceUploadStatus'));
 
 document.getElementById('saveResourceBtn').addEventListener('click', () => {
   const title = document.getElementById('resourceTitle').value.trim();
   if (!title || !activeCourse) return;
   const data = getData();
-  data[activeCourse].resources.push({ id: 'res_' + Date.now(), title, type: document.getElementById('resourceType').value, url: document.getElementById('resourceUrl').value });
+  const resource = { id: editingResourceId || 'res_' + Date.now(), title, type: document.getElementById('resourceType').value, url: document.getElementById('resourceUrl').value };
+  const index = data[activeCourse].resources.findIndex(item => item.id === editingResourceId);
+  if (index < 0) data[activeCourse].resources.push(resource);
+  else data[activeCourse].resources[index] = resource;
   saveData(data);
+  editingResourceId = null;
   document.getElementById('resourceForm').style.display = 'none';
+  document.getElementById('saveResourceBtn').textContent = 'Save Resource';
   document.getElementById('resourceTitle').value = '';
+  document.getElementById('resourceUrl').value = '';
+  document.getElementById('resourceFile').value = '';
   renderResources();
 });
 
@@ -1080,10 +1547,11 @@ function renderResources() {
       <div class="content-card-header">
         <div>
           <span class="content-type-badge resource-badge">${icons[r.type] || '📎'} ${r.type}</span>
-          <h3>${r.title}</h3>
-          ${r.url ? `<a href="${r.url}" target="_blank" class="resource-link">${r.url}</a>` : ''}
+          <h3>${escapeHtml(r.title)}</h3>
+          ${r.url ? `<a href="${escapeHtml(r.url)}" target="_blank" rel="noopener" class="resource-link">${escapeHtml(r.url)}</a>` : ''}
         </div>
         <div class="content-meta">
+          <button class="btn-view" onclick="editResource('${r.id}')">✏️ Edit</button>
           <button class="btn-del" onclick="deleteItem('resources','${r.id}')">🗑</button>
         </div>
       </div>
@@ -1687,12 +2155,16 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-document.getElementById('btnSaveCourse').addEventListener('click', () => {
+document.getElementById('btnSaveCourse').addEventListener('click', async () => {
   if (!activeCourse) return;
   const data = getData();
   const course = data[activeCourse];
+  
+  // Save to API and localStorage
+  await saveLmsData(activeCourse, course);
+  
   const totalLessons = (course.topics || []).reduce((s, t) => s + t.lessons.length, 0);
-  showToast(`"${course.name}" saved — ${course.topics.length} topics, ${totalLessons} lessons, ${course.assignments.length} assignments.`);
+  showToast(`✓ "${course.name}" saved — ${course.topics.length} topics, ${totalLessons} lessons, ${course.assignments.length} assignments.`);
 });
 
 // Show/hide save button when course selected
@@ -1708,13 +2180,17 @@ document.getElementById('saveMaterialBtn')?.addEventListener('click', () => {
   const topic = data[activeCourse].topics.find(t => t.id === window._materialTopicId);
   if (!topic) return;
   if (!topic.materials) topic.materials = [];
-  topic.materials.push({
-    id: 'mat_' + Date.now(),
+  const material = {
+    id: window._materialId || 'mat_' + Date.now(),
     title,
     url: document.getElementById('materialUrl').value.trim(),
     type: document.getElementById('materialType').value
-  });
+  };
+  const index = topic.materials.findIndex(item => item.id === window._materialId);
+  if (index < 0) topic.materials.push(material);
+  else topic.materials[index] = material;
   saveData(data);
+  window._materialId = null;
   document.getElementById('materialModal').classList.remove('active');
   renderTopics();
 });

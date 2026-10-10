@@ -102,6 +102,7 @@ document.querySelectorAll('.lms-nav-item').forEach(item => {
     if (view === 'quizzes') renderQuizzes();
     if (view === 'projects') renderProjects();
     if (view === 'resources') renderResources();
+    if (view === 'discussion') renderDiscussion();
   });
 });
 
@@ -140,6 +141,596 @@ function lessonDot(type) {
   return { Video: '▶', Reading: '📖', 'Live Session': '🔴', Lab: '🧪' }[type] || '○';
 }
 
+// ===== VIDEO PLAYER =====
+let currentVideoPlayer = null;
+let videoWatchProgress = {};
+let videoBookmarks = {};
+
+function initVideoPlayer(lessonId, videoUrl) {
+  if (!videoUrl) return null;
+  
+  const container = document.getElementById(`video-container-${lessonId}`);
+  if (!container) return null;
+  
+  const videoData = parseVideoUrl(videoUrl);
+  if (!videoData) return null;
+  
+  // Load saved progress
+  const savedProgress = JSON.parse(localStorage.getItem(`lf_video_progress_${courseId}_${lessonId}`) || '{}');
+  const savedBookmarks = JSON.parse(localStorage.getItem(`lf_video_bookmarks_${courseId}_${lessonId}`) || '[]');
+  videoWatchProgress[lessonId] = savedProgress;
+  videoBookmarks[lessonId] = savedBookmarks;
+  
+  if (videoData.type === 'youtube') {
+    return renderYouTubePlayer(container, lessonId, videoData, savedProgress);
+  } else if (videoData.type === 'vimeo') {
+    return renderVimeoPlayer(container, lessonId, videoData, savedProgress);
+  } else {
+    return renderHTML5Player(container, lessonId, videoUrl, savedProgress);
+  }
+}
+
+function parseVideoUrl(url) {
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) {
+    return { type: 'youtube', id: ytMatch[1] };
+  }
+  
+  // Vimeo
+  const vimeoMatch = url.match(/(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/);
+  if (vimeoMatch) {
+    return { type: 'vimeo', id: vimeoMatch[1] };
+  }
+  
+  // Direct video file
+  if (url.match(/\.(mp4|webm|ogg|mov)(\?.*)?$/i)) {
+    return { type: 'html5', url: url };
+  }
+  
+  return null;
+}
+
+function renderYouTubePlayer(container, lessonId, videoData, savedProgress) {
+  const resumePercent = savedProgress.percent || 0;
+  const showResume = resumePercent > 5 && resumePercent < 95;
+  
+  container.innerHTML = `
+    <div class="video-player-container">
+      <div class="video-wrapper">
+        <iframe 
+          id="yt-player-${lessonId}"
+          src="https://www.youtube.com/embed/${videoData.id}?enablejsapi=1&rel=0&modestbranding=1${savedProgress.time ? '&start=' + Math.floor(savedProgress.time) : ''}"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      ${showResume ? `
+        <div class="resume-overlay" id="resume-overlay-${lessonId}">
+          <h3>Continue watching?</h3>
+          <p class="resume-progress">You watched ${Math.round(resumePercent)}% of this video</p>
+          <button class="btn-resume" onclick="dismissResumeOverlay('${lessonId}')">▶ Resume</button>
+          <button class="btn-start-over" onclick="restartVideo('${lessonId}')">Start Over</button>
+        </div>
+      ` : ''}
+      <div class="video-bookmarks" id="bookmarks-${lessonId}">
+        <div class="video-bookmarks-header">
+          <h4>📌 Bookmarks</h4>
+          <button class="btn-add-bookmark" onclick="addBookmark('${lessonId}')">+ Add Bookmark</button>
+        </div>
+        <div class="bookmark-list" id="bookmark-list-${lessonId}">
+          ${renderBookmarks(lessonId)}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  return { type: 'youtube', lessonId };
+}
+
+function renderVimeoPlayer(container, lessonId, videoData, savedProgress) {
+  const resumePercent = savedProgress.percent || 0;
+  const showResume = resumePercent > 5 && resumePercent < 95;
+  
+  container.innerHTML = `
+    <div class="video-player-container">
+      <div class="video-wrapper">
+        <iframe 
+          id="vimeo-player-${lessonId}"
+          src="https://player.vimeo.com/video/${videoData.id}?dnt=1${savedProgress.time ? '#t=' + Math.floor(savedProgress.time) : ''}"
+          allow="autoplay; fullscreen; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      ${showResume ? `
+        <div class="resume-overlay" id="resume-overlay-${lessonId}">
+          <h3>Continue watching?</h3>
+          <p class="resume-progress">You watched ${Math.round(resumePercent)}% of this video</p>
+          <button class="btn-resume" onclick="dismissResumeOverlay('${lessonId}')">▶ Resume</button>
+          <button class="btn-start-over" onclick="restartVideo('${lessonId}')">Start Over</button>
+        </div>
+      ` : ''}
+      <div class="video-bookmarks">
+        <div class="video-bookmarks-header">
+          <h4>📌 Bookmarks</h4>
+          <button class="btn-add-bookmark" onclick="addBookmark('${lessonId}')">+ Add Bookmark</button>
+        </div>
+        <div class="bookmark-list" id="bookmark-list-${lessonId}">
+          ${renderBookmarks(lessonId)}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  return { type: 'vimeo', lessonId };
+}
+
+function renderHTML5Player(container, lessonId, videoUrl, savedProgress) {
+  const resumePercent = savedProgress.percent || 0;
+  const showResume = resumePercent > 5 && resumePercent < 95;
+  
+  container.innerHTML = `
+    <div class="video-player-container" id="html5-container-${lessonId}">
+      <div class="video-wrapper">
+        <video 
+          id="html5-player-${lessonId}"
+          src="${videoUrl}"
+          controls
+          playsinline
+          style="background:#000"
+          ontimeupdate="trackVideoProgress('${lessonId}', this)"
+          onloadedmetadata="if(${savedProgress.time}) this.currentTime = ${savedProgress.time}">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      ${showResume ? `
+        <div class="resume-overlay" id="resume-overlay-${lessonId}">
+          <h3>Continue watching?</h3>
+          <p class="resume-progress">You watched ${Math.round(resumePercent)}% of this video</p>
+          <button class="btn-resume" onclick="dismissResumeOverlay('${lessonId}')">▶ Resume</button>
+          <button class="btn-start-over" onclick="restartVideo('${lessonId}')">Start Over</button>
+        </div>
+      ` : ''}
+      <div class="video-bookmarks">
+        <div class="video-bookmarks-header">
+          <h4>📌 Bookmarks</h4>
+          <button class="btn-add-bookmark" onclick="addBookmark('${lessonId}')">+ Add Bookmark</button>
+        </div>
+        <div class="bookmark-list" id="bookmark-list-${lessonId}">
+          ${renderBookmarks(lessonId)}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  return { type: 'html5', lessonId };
+}
+
+function renderBookmarks(lessonId) {
+  const bookmarks = videoBookmarks[lessonId] || [];
+  if (!bookmarks.length) {
+    return '<p style="font-size:0.8rem;color:#64748b;text-align:center;padding:8px">No bookmarks yet. Add one during playback.</p>';
+  }
+  
+  return bookmarks.map((bm, i) => `
+    <div class="bookmark-item" onclick="jumpToBookmark('${lessonId}', ${bm.time})">
+      <span class="bookmark-time">${formatTime(bm.time)}</span>
+      <span class="bookmark-label">${bm.label || 'Bookmark ' + (i + 1)}</span>
+      <button class="bookmark-delete" onclick="event.stopPropagation(); deleteBookmark('${lessonId}', ${i})">🗑</button>
+    </div>
+  `).join('');
+}
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function trackVideoProgress(lessonId, videoEl) {
+  const progress = {
+    time: videoEl.currentTime,
+    duration: videoEl.duration || 0,
+    percent: videoEl.duration ? (videoEl.currentTime / videoEl.duration) * 100 : 0
+  };
+  videoWatchProgress[lessonId] = progress;
+  
+  // Save to localStorage periodically
+  localStorage.setItem(`lf_video_progress_${courseId}_${lessonId}`, JSON.stringify(progress));
+}
+
+function dismissResumeOverlay(lessonId) {
+  const overlay = document.getElementById(`resume-overlay-${lessonId}`);
+  if (overlay) overlay.style.display = 'none';
+}
+
+function restartVideo(lessonId) {
+  localStorage.removeItem(`lf_video_progress_${courseId}_${lessonId}`);
+  const overlay = document.getElementById(`resume-overlay-${lessonId}`);
+  if (overlay) overlay.style.display = 'none';
+  
+  const video = document.getElementById(`html5-player-${lessonId}`);
+  if (video) {
+    video.currentTime = 0;
+    video.play();
+  }
+}
+
+function addBookmark(lessonId) {
+  const video = document.getElementById(`html5-player-${lessonId}`);
+  if (!video) {
+    alert('Bookmarks are available during video playback.');
+    return;
+  }
+  
+  const currentTime = video.currentTime;
+  const label = prompt('Enter bookmark label:', `Bookmark at ${formatTime(currentTime)}`);
+  if (!label) return;
+  
+  const bookmarks = videoBookmarks[lessonId] || [];
+  bookmarks.push({ time: currentTime, label: label });
+  videoBookmarks[lessonId] = bookmarks;
+  
+  localStorage.setItem(`lf_video_bookmarks_${courseId}_${lessonId}`, JSON.stringify(bookmarks));
+  
+  const list = document.getElementById(`bookmark-list-${lessonId}`);
+  if (list) list.innerHTML = renderBookmarks(lessonId);
+}
+
+function deleteBookmark(lessonId, index) {
+  const bookmarks = videoBookmarks[lessonId] || [];
+  bookmarks.splice(index, 1);
+  videoBookmarks[lessonId] = bookmarks;
+  
+  localStorage.setItem(`lf_video_bookmarks_${courseId}_${lessonId}`, JSON.stringify(bookmarks));
+  
+  const list = document.getElementById(`bookmark-list-${lessonId}`);
+  if (list) list.innerHTML = renderBookmarks(lessonId);
+}
+
+function jumpToBookmark(lessonId, time) {
+  const video = document.getElementById(`html5-player-${lessonId}`);
+  if (video) {
+    video.currentTime = time;
+    video.play();
+  }
+  
+  // For YouTube/Vimeo, reload with timestamp
+  // (simplified - would need YouTube IFrame API for full control)
+}
+
+// ===== DISCUSSION FORUM =====
+let discussionThreads = [];
+let currentThreadView = null;
+const API_BASE = 'http://127.0.0.1:5001';
+
+async function renderDiscussion() {
+  const el = document.getElementById('discussionContent');
+  if (!courseId) {
+    el.innerHTML = '<div class="discussion-empty"><p>Select a course to view discussions.</p></div>';
+    return;
+  }
+  
+  const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+  
+  try {
+    const res = await fetch(`${API_BASE}/api/discussion/threads?course_id=${encodeURIComponent(courseId)}`);
+    discussionThreads = await res.json();
+  } catch (e) {
+    console.warn('Could not load discussions:', e);
+  }
+  
+  if (currentThreadView) {
+    renderThreadDetail(currentThreadView);
+    return;
+  }
+  
+  if (!discussionThreads.length) {
+    el.innerHTML = `
+      <div class="discussion-container">
+        <div class="discussion-header">
+          <h2>💬 Discussion Forum</h2>
+          <button class="btn-new-thread" onclick="showNewThreadModal()">+ Ask a Question</button>
+        </div>
+        <div class="discussion-empty">
+          <div class="discussion-empty-icon">💬</div>
+          <h3>No discussions yet</h3>
+          <p>Be the first to ask a question or start a discussion!</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  
+  el.innerHTML = `
+    <div class="discussion-container">
+      <div class="discussion-header">
+        <h2>💬 Discussion Forum</h2>
+        <button class="btn-new-thread" onclick="showNewThreadModal()">+ Ask a Question</button>
+      </div>
+      <div class="thread-list">
+        ${discussionThreads.map(t => renderThreadCard(t)).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderThreadCard(thread) {
+  const preview = thread.content.substring(0, 150) + (thread.content.length > 150 ? '...' : '');
+  const initials = thread.user_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  
+  return `
+    <div class="thread-card" onclick="viewThread(${thread.id})">
+      <div class="thread-card-header">
+        <div class="thread-votes">
+          <button class="vote-btn" onclick="event.stopPropagation(); voteThread(${thread.id}, 1)">▲</button>
+          <span class="vote-count">${thread.votes || 0}</span>
+          <button class="vote-btn" onclick="event.stopPropagation(); voteThread(${thread.id}, -1)">▼</button>
+        </div>
+        <div class="thread-meta">
+          <h3 class="thread-title">${escapeHtml(thread.title)}</h3>
+          <p class="thread-preview">${escapeHtml(preview)}</p>
+          <div class="thread-footer">
+            <div class="thread-author">
+              <div class="thread-avatar">${initials}</div>
+              <span>${thread.user_name}</span>
+            </div>
+            <span>${thread.created_at}</span>
+            <span class="thread-badge ${thread.is_answered ? 'badge-answered' : 'badge-open'}">
+              ${thread.is_answered ? '✓ Answered' : 'Open'}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function viewThread(threadId) {
+  try {
+    const res = await fetch(`${API_BASE}/api/discussion/threads/${threadId}`);
+    currentThreadView = await res.json();
+    renderThreadDetail(currentThreadView);
+  } catch (e) {
+    console.error('Failed to load thread:', e);
+  }
+}
+
+function renderThreadDetail(thread) {
+  const el = document.getElementById('discussionContent');
+  const initials = thread.user_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+  
+  el.innerHTML = `
+    <div class="discussion-container">
+      <button class="btn-back-threads" onclick="backToThreadList()">← Back to Discussions</button>
+      
+      <div class="thread-detail">
+        <div class="thread-detail-header">
+          <h1 class="thread-detail-title">${escapeHtml(thread.title)}</h1>
+          <div class="thread-detail-content">${escapeHtml(thread.content)}</div>
+          <div class="thread-detail-meta">
+            <div class="thread-author">
+              <div class="thread-avatar">${initials}</div>
+              <span>${thread.user_name}</span>
+            </div>
+            <span>${thread.created_at}</span>
+            <button class="vote-btn" onclick="voteThread(${thread.id}, 1)">▲</button>
+            <span class="vote-count">${thread.votes || 0}</span>
+            <button class="vote-btn" onclick="voteThread(${thread.id}, -1)">▼</button>
+          </div>
+        </div>
+        
+        <div class="replies-section">
+          <div class="replies-header">${thread.replies?.length || 0} Replies</div>
+          ${(thread.replies || []).map(r => renderReply(r, thread, user)).join('')}
+        </div>
+        
+        <div style="padding: 20px 24px;">
+          <div class="reply-form">
+            <div class="reply-form-header">Write a Reply</div>
+            <textarea class="reply-textarea" id="replyContent" placeholder="Share your thoughts..."></textarea>
+            <div class="reply-form-actions">
+              <button class="btn-start" onclick="submitReply(${thread.id})">Post Reply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderReply(reply, thread, currentUser) {
+  const initials = reply.user_name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const isOwner = currentUser.email === thread.user_email;
+  
+  return `
+    <div class="reply-card ${reply.is_answer ? 'is-answer' : ''}">
+      ${reply.is_answer ? '<div class="answer-badge">✓ Accepted Answer</div>' : ''}
+      <div class="reply-header">
+        <div class="reply-avatar">${initials}</div>
+        <span class="reply-author">${reply.user_name}</span>
+        <span class="reply-time">${reply.created_at}</span>
+      </div>
+      <div class="reply-content">${escapeHtml(reply.content)}</div>
+      <div class="reply-actions">
+        <button class="reply-action-btn" onclick="voteReply(${reply.id}, 1)">▲ ${reply.votes || 0}</button>
+        <button class="reply-action-btn" onclick="voteReply(${reply.id}, -1)">▼</button>
+        ${isOwner && !thread.is_answered ? `<button class="reply-action-btn" onclick="markAsAnswer(${thread.id}, ${reply.id})" style="color: #059669;">✓ Accept as Answer</button>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function backToThreadList() {
+  currentThreadView = null;
+  renderDiscussion();
+}
+
+function showNewThreadModal() {
+  const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+  if (!user.email) {
+    alert('Please log in to create a discussion.');
+    return;
+  }
+  
+  // Create modal
+  const modal = document.createElement('div');
+  modal.id = 'newThreadModal';
+  modal.className = 'thread-modal active';
+  modal.innerHTML = `
+    <div class="thread-modal-backdrop" onclick="closeNewThreadModal()"></div>
+    <div class="thread-modal-box">
+      <div class="thread-modal-header">
+        <h3>Ask a Question</h3>
+        <button class="thread-modal-close" onclick="closeNewThreadModal()">&times;</button>
+      </div>
+      <div class="thread-form-field">
+        <label>Title</label>
+        <input type="text" class="thread-form-input" id="threadTitle" placeholder="What's your question?"/>
+      </div>
+      <div class="thread-form-field">
+        <label>Details</label>
+        <textarea class="thread-form-input thread-form-textarea" id="threadContent" placeholder="Provide more context, what you've tried, etc."></textarea>
+      </div>
+      <div class="reply-form-actions">
+        <button class="btn-start" onclick="createThread()">Post Question</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+function closeNewThreadModal() {
+  const modal = document.getElementById('newThreadModal');
+  if (modal) modal.remove();
+}
+
+async function createThread() {
+  const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+  const title = document.getElementById('threadTitle').value.trim();
+  const content = document.getElementById('threadContent').value.trim();
+  
+  if (!title || !content) {
+    alert('Please fill in both title and content.');
+    return;
+  }
+  
+  try {
+    const res = await fetch(`${API_BASE}/api/discussion/threads`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        course_id: courseId,
+        user_email: user.email,
+        user_name: user.name,
+        title: title,
+        content: content
+      })
+    });
+    
+    if (res.ok) {
+      closeNewThreadModal();
+      renderDiscussion();
+    }
+  } catch (e) {
+    console.error('Failed to create thread:', e);
+  }
+}
+
+async function submitReply(threadId) {
+  const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+  const content = document.getElementById('replyContent').value.trim();
+  
+  if (!content) {
+    alert('Please write a reply.');
+    return;
+  }
+  
+  try {
+    const res = await fetch(`${API_BASE}/api/discussion/replies`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        thread_id: threadId,
+        user_email: user.email,
+        user_name: user.name,
+        content: content
+      })
+    });
+    
+    if (res.ok) {
+      viewThread(threadId);
+    }
+  } catch (e) {
+    console.error('Failed to submit reply:', e);
+  }
+}
+
+async function voteThread(threadId, voteType) {
+  const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+  if (!user.email) return;
+  
+  try {
+    await fetch(`${API_BASE}/api/discussion/vote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        item_type: 'thread',
+        item_id: threadId,
+        user_email: user.email,
+        vote_type: voteType
+      })
+    });
+    renderDiscussion();
+  } catch (e) {
+    console.error('Vote failed:', e);
+  }
+}
+
+async function voteReply(replyId, voteType) {
+  const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+  if (!user.email) return;
+  
+  try {
+    await fetch(`${API_BASE}/api/discussion/vote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        item_type: 'reply',
+        item_id: replyId,
+        user_email: user.email,
+        vote_type: voteType
+      })
+    });
+    if (currentThreadView) viewThread(currentThreadView.id);
+  } catch (e) {
+    console.error('Vote failed:', e);
+  }
+}
+
+async function markAsAnswer(threadId, replyId) {
+  try {
+    await fetch(`${API_BASE}/api/discussion/answer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        thread_id: threadId,
+        reply_id: replyId
+      })
+    });
+    viewThread(threadId);
+  } catch (e) {
+    console.error('Mark as answer failed:', e);
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 // ===== LOAD LESSON =====
 function loadLesson(ti, li) {
   currentLesson = { topicIdx: ti, lessonIdx: li };
@@ -160,6 +751,11 @@ function loadLesson(ti, li) {
     const diagrams = document.querySelectorAll('#lessonBody .mermaid');
     if (diagrams.length && typeof mermaid !== 'undefined') {
       mermaid.init(undefined, diagrams);
+    }
+    
+    // Initialize video player if present
+    if (lesson.video) {
+      currentVideoPlayer = initVideoPlayer(lesson.id, lesson.video);
     }
   }, 100);
 }
@@ -206,10 +802,8 @@ function buildLessonBlog(lesson, topic, li, ti) {
       <!-- Video link if present -->
       ${lesson.video ? `
       <div class="lb-section">
-        <div class="lb-section-label">🎬 Video Resource</div>
-        <a href="${lesson.video}" target="_blank" class="lb-video-link">
-          <span>▶</span> Watch: ${lesson.title}
-        </a>
+        <div class="lb-section-label">🎬 Video Lesson</div>
+        <div id="video-container-${lesson.id}"></div>
       </div>` : ''}
 
       <!-- Notes area -->
@@ -298,6 +892,78 @@ function updateProgress() {
   const pct = total ? Math.round((completed.size / total) * 100) : 0;
   document.getElementById('topProgress').style.width = pct + '%';
   document.getElementById('topProgressLabel').textContent = pct + '%';
+  
+  // Check for course completion and generate certificate
+  if (pct === 100 && courseData.name) {
+    generateCertificate();
+  }
+}
+
+async function generateCertificate() {
+  // Prevent duplicate generation
+  if (localStorage.getItem(`lf_cert_${courseId}`)) return;
+  
+  const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+  if (!user.email) return;
+  
+  try {
+    const res = await fetch('/api/certificates', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: user.email,
+        name: user.name,
+        courseId: courseId,
+        courseName: courseData.name,
+        instructor: courseData.instructor || 'Athrexai'
+      })
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      localStorage.setItem(`lf_cert_${courseId}`, JSON.stringify(data.certificate));
+      
+      // Show celebration
+      showCertificateCelebration(data.certificate);
+    }
+  } catch (e) {
+    console.warn('Certificate generation failed:', e);
+  }
+}
+
+function showCertificateCelebration(cert) {
+  // Create celebration overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'certCelebration';
+  overlay.innerHTML = `
+    <div class="cert-celebration-backdrop"></div>
+    <div class="cert-celebration-modal">
+      <div class="cert-confetti">🎉🏆🎉</div>
+      <h2>Congratulations!</h2>
+      <p>You've completed <strong>${courseData.name}</strong>!</p>
+      <div class="cert-preview">
+        <div class="cert-badge">🏆</div>
+        <div class="cert-info">
+          <div class="cert-id">Certificate ID: <strong>${cert.certificate_id}</strong></div>
+          <div class="cert-date">Issued: ${cert.issued_at}</div>
+        </div>
+      </div>
+      <div class="cert-actions">
+        <button onclick="viewCertificate('${cert.certificate_id}')" class="btn-cert-view">📜 View Certificate</button>
+        <button onclick="closeCelebration()" class="btn-cert-close">Continue Learning</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function viewCertificate(certId) {
+  window.open(`certificate.html?id=${certId}`, '_blank');
+}
+
+function closeCelebration() {
+  const el = document.getElementById('certCelebration');
+  if (el) el.remove();
 }
 
 // Prev / Next

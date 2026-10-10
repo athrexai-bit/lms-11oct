@@ -15,26 +15,48 @@
 
   <header class="topbar">
     <div class="topbar-left">
-      <div class="logo" onclick="location.href='/'">Athrex<span>ai</span></div>
+      <div class="logo" onclick="showStudentDashboard()">Athrex<span>ai</span></div>
       <div class="lms-course-name" id="topCourseTitle"></div>
     </div>
     <div class="topbar-right">
-      <a href="#" class="btn-back btn-edit-lms" id="editCourseBtn">✏️ Edit Course</a>
-      <a href="/" class="btn-back">← Dashboard</a>
-      <div class="lms-progress-wrap">
+      <a href="#" class="btn-back btn-edit-lms" id="editCourseBtn" style="display:none">✏️ Edit Course</a>
+      <a href="#" class="btn-back" id="backToDashBtn" onclick="showStudentDashboard()" style="display:none">← My Courses</a>
+      <a href="/" class="btn-back">← Main Site</a>
+      <div class="lms-progress-wrap" id="progressWrap" style="display:none">
         <div class="lms-progress-bar"><div class="lms-progress-fill" id="topProgress" style="width:0%"></div></div>
         <span id="topProgressLabel">0%</span>
       </div>
-      <div class="user-avatar" id="userInitials">U</div>
+      <div class="user-avatar" id="userInitials" title="Log out" onclick="lmsLogout()" style="cursor:pointer">U</div>
     </div>
   </header>
 
+  <!-- ══ STUDENT COURSE DASHBOARD ══ -->
+  <div id="studentDashboard" style="display:none; margin-top:72px; padding: 40px 32px; max-width:1100px; margin-left:auto; margin-right:auto;">
+    <div style="margin-bottom:32px">
+      <h1 style="font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;color:var(--ink);margin-bottom:6px">Welcome back, <span id="dashUserName"></span> 👋</h1>
+      <p style="color:var(--muted);font-size:.95rem">Pick up where you left off, or explore a new course.</p>
+    </div>
+    
+    <!-- Certificates Gallery -->
+    <div id="certificatesGallery" style="margin-bottom:40px; display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <h2 style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:var(--ink)">🏆 My Certificates</h2>
+      </div>
+      <div id="certGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;"></div>
+    </div>
+    
+    <h2 style="font-family:'Outfit',sans-serif;font-size:1.3rem;font-weight:800;color:var(--ink);margin-bottom:20px">📚 My Courses</h2>
+    <div id="dashCourseGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px;"></div>
+  </div>
+
+  <div id="lmsPlayerWrap">
   <div class="lms-layout">
 
     <!-- LEFT SIDEBAR -->
     <aside class="lms-sidebar">
       <nav class="lms-sidebar-nav">
         <a href="#" class="lms-nav-item active" data-view="lessons">📚 Lessons</a>
+        <a href="#" class="lms-nav-item" data-view="discussion">💬 Discussion</a>
         <a href="#" class="lms-nav-item" data-view="assignments">📝 Assignments</a>
         <a href="#" class="lms-nav-item" data-view="quizzes">🧠 Quizzes</a>
         <a href="#" class="lms-nav-item" data-view="projects">🚀 Projects</a>
@@ -54,13 +76,13 @@
           <div class="lesson-breadcrumb" id="lessonBreadcrumb">Select a lesson</div>
           <h1 class="lesson-title" id="lessonTitle">Welcome! 👋</h1>
         </div>
-        <div class="lesson-video-box">
-          <div class="video-placeholder">
-            <span>▶</span>
-            <p id="videoLabel">Select a lesson from the left to begin</p>
-          </div>
-        </div>
         <div class="lesson-body" id="lessonBody">
+          <div class="video-placeholder-box">
+            <div class="video-placeholder-content">
+              <div class="video-placeholder-icon">▶</div>
+              <p class="video-placeholder-text">Select a lesson from the left to begin</p>
+            </div>
+          </div>
           <p style="color:var(--muted)">Click any lesson from the sidebar to start learning.</p>
         </div>
         <div class="lesson-nav-btns">
@@ -93,8 +115,15 @@
         <div id="resourcesContent"></div>
       </div>
 
+      <!-- DISCUSSION VIEW -->
+      <div class="lms-view" id="view-discussion">
+        <div id="discussionContent"></div>
+      </div>
+
     </main>
   </div>
+
+  </div><!-- /#lmsPlayerWrap -->
 
   <!-- QUIZ MODAL -->
   <div class="modal-overlay" id="quizModal">
@@ -115,5 +144,286 @@
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>mermaid.initialize({ startOnLoad: false, theme: 'dark' });</script>
   <script src="lms.js"></script>
+
+  <!-- LOGIN GATE — shown if not logged in -->
+  <style>
+    #lmsLoginGate {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(7,17,31,.6);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    #lmsLoginGate.active { display: flex; }
+    .lms-gate-box {
+      background: #fff;
+      border-radius: 20px;
+      padding: 40px 36px;
+      width: 100%; max-width: 400px;
+      box-shadow: 0 32px 80px rgba(7,17,31,.25);
+      position: relative;
+    }
+    .lms-gate-logo { font-family: 'Outfit',sans-serif; font-size: 1.5rem; font-weight: 800; color: #07111f; margin-bottom: 4px; }
+    .lms-gate-logo span { color: #0b5fff; }
+    .lms-gate-sub { font-size: 0.88rem; color: #64748b; margin-bottom: 22px; }
+    .lms-gate-tabs { display: flex; gap: 4px; background: #f1f5f9; border-radius: 10px; padding: 4px; margin-bottom: 20px; }
+    .lms-gate-tab { flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; background: none; color: #64748b; transition: all .2s; font-family: inherit; }
+    .lms-gate-tab.active { background: #fff; color: #07111f; box-shadow: 0 2px 8px rgba(7,17,31,.1); }
+    .lms-gate-field { margin-bottom: 13px; }
+    .lms-gate-field label { display: block; font-size: 0.78rem; font-weight: 700; color: #475569; margin-bottom: 4px; }
+    .lms-gate-field input { width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; font-family: inherit; outline: none; box-sizing: border-box; transition: border-color .2s; }
+    .lms-gate-field input:focus { border-color: #0b5fff; box-shadow: 0 0 0 3px rgba(11,95,255,.1); }
+    .lms-gate-btn { width: 100%; padding: 12px; background: linear-gradient(135deg,#0739a8,#0b5fff); color: #fff; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: inherit; margin-top: 4px; }
+    .lms-gate-btn:hover { opacity: .9; }
+    .lms-gate-err { font-size: 0.82rem; color: #ef4444; margin-top: 8px; min-height: 18px; }
+    .lms-gate-hint { font-size: 0.78rem; color: #94a3b8; margin-top: 14px; text-align: center; }
+  </style>
+
+  <div id="lmsLoginGate">
+    <div class="lms-gate-box">
+      <div class="lms-gate-logo">Athrex<span>ai</span></div>
+      <div class="lms-gate-sub" id="gateSubtext">Sign in to access your course</div>
+      <div class="lms-gate-tabs">
+        <button class="lms-gate-tab active" id="gateTabLogin" onclick="gateSwitch('login')">Log in</button>
+        <button class="lms-gate-tab" id="gateTabSignup" onclick="gateSwitch('signup')">Sign up</button>
+      </div>
+      <!-- Login -->
+      <div id="gateLoginForm">
+        <div class="lms-gate-field"><label>Email</label><input type="email" id="gateEmail" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doGateLogin()"/></div>
+        <div class="lms-gate-field"><label>Password</label><input type="password" id="gatePassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')doGateLogin()"/></div>
+        <div class="lms-gate-err" id="gateLoginErr"></div>
+        <button class="lms-gate-btn" onclick="doGateLogin()">Log in</button>
+      </div>
+      <!-- Signup -->
+      <div id="gateSignupForm" style="display:none">
+        <div class="lms-gate-field"><label>Full Name</label><input type="text" id="gateName" placeholder="Your name"/></div>
+        <div class="lms-gate-field"><label>Email</label><input type="email" id="gateSignupEmail" placeholder="you@email.com"/></div>
+        <div class="lms-gate-field"><label>Password</label><input type="password" id="gateSignupPw" placeholder="Create a password"/></div>
+        <div class="lms-gate-err" id="gateSignupErr"></div>
+        <button class="lms-gate-btn" onclick="doGateSignup()">Create account</button>
+      </div>
+      <div class="lms-gate-hint">Demo: user@athrexai.com / user123</div>
+    </div>
+  </div>
+
+  <script>
+    // ── LMS Login Gate ──────────────────────────────────────────────
+    const GATE_DEMO = {
+      'user@athrexai.com':  { password: 'user123',  name: 'User' },
+      'admin@athrexai.com': { password: 'admin123', name: 'Admin' },
+    };
+
+    function gateSwitch(tab) {
+      document.getElementById('gateTabLogin').classList.toggle('active', tab === 'login');
+      document.getElementById('gateTabSignup').classList.toggle('active', tab === 'signup');
+      document.getElementById('gateLoginForm').style.display  = tab === 'login'  ? 'block' : 'none';
+      document.getElementById('gateSignupForm').style.display = tab === 'signup' ? 'block' : 'none';
+    }
+
+    async function doGateLogin() {
+      const email = document.getElementById('gateEmail').value.trim().toLowerCase();
+      const pw    = document.getElementById('gatePassword').value;
+      const err   = document.getElementById('gateLoginErr');
+      err.textContent = '';
+      if (!email || !pw) { err.textContent = 'Please enter email and password.'; return; }
+
+      let ok = false, name = '';
+      try {
+        const res = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password:pw}) });
+        const d = await res.json();
+        if (res.ok && d.success) { ok = true; name = d.name; }
+        else throw new Error(d.error || 'Invalid credentials');
+      } catch(e) {
+        const u = GATE_DEMO[email];
+        if (u && u.password === pw) { ok = true; name = u.name; }
+        else { err.textContent = '❌ ' + (e.message || 'Invalid email or password'); return; }
+      }
+
+      if (ok) {
+        localStorage.setItem('lms_user', JSON.stringify({ email, name }));
+        document.getElementById('lmsLoginGate').classList.remove('active');
+        document.getElementById('userInitials').textContent = name.slice(0,2).toUpperCase();
+        document.getElementById('dashUserName').textContent = name.split(' ')[0];
+        const params = new URLSearchParams(location.search);
+        if (params.get('cid') || params.get('course')) { showPlayer(); }
+        else { showStudentDashboard(); }
+      }
+    }
+
+    async function doGateSignup() {
+      const name  = document.getElementById('gateName').value.trim();
+      const email = document.getElementById('gateSignupEmail').value.trim().toLowerCase();
+      const pw    = document.getElementById('gateSignupPw').value;
+      const err   = document.getElementById('gateSignupErr');
+      err.textContent = '';
+      if (!name || !email || !pw) { err.textContent = 'All fields are required.'; return; }
+
+      try {
+        const res = await fetch('/api/auth/signup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name, email, password:pw}) });
+        const d = await res.json();
+        if (!res.ok) throw new Error(d.error || 'Signup failed');
+      } catch(e) { /* fallback — save locally */ }
+
+      localStorage.setItem('lms_user', JSON.stringify({ email, name }));
+      document.getElementById('lmsLoginGate').classList.remove('active');
+      document.getElementById('userInitials').textContent = name.slice(0,2).toUpperCase();
+      document.getElementById('dashUserName').textContent = name.split(' ')[0];
+      const params = new URLSearchParams(location.search);
+      if (params.get('cid') || params.get('course')) { showPlayer(); }
+      else { showStudentDashboard(); }
+    }
+
+    // ── Student Dashboard ─────────────────────────────────────────────
+    function showStudentDashboard() {
+      document.getElementById('studentDashboard').style.display = 'block';
+      document.getElementById('lmsPlayerWrap').style.display    = 'none';
+      document.getElementById('topCourseTitle').textContent     = '';
+      document.getElementById('backToDashBtn').style.display    = 'none';
+      document.getElementById('editCourseBtn').style.display    = 'none';
+      document.getElementById('progressWrap').style.display     = 'none';
+      renderDashCourses();
+    }
+
+    async function loadCertificatesGallery() {
+      const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+      if (!user.email) return;
+      
+      const gallery = document.getElementById('certificatesGallery');
+      const grid = document.getElementById('certGrid');
+      
+      try {
+        const res = await fetch(`/api/certificates?email=${encodeURIComponent(user.email)}`);
+        if (!res.ok) return;
+        
+        const certs = await res.json();
+        if (!certs.length) {
+          gallery.style.display = 'none';
+          return;
+        }
+        
+        gallery.style.display = 'block';
+        grid.innerHTML = certs.map(cert => `
+          <div class="cert-card" onclick="window.open('certificate.html?id=${cert.certificate_id}', '_blank')" 
+               style="background:linear-gradient(135deg,#fff,#f8fafc);border:1px solid #e2e8f0;border-radius:16px;padding:24px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden"
+               onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(7,17,31,.12)'"
+               onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:linear-gradient(135deg,rgba(212,175,55,0.15),rgba(244,208,63,0.1));border-radius:0 0 0 80px"></div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+              <div style="width:48px;height:48px;background:linear-gradient(135deg,#d4af37,#f4d03f);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 4px 16px rgba(212,175,55,0.3)">🏆</div>
+              <div>
+                <div style="font-size:0.72rem;font-weight:700;color:#d4af37;text-transform:uppercase;letter-spacing:0.5px">Certificate</div>
+                <div style="font-size:0.8rem;color:#64748b">${cert.issued_at}</div>
+              </div>
+            </div>
+            <h3 style="font-size:1rem;font-weight:700;color:#07111f;margin:0 0 8px;line-height:1.4">${cert.course_name}</h3>
+            <div style="font-size:0.78rem;color:#64748b;margin-bottom:12px">Issued to: <strong style="color:#07111f">${cert.user_name}</strong></div>
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <div style="font-family:'Fira Code',monospace;font-size:0.72rem;color:#0b5fff;background:rgba(11,95,255,0.08);padding:4px 10px;border-radius:6px">${cert.certificate_id}</div>
+              <span style="font-size:0.78rem;color:#0b5fff;font-weight:600">View →</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.warn('Could not load certificates:', e);
+      }
+    }
+
+    function showPlayer() {
+      document.getElementById('studentDashboard').style.display = 'none';
+      document.getElementById('lmsPlayerWrap').style.display    = 'block';
+      document.getElementById('backToDashBtn').style.display    = 'inline-flex';
+      document.getElementById('progressWrap').style.display     = 'flex';
+    }
+
+    function renderDashCourses() {
+      loadCertificatesGallery();
+      const grid = document.getElementById('dashCourseGrid');
+      const lmsData = JSON.parse(localStorage.getItem('lf_lms') || '{}');
+      const courses = Object.entries(lmsData);
+
+      if (!courses.length) {
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;padding:60px 20px;background:#fff;border:1px solid #e2e8f0;border-radius:16px">
+            <div style="font-size:3rem;margin-bottom:16px">📚</div>
+            <h3 style="font-size:1.1rem;font-weight:700;color:#07111f;margin-bottom:8px">No courses yet</h3>
+            <p style="color:#64748b;font-size:.9rem">Your enrolled courses will appear here.<br/>Ask your admin to set up your course in the LMS.</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = courses.map(([id, c]) => {
+        const progress = JSON.parse(localStorage.getItem('lf_progress_' + id) || '[]');
+        const totalLessons = (c.topics||[]).reduce((s,t) => s + t.lessons.length, 0);
+        const pct = totalLessons ? Math.round((progress.length / totalLessons) * 100) : 0;
+        const catColors = { agentic:'#1e40af', genai:'#7c3aed', datascience:'#0891b2', domainai:'#059669', programming:'#ea580c' };
+        const bg = catColors[c.category] || '#0b5fff';
+        return `
+          <div onclick="openCourseFromDash('${id}')" style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s"
+               onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 16px 40px rgba(7,17,31,.12)'"
+               onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="height:120px;background:linear-gradient(135deg,${bg},${bg}99);display:flex;align-items:center;justify-content:center;font-size:2.5rem">📚</div>
+            <div style="padding:18px">
+              <div style="font-size:.72rem;font-weight:700;color:${bg};text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">${c.category||'Course'}</div>
+              <h3 style="font-size:.98rem;font-weight:700;color:#07111f;margin-bottom:10px;line-height:1.4">${c.name}</h3>
+              <div style="font-size:.78rem;color:#64748b;margin-bottom:8px">${(c.topics||[]).length} modules · ${totalLessons} lessons</div>
+              <div style="background:#f1f5f9;border-radius:50px;height:6px;overflow:hidden;margin-bottom:6px">
+                <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#0739a8,#0b5fff);border-radius:50px;transition:width .4s"></div>
+              </div>
+              <div style="font-size:.75rem;color:#64748b;font-weight:600">${pct}% complete</div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function openCourseFromDash(id) {
+      // Set URL params so lms.js picks up the right course
+      const lmsData = JSON.parse(localStorage.getItem('lf_lms') || '{}');
+      const c = lmsData[id];
+      if (!c) return;
+      const url = new URL(location.href);
+      url.searchParams.set('cid', id);
+      url.searchParams.set('course', c.name);
+      history.replaceState({}, '', url);
+      // Reload lms.js course data
+      if (typeof loadCourseData === 'function') loadCourseData();
+      showPlayer();
+      // Update topbar
+      document.getElementById('topCourseTitle').textContent = c.name;
+      document.getElementById('editCourseBtn').style.display = 'inline-flex';
+    }
+
+    function lmsLogout() {
+      if (!confirm('Log out of LMS?')) return;
+      localStorage.removeItem('lms_user');
+      location.reload();
+    }
+
+    // ── Check on load ─────────────────────────────────────────────────
+    (function() {
+      const u = localStorage.getItem('lms_user');
+      // Check URL params — if coming from enroll flow, go straight to player
+      const params = new URLSearchParams(location.search);
+      const hasCourse = params.get('cid') || params.get('course');
+
+      if (!u) {
+        document.getElementById('lmsLoginGate').classList.add('active');
+        setTimeout(() => document.getElementById('gateEmail')?.focus(), 200);
+      } else {
+        const user = JSON.parse(u);
+        document.getElementById('userInitials').textContent = (user.name||'U').slice(0,2).toUpperCase();
+        document.getElementById('dashUserName').textContent = user.name.split(' ')[0];
+        if (hasCourse) {
+          showPlayer();
+          const courseTitle = params.get('course') ? decodeURIComponent(params.get('course')) : '';
+          if (courseTitle) document.getElementById('topCourseTitle').textContent = courseTitle;
+          document.getElementById('editCourseBtn').style.display = 'inline-flex';
+        } else {
+          showStudentDashboard();
+        }
+      }
+    })();
+  </script>
 </body>
 </html>

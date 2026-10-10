@@ -5,7 +5,13 @@
  */
 
 // Backend URL — auto-detect environment
-const API_BASE = '/api';
+const API_BASE = (() => {
+  const h = location.hostname;
+  if (h === 'localhost' || h === '127.0.0.1') {
+    return `${location.protocol}//${h}:5000/api`;
+  }
+  return '/api'; // production: same origin
+})();
 
 async function apiCall(method, endpoint, body = null) {
   try {

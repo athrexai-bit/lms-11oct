@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Certificate — Athrexai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #0b5fff;
+      --primary-dark: #0739a8;
+      --gold: #d4af37;
+      --gold-light: #f4d03f;
+      --ink: #07111f;
+      --muted: #64748b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .cert-container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .cert-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding: 16px 24px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(7, 17, 31, 0.08);
+    }
+
+    .cert-actions-bar h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .cert-actions-bar .actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: #fff;
+      border: none;
+      box-shadow: 0 6px 20px rgba(11, 95, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 26px rgba(11, 95, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+
+    /* Certificate Design */
+    .certificate {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 16px 64px rgba(7, 17, 31, 0.12);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cert-border {
+      padding: 60px 80px;
+      border: 3px solid var(--gold);
+      margin: 20px;
+      position: relative;
+    }
+
+    .cert-border::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border: 1px solid var(--gold-light);
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .cert-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .cert-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+
+    .cert-logo span {
+      color: var(--primary);
+    }
+
+    .cert-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      margin-bottom: 8px;
+    }
+
+    .cert-subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .cert-body {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .cert-body p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+
+    .cert-recipient {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 24px 0;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--gold-light);
+      display: inline-block;
+    }
+
+    .cert-course-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin: 20px 0;
+    }
+
+    .cert-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 60px;
+      padding-top: 40px;
+    }
+
+    .cert-signature {
+      text-align: center;
+      flex: 1;
+    }
+
+    .cert-signature-line {
+      width: 180px;
+      height: 1px;
+      background: var(--ink);
+      margin: 0 auto 8px;
+    }
+
+    .cert-signature-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .cert-signature-title {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .cert-seal {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      box-shadow: 0 8px 32px rgba(212, 175, 55, 0.4);
+    }
+
+    .cert-meta {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background: linear-gradient(135deg, rgba(11, 95, 255, 0.05), rgba(124, 58, 237, 0.05));
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .cert-meta-item {
+      text-align: center;
+    }
+
+    .cert-meta-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .cert-meta-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink);
+      font-family: 'Fira Code', monospace;
+    }
+
+    /* Verify Section */
+    .verify-section {
+      margin-top: 24px;
+      padding: 24px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(7, 17, 31, 0.08);
+      text-align: center;
+    }
+
+    .verify-section h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .verify-section p {
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .verify-link {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .verify-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Error State */
+    .error-state {
+      text-align: center;
+      padding: 80px 40px;
+    }
+
+    .error-state h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.5rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .error-state p {
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+
+      .cert-actions-bar, .verify-section {
+        display: none;
+      }
+
+      .certificate {
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      .cert-border {
+        margin: 0;
+        border-width: 2px;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .cert-border {
+        padding: 40px 30px;
+        margin: 12px;
+      }
+
+      .cert-title {
+        font-size: 2rem;
+        letter-spacing: 4px;
+      }
+
+      .cert-recipient {
+        font-size: 1.8rem;
+      }
+
+      .cert-course-name {
+        font-size: 1.2rem;
+      }
+
+      .cert-footer {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .cert-actions-bar {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cert-container">
+    <div class="cert-actions-bar" id="actionsBar" style="display: none;">
+      <h1>📜 Certificate of Completion</h1>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="printCertificate()">🖨️ Print</button>
+        <button class="btn btn-primary" onclick="downloadPDF()">⬇️ Download PDF</button>
+        <a href="lms.html" class="btn btn-secondary">← Back to LMS</a>
+      </div>
+    </div>
+
+    <div id="certificateContent">
+      <!-- Loaded dynamically -->
+    </div>
+
+    <div class="verify-section" id="verifySection" style="display: none;">
+      <h3>🔗 Verify This Certificate</h3>
+      <p>
+        Anyone can verify this certificate at:<br/>
+        <a class="verify-link" id="verifyUrl" href="#" target="_blank"></a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const certId = params.get('id');
+
+    async function loadCertificate() {
+      if (!certId) {
+        showError('No certificate ID provided');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/certificates/${certId}`);
+        if (!res.ok) {
+          showError('Certificate not found');
+          return;
+        }
+
+        const cert = await res.json();
+        renderCertificate(cert);
+      } catch (e) {
+        console.error('Error loading certificate:', e);
+        showError('Failed to load certificate');
+      }
+    }
+
+    function renderCertificate(cert) {
+      document.getElementById('actionsBar').style.display = 'flex';
+      document.getElementById('verifySection').style.display = 'block';
+      document.getElementById('verifyUrl').href = `${window.location.origin}/certificate.html?id=${cert.certificate_id}`;
+      document.getElementById('verifyUrl').textContent = `${window.location.origin}/certificate.html?id=${cert.certificate_id}`;
+
+      document.getElementById('certificateContent').innerHTML = `
+        <div class="certificate" id="certPaper">
+          <div class="cert-border">
+            <div class="cert-header">
+              <div class="cert-logo">Athrex<span>ai</span></div>
+              <div class="cert-title">Certificate</div>
+              <div class="cert-subtitle">of Completion</div>
+            </div>
+
+            <div class="cert-body">
+              <p>This is to certify that</p>
+              <div class="cert-recipient">${cert.user_name}</div>
+              <p>has successfully completed the course</p>
+              <div class="cert-course-name">${cert.course_name}</div>
+              <p>demonstrating proficiency and commitment to excellence in their learning journey.</p>
+            </div>
+
+            <div class="cert-footer">
+              <div class="cert-signature">
+                <div class="cert-signature-line"></div>
+                <div class="cert-signature-name">${cert.instructor || 'Athrexai Team'}</div>
+                <div class="cert-signature-title">Course Instructor</div>
+              </div>
+
+              <div class="cert-seal">🏆</div>
+
+              <div class="cert-signature">
+                <div class="cert-signature-line"></div>
+                <div class="cert-signature-name">Dr. Arjun Nair</div>
+                <div class="cert-signature-title">Director, Athrexai</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="cert-meta">
+            <div class="cert-meta-item">
+              <div class="cert-meta-label">Certificate ID</div>
+              <div class="cert-meta-value">${cert.certificate_id}</div>
+            </div>
+            <div class="cert-meta-item">
+              <div class="cert-meta-label">Issue Date</div>
+              <div class="cert-meta-value">${cert.issued_at}</div>
+            </div>
+            <div class="cert-meta-item">
+              <div class="cert-meta-label">Valid</div>
+              <div class="cert-meta-value" style="color: #10b981;">✓ Verified</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showError(message) {
+      document.getElementById('certificateContent').innerHTML = `
+        <div class="certificate">
+          <div class="error-state">
+            <h2>❌ ${message}</h2>
+            <p>The certificate you're looking for doesn't exist or has been revoked.</p>
+            <a href="lms.html" class="btn btn-primary">← Back to LMS</a>
+          </div>
+        </div>
+      `;
+    }
+
+    function printCertificate() {
+      window.print();
+    }
+
+    function downloadPDF() {
+      // Use browser print to PDF
+      window.print();
+    }
+
+    // Load on page ready
+    loadCertificate();
+  </script>
+</body>
+</html>

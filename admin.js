@@ -7,7 +7,8 @@ function normalizeEnrollment(e) {
     course: e.course || '',
     courseId: e.courseId || e.course_id || '',
     status: (e.status || 'pending').toLowerCase(),
-    date: e.date || e.created_at || ''
+    date: e.date || e.created_at || '',
+    utr: e.utr || ''
   };
 }
 

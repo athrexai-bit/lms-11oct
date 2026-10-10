@@ -6,11 +6,20 @@ Production: gunicorn server:app
 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+from werkzeug.utils import secure_filename
 import sqlite3, os, json
 from datetime import datetime
+from uuid import uuid4
 
 app = Flask(__name__, static_folder='.')
 CORS(app, origins="*")
+app.config['MAX_CONTENT_LENGTH'] = 25 * 1024 * 1024
+LMS_UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads', 'lms')
+
+
+@app.errorhandler(413)
+def upload_too_large(_error):
+    return jsonify({'error': 'Files must be 25 MB or smaller.'}), 413
 
 # Use /tmp for SQLite on Render (writable directory)
 DB_PATH = os.environ.get('DB_PATH', '/tmp/arthrex.db')
@@ -59,6 +68,26 @@ def init_db():
         duration   TEXT,
         data       TEXT,
         created_at TEXT DEFAULT (datetime('now','localtime'))
+    )''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS attendance_sessions (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        course_id  TEXT NOT NULL,
+        title      TEXT NOT NULL,
+        session_at TEXT NOT NULL,
+        created_at TEXT DEFAULT (datetime('now','localtime'))
+    )''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS attendance_records (
+        id             INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id     INTEGER NOT NULL,
+        enrollment_id  INTEGER NOT NULL,
+        status         TEXT NOT NULL DEFAULT 'absent',
+        note           TEXT DEFAULT '',
+        updated_at     TEXT DEFAULT (datetime('now','localtime')),
+        UNIQUE(session_id, enrollment_id),
+        FOREIGN KEY(session_id) REFERENCES attendance_sessions(id) ON DELETE CASCADE,
+        FOREIGN KEY(enrollment_id) REFERENCES enrollments(id) ON DELETE CASCADE
     )''')
 
     # Masterclasses
@@ -314,6 +343,35 @@ def get_lms():
         }
     return jsonify(result)
 
+
+@app.route('/api/lms/uploads', methods=['POST'])
+def upload_lms_file():
+    upload = request.files.get('file')
+    if not upload or not upload.filename:
+        return jsonify({'error': 'Choose a file to upload.'}), 400
+
+    allowed_extensions = {
+        '.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.csv',
+        '.zip', '.ipynb', '.py', '.js', '.html', '.txt', '.png', '.jpg',
+        '.jpeg', '.webp', '.mp4', '.webm'
+    }
+    extension = os.path.splitext(upload.filename)[1].lower()
+    if extension not in allowed_extensions:
+        return jsonify({'error': 'This file type is not supported.'}), 400
+
+    safe_name = secure_filename(upload.filename)
+    stored_name = f'{uuid4().hex}_{safe_name}'
+    os.makedirs(LMS_UPLOAD_FOLDER, exist_ok=True)
+    upload.save(os.path.join(LMS_UPLOAD_FOLDER, stored_name))
+    return jsonify({'name': upload.filename, 'url': f'/api/lms/uploads/{stored_name}'}), 201
+
+
+@app.route('/api/lms/uploads/<filename>', methods=['GET'])
+def get_lms_upload(filename):
+    if secure_filename(filename) != filename:
+        return jsonify({'error': 'File not found.'}), 404
+    return send_from_directory(LMS_UPLOAD_FOLDER, filename, as_attachment=False)
+
 @app.route('/api/lms/<course_id>', methods=['PUT'])
 def save_lms_course(course_id):
     d = request.json
@@ -338,6 +396,98 @@ def delete_lms_course(course_id):
     conn.commit()
     conn.close()
     return jsonify({'success': True})
+
+
+@app.route('/api/lms/<course_id>/attendance', methods=['GET'])
+def get_course_attendance(course_id):
+    conn = get_db()
+    course = conn.execute("SELECT name FROM lms_courses WHERE id=?", (course_id,)).fetchone()
+    course_name = course['name'] if course else ''
+    sessions = conn.execute(
+        "SELECT id, course_id, title, session_at, created_at FROM attendance_sessions "
+        "WHERE course_id=? ORDER BY session_at DESC, id DESC", (course_id,)
+    ).fetchall()
+    result = []
+    for session in sessions:
+        learners = conn.execute(
+            "SELECT e.id AS enrollment_id, e.name, e.email, e.phone, "
+            "COALESCE(a.status, 'unmarked') AS status, COALESCE(a.note, '') AS note "
+            "FROM enrollments e LEFT JOIN attendance_records a "
+            "ON a.enrollment_id=e.id AND a.session_id=? "
+            "WHERE lower(COALESCE(e.status,''))='approved' "
+            "AND (e.course_id=? OR (e.course_id='' AND lower(COALESCE(e.course,''))=lower(?))) "
+            "ORDER BY lower(e.name), lower(e.email)",
+            (session['id'], course_id, course_name)
+        ).fetchall()
+        result.append({**dict(session), 'learners': [dict(learner) for learner in learners]})
+    conn.close()
+    return jsonify(result)
+
+
+@app.route('/api/lms/<course_id>/attendance/sessions', methods=['POST'])
+def create_attendance_session(course_id):
+    data = request.json or {}
+    title = (data.get('title') or '').strip()
+    session_at = (data.get('session_at') or '').strip()
+    if not title or not session_at:
+        return jsonify({'error': 'Session title and date/time are required.'}), 400
+
+    conn = get_db()
+    course = conn.execute("SELECT id FROM lms_courses WHERE id=?", (course_id,)).fetchone()
+    if not course:
+        conn.close()
+        return jsonify({'error': 'Course not found.'}), 404
+    cursor = conn.execute(
+        "INSERT INTO attendance_sessions (course_id, title, session_at) VALUES (?,?,?)",
+        (course_id, title, session_at)
+    )
+    conn.commit()
+    session = conn.execute("SELECT * FROM attendance_sessions WHERE id=?", (cursor.lastrowid,)).fetchone()
+    conn.close()
+    return jsonify({'success': True, 'session': dict(session)}), 201
+
+
+@app.route('/api/lms/attendance/sessions/<int:session_id>', methods=['DELETE'])
+def delete_attendance_session(session_id):
+    conn = get_db()
+    conn.execute("DELETE FROM attendance_records WHERE session_id=?", (session_id,))
+    cursor = conn.execute("DELETE FROM attendance_sessions WHERE id=?", (session_id,))
+    conn.commit()
+    conn.close()
+    if not cursor.rowcount:
+        return jsonify({'error': 'Session not found.'}), 404
+    return jsonify({'success': True})
+
+
+@app.route('/api/lms/attendance/sessions/<int:session_id>/learners/<int:enrollment_id>', methods=['PUT'])
+def save_attendance_record(session_id, enrollment_id):
+    data = request.json or {}
+    status = (data.get('status') or '').strip().lower()
+    if status not in ('present', 'late', 'absent', 'excused'):
+        return jsonify({'error': 'Status must be present, late, absent, or excused.'}), 400
+
+    conn = get_db()
+    row = conn.execute(
+        "SELECT s.id FROM attendance_sessions s "
+        "JOIN enrollments e ON e.id=? "
+        "JOIN lms_courses c ON c.id=s.course_id "
+        "WHERE s.id=? AND lower(COALESCE(e.status,''))='approved' "
+        "AND (e.course_id=s.course_id OR (e.course_id='' AND lower(COALESCE(e.course,''))=lower(c.name)))",
+        (enrollment_id, session_id)
+    ).fetchone()
+    if not row:
+        conn.close()
+        return jsonify({'error': 'Session or approved course enrollment not found.'}), 404
+    conn.execute(
+        "INSERT INTO attendance_records (session_id, enrollment_id, status, note, updated_at) "
+        "VALUES (?,?,?,?,datetime('now','localtime')) "
+        "ON CONFLICT(session_id,enrollment_id) DO UPDATE SET "
+        "status=excluded.status, note=excluded.note, updated_at=excluded.updated_at",
+        (session_id, enrollment_id, status, (data.get('note') or '').strip())
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True, 'status': status})
 
 # ─────────────────────────────────────────────
 #  MASTERCLASSES

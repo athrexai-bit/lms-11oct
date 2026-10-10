@@ -518,7 +518,7 @@ footer{background:#07111f;color:#e2e8f0;padding-top:52px}
       <a href="#" onclick="showPage('courses')">Courses</a>
       <a href="#" onclick="showPage('workshops')">Workshops</a>
       <a href="#" onclick="showPage('projects')">Projects</a>
-      <a href="http://localhost:8000/" target="_blank" rel="noopener" title="Open LMS dashboard" style="background:linear-gradient(135deg,#0739a8,#0b5fff);color:#fff!important;padding:7px 16px;border-radius:999px;font-weight:700;box-shadow:0 3px 10px rgba(11,95,255,.3);text-decoration:none">LMS</a>
+      <a href="http://127.0.0.1:8080/lms.html" target="_blank" rel="noopener" title="Open LMS dashboard" style="background:linear-gradient(135deg,#0739a8,#0b5fff);color:#fff!important;padding:7px 16px;border-radius:999px;font-weight:700;box-shadow:0 3px 10px rgba(11,95,255,.3);text-decoration:none">LMS</a>
     </div>
     <div style="display:flex;gap:8px;margin-left:auto;flex-shrink:0">
       <span id="navUserArea">
@@ -2052,20 +2052,119 @@ const COURSES = [
     ]}
   ]},
 
+  { id:'8', title:'AI Product Manager', slug:'ai-product-manager', category:'AI Product Manager',
+  instructor:{name:'Riya Mehta', avatar:'https://ui-avatars.com/api/?name=Riya+Mehta&background=7c3aed&color=fff&size=40', title:'Senior AI Product Manager', bio:'Ex-Microsoft & Flipkart. 9 years in product management. Specialist in AI-driven product strategy.', rating:4.9, students:4200, courses:4},
+  thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80',
+  price:34999, originalPrice:69999, discount:50, rating:4.9, reviewCount:980, enrolledCount:4200,
+  duration:'4 months', level:'Beginner to Intermediate', badge:'New', featured:false, trending:false, cohortStartDate:'1st Oct 2026',
+  skills:['AI Strategy','Product Roadmapping','LLM Integration','Prompt Design','Data-Driven Decisions','Agile for AI','Stakeholder Management','AI Ethics','Go-to-Market','OKRs'],
+  highlights:[
+    'Define and ship AI-powered product features',
+    'Work effectively with AI engineers and data scientists',
+    'Build product roadmaps for LLM & agent-based products',
+    'Measure AI product success with the right metrics',
+    'Navigate AI ethics, bias, and governance as a PM',
+    'Capstone: End-to-end AI product strategy presentation'
+  ],
+  description:'The only product management program built for the AI era. Over 4 months you will learn how to ideate, prioritise, and ship AI-powered products — from prompt design to LLM integration to go-to-market. Perfect for PMs, aspiring PMs, and engineers moving into product roles.',
+  curriculum:[
+    {section:'MONTH 1 — AI Fundamentals for PMs', lessons:[
+      {title:'How AI & LLMs Work — A PM Perspective', duration:'45m', type:'video'},
+      {title:'The AI Product Landscape in 2026', duration:'30m', type:'video'},
+      {title:'Identifying AI Opportunities in Your Product', duration:'45m', type:'video'},
+      {title:'🛠 Lab: Audit an existing product for AI opportunities', duration:'1h', type:'project'}
+    ]},
+    {section:'MONTH 2 — Building AI Products', lessons:[
+      {title:'Writing AI Product Requirements (PRDs)', duration:'1h', type:'video'},
+      {title:'Prompt Design for PMs — No Code Required', duration:'45m', type:'video'},
+      {title:'Working with AI Engineers & Data Scientists', duration:'45m', type:'video'},
+      {title:'🛠 Lab: Build a mini AI feature spec', duration:'1.5h', type:'project'}
+    ]},
+    {section:'MONTH 3 — Strategy, Metrics & Ethics', lessons:[
+      {title:'AI Product Roadmapping & Prioritisation', duration:'1h', type:'video'},
+      {title:'Measuring AI Product Success', duration:'45m', type:'video'},
+      {title:'AI Ethics, Bias & Responsible AI for PMs', duration:'45m', type:'video'},
+      {title:'🛠 Lab: Define KPIs for an AI product', duration:'1h', type:'project'}
+    ]},
+    {section:'MONTH 4 — Capstone & Career', lessons:[
+      {title:'Go-to-Market Strategy for AI Products', duration:'1h', type:'video'},
+      {title:'Live Q&A with Senior AI PMs', duration:'1h', type:'live'},
+      {title:'🛠 Capstone: End-to-end AI product strategy', duration:'3h', type:'project'},
+      {title:'🏆 Certification Award', duration:'30m', type:'video'}
+    ]}
+  ]},
+
 ];
 
 const CATEGORIES = [
-  {name:'Agentic AI',          icon:'🤖', count:18, color:'#1E40AF', bg:'#EFF6FF'},
-  {name:'Generative AI',       icon:'✨', count:22, color:'#7C3AED', bg:'#F5F3FF'},
-  {name:'AI & Machine Learning',icon:'🧠', count:24, color:'#2563EB', bg:'#DBEAFE'},
-  {name:'Data Science',        icon:'📊', count:16, color:'#0891B2', bg:'#ECFEFF'},
-  {name:'Data Analytics',      icon:'📈', count:14, color:'#059669', bg:'#ECFDF5'},
-
-
-  {name:'DevOps & AWS',        icon:'☁️', count:15, color:'#EA580C', bg:'#FFF7ED'},
-  {name:'Robotics & AI',       icon:'🦾', count:8,  color:'#6D28D9', bg:'#F3E8FF'},
-  {name:'Forward Deployment Engineer', icon:'🚀', count:12, color:'#0E7490', bg:'#ECFEFF'},
+  {name:'Agentic AI',                   icon:'🤖', count:17, color:'#1E40AF', bg:'#EFF6FF'},
+  {name:'Generative AI',                icon:'✨', count:21, color:'#7C3AED', bg:'#F5F3FF'},
+  {name:'Forward Deployment Engineer',  icon:'🚀', count:1,  color:'#0E7490', bg:'#ECFEFF'},
+  {name:'AI DevOps & AWS',              icon:'☁️', count:1,  color:'#EA580C', bg:'#FFF7ED'},
+  {name:'AI Product Manager',           icon:'🗂️', count:1,  color:'#7C3AED', bg:'#F5F3FF'},
+  {name:'AI & Machine Learning',        icon:'🧠', count:24, color:'#2563EB', bg:'#DBEAFE'},
+  {name:'Data Science',                 icon:'📊', count:6,  color:'#0891B2', bg:'#ECFEFF'},
+  {name:'Data Analytics',               icon:'📈', count:3,  color:'#059669', bg:'#ECFDF5'},
+  {name:'Robotics & AI',                icon:'🦾', count:1,  color:'#6D28D9', bg:'#F3E8FF'},
+  {name:'Full Stack Development',       icon:'🛠️', count:1,  color:'#16A34A', bg:'#F0FDF4'},
 ];
+
+// ── Map COURSE_DATABASE category keys to display names ───────────────────────
+const DB_CAT_MAP = {
+  genai:       'Generative AI',
+  agentic:     'Agentic AI',
+  datascience: 'Data Science',
+  domainai:    'Robotics & AI',
+  programming: 'Full Stack Development'
+};
+
+// ── Build a merged flat list: COURSES (flagship) + COURSE_DATABASE (all others) ─
+function buildAllCourses() {
+  const flagshipIds = new Set(COURSES.map(c => c.id));
+  const extra = [];
+
+  if (typeof COURSE_DATABASE !== 'undefined') {
+    Object.entries(COURSE_DATABASE).forEach(([catKey, catData]) => {
+      const catName = DB_CAT_MAP[catKey] || catData.name;
+      Object.values(catData.subcategories || {}).forEach(sub => {
+        (sub.courses || []).forEach(course => {
+          // Skip if already in COURSES flagship list (match by title)
+          if (COURSES.some(c => c.title.toLowerCase() === course.name.toLowerCase())) return;
+          extra.push({
+            id: course.id,
+            title: course.name,
+            slug: course.id,
+            category: catName,
+            badge: course.badge || null,
+            badgeType: course.badgeType || null,
+            thumbnail: `https://placehold.co/400x200/0b1f3a/ffffff?text=${encodeURIComponent(course.name.slice(0,24))}`,
+            instructor: { name: 'Expert Instructor', avatar: `https://ui-avatars.com/api/?name=Expert+Instructor&background=1e40af&color=fff&size=40` },
+            rating: course.rating || 4.8,
+            reviewCount: parseInt((course.enrolled || '1K').replace(/[^0-9]/g,'')) * 10 || 500,
+            enrolledCount: parseInt((course.enrolled || '1K').replace(/[^0-9]/g,'')) * 1000 || 1000,
+            level: 'Intermediate',
+            duration: course.duration || 'Self-paced',
+            price: parseInt((course.price || '₹9,999').replace(/[^0-9]/g,'')) || 9999,
+            originalPrice: parseInt((course.price || '₹9,999').replace(/[^0-9]/g,'')) * 2 || 19998,
+            discount: 50,
+            description: course.description || '',
+            skills: [],
+            highlights: [],
+            curriculum: [],
+            cohortStartDate: null
+          });
+        });
+      });
+    });
+  }
+  return [...COURSES, ...extra];
+}
+
+let ALL_COURSES = null;
+function getAllCourses() {
+  if (!ALL_COURSES) ALL_COURSES = buildAllCourses();
+  return ALL_COURSES;
+}
 
 const TESTIMONIALS = [
   {name:'Karthik Reddy',role:'ML Engineer at Google',avatar:'https://ui-avatars.com/api/?name=Karthik+Reddy&background=4285F4&color=fff&size=56',text:'The AI & ML Bootcamp transformed my career. Within 3 months of completing the course, I landed a role at Google. The hands-on projects and mentorship were invaluable.',course:'AI & ML Bootcamp',rating:5},
@@ -2308,14 +2407,19 @@ function showPage(page, opts={}) {
 
 // ── HOME ─────────────────────────────────────────────────────────────
 function renderCategories() {
-  document.getElementById('categoriesGrid').innerHTML = CATEGORIES.map(cat => `
+  const all = getAllCourses();
+  document.getElementById('categoriesGrid').innerHTML = CATEGORIES.map(cat => {
+    const realCount = all.filter(c => c.category === cat.name).length;
+    const display = realCount || cat.count;
+    return `
     <div class="cat-card" style="border-color:${cat.bg}" onclick="filterByCategory('${cat.name}')"
       onmouseover="this.style.borderColor='${cat.color}';this.style.boxShadow='0 12px 32px ${cat.color}22'"
       onmouseout="this.style.borderColor='${cat.bg}';this.style.boxShadow='none'">
       <div class="cat-icon">${cat.icon}</div>
       <div class="cat-name">${cat.name}</div>
-      <div class="cat-count" style="color:${cat.color}">${cat.count} Courses</div>
-    </div>`).join('');
+      <div class="cat-count" style="color:${cat.color}">${display} Courses</div>
+    </div>`;
+  }).join('');
 }
 
 function renderHomeCoursesGrid() {
@@ -2394,16 +2498,20 @@ function renderCoursesPage(opts={}) {
 function renderSidebarCats() {
   const el = document.getElementById('sidebarCats');
   if (!el) return;
+  const all = getAllCourses();
   el.innerHTML = `
     <button class="cf-cat ${!activeCategory?'active':''}" onclick="activeCategory='';renderAllCourses()">
       <span class="name">All categories</span>
-      <span class="count">${COURSES.length}</span>
+      <span class="count">${all.length}</span>
     </button>
-    ${CATEGORIES.map(cat=>`
+    ${CATEGORIES.map(cat => {
+      const realCount = all.filter(c => c.category === cat.name).length;
+      return `
     <button class="cf-cat ${activeCategory===cat.name?'active':''}" onclick="activeCategory='${cat.name}';renderAllCourses()">
       <span class="name">${cat.name}</span>
-      <span class="count">${cat.count}</span>
-    </button>`).join('')}`;
+      <span class="count">${realCount || cat.count}</span>
+    </button>`;
+    }).join('')}`;
 }
 
 function getSelectedLevels() {
@@ -2421,7 +2529,7 @@ function matchesLevel(courseLevel, selected) {
 }
 
 function renderAllCourses() {
-  let res = [...COURSES];
+  let res = [...getAllCourses()];
   if(activeCategory) res = res.filter(c=>c.category===activeCategory||c.subcategory===activeCategory);
   if(searchQuery) {
     const q = searchQuery.toLowerCase();
@@ -2725,7 +2833,7 @@ function getLmsBase() {
   const host = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
     ? location.hostname
     : '127.0.0.1';
-  return `${location.protocol}//${host}:8000`;
+  return `${location.protocol}//${host}:8080`;
 }
 
 function parseLessonMinutes(duration) {
@@ -2745,6 +2853,429 @@ function cleanLessonTitle(title) {
 
 /** Convert marketing syllabus (COURSES.curriculum) into LMS player payload */
 function curriculumToLms(c) {
+
+  // ── Course-specific quiz bank ────────────────────────────────────────────
+  const QUIZ_BANK = {
+    '1': { // Agentic AI Professional
+      'Week 1': [
+        { question: 'What distinguishes Agentic AI from traditional AI chatbots?', options: ['Agentic AI only generates text', 'Agentic AI can plan, use tools and take autonomous actions', 'Chatbots are more powerful', 'They are identical'], answer: 'B' },
+        { question: 'Which architecture is the foundation of modern LLMs?', options: ['CNN', 'RNN', 'Transformer', 'Decision Tree'], answer: 'C' },
+        { question: 'What is a "token" in the context of LLMs?', options: ['A security key', 'A unit of text the model processes', 'A database record', 'A Python variable'], answer: 'B' },
+        { question: 'Which of these is an open-source LLM?', options: ['GPT-4', 'Claude', 'Llama', 'Gemini Ultra'], answer: 'C' },
+        { question: 'What does "context window" mean?', options: ['The browser window', 'Maximum tokens the model can process at once', 'The popup dialog', 'The IDE window'], answer: 'B' }
+      ],
+      'Week 2': [
+        { question: 'What is "few-shot prompting"?', options: ['Prompting with no examples', 'Providing a few examples in the prompt to guide the model', 'Reducing model size', 'Using fewer API calls'], answer: 'B' },
+        { question: 'Chain-of-Thought prompting helps the model to:', options: ['Run faster', 'Reason step by step before answering', 'Use less memory', 'Skip difficult questions'], answer: 'B' },
+        { question: 'Which prompt strategy forces the model to produce structured JSON output?', options: ['Role prompting', 'Zero-shot', 'Structured output / JSON mode', 'Temperature setting'], answer: 'C' },
+        { question: 'What is a "prompt anti-pattern"?', options: ['A useful prompt template', 'A prompt structure that consistently produces poor results', 'A debugging tool', 'A tokenisation error'], answer: 'B' },
+        { question: 'Prompt versioning is important because:', options: ['It makes prompts look better', 'It allows you to track, compare and roll back prompt changes', 'It reduces cost automatically', 'It is required by OpenAI'], answer: 'B' }
+      ],
+      'Week 3': [
+        { question: 'Which component gives an AI agent the ability to recall past interactions?', options: ['Tools', 'Memory', 'Planning', 'Output parser'], answer: 'B' },
+        { question: 'The ReAct pattern combines:', options: ['Retrieval and Action', 'Reasoning and Acting', 'REST and ACID', 'Reflection and Coding'], answer: 'B' },
+        { question: 'What separates an AI agent from a simple LLM call?', options: ['Agents use bigger models', 'Agents can take actions, use tools and iterate towards a goal', 'Agents are slower', 'Agents only work offline'], answer: 'B' },
+        { question: 'Which of these is a valid agent tool?', options: ['A CSS file', 'A web search API', 'A font family', 'A git branch'], answer: 'B' },
+        { question: 'Agent "reflection" means:', options: ['Displaying a mirror', 'The agent critiques its own output and improves it', 'Using a larger context window', 'Logging errors'], answer: 'B' }
+      ],
+      'Week 4': [
+        { question: 'Function calling in LLM APIs allows:', options: ['Calling Python functions only', 'The model to request structured data from external tools', 'Faster inference', 'Free API usage'], answer: 'B' },
+        { question: 'Which HTTP method is used to send data to an API endpoint?', options: ['GET', 'DELETE', 'POST', 'HEAD'], answer: 'C' },
+        { question: 'How do you reduce OpenAI API costs?', options: ['Use a larger model', 'Optimise prompts, reduce tokens, cache responses', 'Call the API more frequently', 'Disable streaming'], answer: 'B' },
+        { question: 'Rate limiting on LLM APIs means:', options: ['The model has an IQ limit', 'There is a cap on requests per minute/tokens per day', 'The server is always down', 'Free tier has no limits'], answer: 'B' },
+        { question: 'Structured outputs from LLM APIs are useful because:', options: ['They look prettier', 'They can be parsed and used directly in application code', 'They cost less', 'They support only English'], answer: 'B' }
+      ],
+      'Week 5': [
+        { question: 'What does LCEL stand for in LangChain?', options: ['Large Context Embedding Layer', 'LangChain Expression Language', 'LLM Calling and Execution Loop', 'Layered Chain Execution Logic'], answer: 'B' },
+        { question: 'In LangChain, a "chain" is:', options: ['A blockchain', 'A sequence of components that process data in order', 'A Python list', 'A database table'], answer: 'B' },
+        { question: 'Which LangChain memory type stores the full conversation history?', options: ['BufferMemory', 'SummaryMemory', 'VectorMemory', 'NoMemory'], answer: 'A' },
+        { question: 'LangChain "tools" are:', options: ['Hardware peripherals', 'Functions the agent can call to interact with external systems', 'CSS utilities', 'Testing libraries'], answer: 'B' },
+        { question: 'Output parsers in LangChain are used to:', options: ['Display output on screen', 'Transform raw LLM text into structured Python objects', 'Delete old outputs', 'Compress responses'], answer: 'B' }
+      ],
+      'Week 6': [
+        { question: 'In LangGraph, a "node" represents:', options: ['A database node', 'A processing step in the agent workflow', 'A network server', 'A vector embedding'], answer: 'B' },
+        { question: 'What makes LangGraph different from a simple chain?', options: ['It is faster', 'It supports cycles, conditionals and stateful multi-step flows', 'It uses less memory', 'It only works with GPT-4'], answer: 'B' },
+        { question: 'Human-in-the-loop in LangGraph allows:', options: ['Humans to write the code', 'A human to review or redirect the agent at checkpoints', 'Manual prompt writing', 'Disabling the LLM'], answer: 'B' },
+        { question: 'A "conditional edge" in LangGraph:', options: ['Connects two databases', 'Routes workflow to different nodes based on agent decision', 'Ends the graph', 'Is a debug tool'], answer: 'B' },
+        { question: 'State in LangGraph is:', options: ['A US state', 'A shared data object passed between all nodes in the graph', 'A constant variable', 'A cloud region'], answer: 'B' }
+      ],
+      'Week 7': [
+        { question: 'What is "chunking" in RAG?', options: ['Compressing images', 'Splitting documents into smaller pieces for embedding', 'Deleting data', 'Encrypting files'], answer: 'B' },
+        { question: 'Vector embeddings represent text as:', options: ['HTML strings', 'Dense numerical vectors capturing semantic meaning', 'SQL rows', 'JSON keys'], answer: 'B' },
+        { question: 'Which of these is a vector database?', options: ['MySQL', 'MongoDB', 'ChromaDB', 'Redis'], answer: 'C' },
+        { question: 'RAGAS is used for:', options: ['Building UI components', 'Evaluating RAG pipeline quality', 'Training new models', 'Writing prompts'], answer: 'B' },
+        { question: 'Hybrid search in RAG combines:', options: ['SQL and NoSQL', 'Dense vector search and sparse keyword search', 'Python and JavaScript', 'Cloud and on-premise'], answer: 'B' }
+      ],
+      'Week 8': [
+        { question: 'MCP stands for:', options: ['Multi-Chain Protocol', 'Model Context Protocol', 'Machine Code Parser', 'Memory Checkpoint'], answer: 'B' },
+        { question: 'What problem does MCP solve?', options: ['LLM hallucinations', 'Standardised way for AI models to connect to external tools and data', 'Model fine-tuning', 'Database backups'], answer: 'B' },
+        { question: 'Tool calling allows an agent to:', options: ['Write its own code', 'Request execution of a predefined function with specific parameters', 'Bypass API limits', 'Generate images'], answer: 'B' },
+        { question: 'An MCP server exposes:', options: ['Web pages', 'Tools, resources and prompts an AI model can use', 'User authentication', 'Database schemas only'], answer: 'B' },
+        { question: 'Which real-world integration can be built using MCP?', options: ['Only PDF reading', 'Gmail, Calendar, Slack, GitHub, databases and custom APIs', 'Only image generation', 'Only text translation'], answer: 'B' }
+      ],
+      'Week 9': [
+        { question: 'In a multi-agent system, the "supervisor" agent:', options: ['Monitors server performance', 'Coordinates and delegates tasks to worker agents', 'Only generates text', 'Manages databases'], answer: 'B' },
+        { question: 'CrewAI is best described as:', options: ['A video game', 'A framework for building collaborative multi-agent systems', 'A cloud provider', 'A database ORM'], answer: 'B' },
+        { question: 'What is "shared memory" in multi-agent systems?', options: ['RAM in a computer', 'A common data store all agents can read and write to', 'A backup system', 'A logging service'], answer: 'B' },
+        { question: 'Agent conflict resolution refers to:', options: ['Fixing code bugs', 'Handling situations where agents produce contradictory outputs', 'Network timeouts', 'Version control merges'], answer: 'B' },
+        { question: 'AutoGen is a framework by:', options: ['Google', 'Microsoft', 'OpenAI', 'Meta'], answer: 'B' }
+      ],
+      'Week 10': [
+        { question: 'Event-driven agents are triggered by:', options: ['Manual keyboard input only', 'External events like new emails, webhooks or database changes', 'Random intervals', 'User login only'], answer: 'B' },
+        { question: 'What is RPA?', options: ['Remote Python API', 'Robotic Process Automation — software that mimics human UI actions', 'Real-time Processing Architecture', 'React Python App'], answer: 'B' },
+        { question: 'Document intelligence in AI refers to:', options: ['Reading printed books', 'Extracting structured data from PDFs, invoices and contracts using AI', 'Writing documents', 'Storing files'], answer: 'B' },
+        { question: 'An ERP system integration with AI enables:', options: ['Only email sending', 'AI to read and update business data like inventory, orders and finance', 'Only user management', 'Only PDF generation'], answer: 'B' },
+        { question: 'Invoice processing automation saves time by:', options: ['Printing invoices faster', 'Automatically extracting, validating and routing invoice data', 'Only storing PDFs', 'Sending emails manually'], answer: 'B' }
+      ],
+      'Week 11': [
+        { question: 'CRM stands for:', options: ['Code Repository Manager', 'Customer Relationship Management', 'Cloud Resource Monitor', 'Content Rendering Module'], answer: 'B' },
+        { question: 'REST APIs communicate using:', options: ['Binary files', 'HTTP methods and JSON/XML data', 'Only SQL', 'WebSockets only'], answer: 'B' },
+        { question: 'Webhooks are:', options: ['Fishing hooks for the web', 'HTTP callbacks triggered when an event occurs in an external system', 'API documentation', 'Database triggers only'], answer: 'B' },
+        { question: 'Microsoft Graph API gives AI access to:', options: ['Only Excel files', 'Emails, calendars, Teams, OneDrive and other M365 data', 'Only SharePoint', 'Azure billing only'], answer: 'B' },
+        { question: 'Salesforce integration with AI agents enables:', options: ['Only lead creation', 'Automated CRM updates, opportunity tracking and customer insights', 'Only contact lookup', 'Only report generation'], answer: 'B' }
+      ],
+      'Week 12': [
+        { question: 'Prompt injection is:', options: ['A vaccination technique', 'An attack where malicious input overrides the system prompt', 'A CSS property', 'A network protocol'], answer: 'B' },
+        { question: 'OWASP LLM Top 10 covers:', options: ['Top 10 programming languages', 'The most critical security risks specific to LLM applications', 'Database vulnerabilities', 'Network threats only'], answer: 'B' },
+        { question: 'Data leakage in AI systems means:', options: ['Memory leaks in code', 'Sensitive data being exposed in model outputs', 'Network packet loss', 'Database connection drops'], answer: 'B' },
+        { question: 'AI guardrails are:', options: ['Physical safety rails', 'Input/output filters that prevent harmful or off-policy AI behaviour', 'Code linting rules', 'Performance benchmarks'], answer: 'B' },
+        { question: 'Responsible AI principles include:', options: ['Maximising profits at all costs', 'Fairness, transparency, accountability and privacy', 'Only speed optimisation', 'Ignoring bias'], answer: 'B' }
+      ],
+      'Week 13': [
+        { question: 'Agent self-correction means:', options: ['The agent fixes hardware issues', 'The agent detects errors in its output and iterates to improve it', 'Auto-saving files', 'Restarting the server'], answer: 'B' },
+        { question: 'Long-term memory in agents stores:', options: ['Video files', 'Persistent facts and past interactions beyond the context window', 'Current session only', 'API keys'], answer: 'B' },
+        { question: 'Agent evaluation frameworks measure:', options: ['Developer happiness', 'Task completion rate, accuracy and efficiency of agent actions', 'Code formatting', 'Server uptime'], answer: 'B' },
+        { question: 'Reflection in agents involves:', options: ['Displaying a mirror image', 'The agent critiquing its own plan or output before finalising', 'Logging all requests', 'Restarting the LLM'], answer: 'B' },
+        { question: 'Iterative planning in agents means:', options: ['Writing plans in iterations like Agile', 'The agent continuously refines its plan based on intermediate results', 'Planning only once at start', 'Random action selection'], answer: 'B' }
+      ],
+      'Week 14': [
+        { question: 'FastAPI is preferred for AI apps because:', options: ['It is the oldest framework', 'It is fast, async-capable and auto-generates API documentation', 'It only works with Python 2', 'It has no dependencies'], answer: 'B' },
+        { question: 'Docker containerisation ensures:', options: ['Faster GPUs', 'Consistent runtime environment across dev, staging and production', 'Free cloud hosting', 'Automatic code testing'], answer: 'B' },
+        { question: 'CI/CD in AI apps automates:', options: ['Writing prompts', 'Building, testing and deploying code changes automatically', 'Training models', 'Data labelling'], answer: 'B' },
+        { question: 'Streamlit is used for:', options: ['Database management', 'Building interactive AI web UIs rapidly in Python', 'Container orchestration', 'API gateway management'], answer: 'B' },
+        { question: 'GitHub Actions is a:', options: ['Code editor', 'CI/CD automation platform built into GitHub', 'Cloud database', 'Testing library'], answer: 'B' }
+      ],
+      'Week 15': [
+        { question: 'LangSmith is used for:', options: ['Writing LangChain code', 'Tracing, evaluating and monitoring LangChain applications in production', 'Fine-tuning models', 'Database migrations'], answer: 'B' },
+        { question: 'Prompt evaluation compares:', options: ['Prompt colours', 'Different prompt versions on quality, cost and latency metrics', 'Number of words', 'API response sizes'], answer: 'B' },
+        { question: 'Observability in AI systems includes:', options: ['Only error logging', 'Tracing, metrics, logging and alerting across the full AI pipeline', 'Only CPU monitoring', 'Only database queries'], answer: 'B' },
+        { question: 'A/B testing prompts helps you:', options: ['Design better UI buttons', 'Determine which prompt version performs better in production', 'Reduce server costs', 'Train models faster'], answer: 'B' },
+        { question: 'Latency tuning in AI systems involves:', options: ['Buying faster hardware only', 'Caching, streaming, batching and model selection optimisation', 'Disabling logging', 'Reducing code comments'], answer: 'B' }
+      ],
+      'Week 16': [
+        { question: 'A production-grade Agentic AI solution must include:', options: ['Only a UI', 'Agent logic, tool integrations, security, monitoring and deployment', 'Only a database', 'Only API endpoints'], answer: 'B' },
+        { question: 'A capstone portfolio project demonstrates:', options: ['Only coding skills', 'End-to-end ability to design, build, secure and deploy an AI system', 'Only theoretical knowledge', 'UI design skills'], answer: 'B' },
+        { question: 'GitHub repository for a capstone should contain:', options: ['Only README', 'Code, documentation, architecture diagram and deployment instructions', 'Only Jupyter notebooks', 'Only presentation slides'], answer: 'B' },
+        { question: 'Enterprise AI certification validates:', options: ['Only Python knowledge', 'Comprehensive ability to build production AI systems in a business context', 'Only ML theory', 'Only cloud basics'], answer: 'B' },
+        { question: 'ROI in enterprise AI is measured by:', options: ['Number of models trained', 'Cost savings, time reduction, revenue impact and error reduction', 'Lines of code written', 'API calls made'], answer: 'B' }
+      ]
+    },
+    '2': { // Generative AI with Agents
+      'Week 1': [
+        { question: 'What is the "attention mechanism" in Transformers?', options: ['A notification system', 'A way for the model to weigh the importance of different tokens', 'A memory cache', 'A training trick'], answer: 'B' },
+        { question: 'Which of these is NOT a frontier LLM?', options: ['GPT-4', 'Gemini', 'Llama 3', 'TensorFlow'], answer: 'D' },
+        { question: 'The OpenAI Completions API returns:', options: ['Images', 'Generated text based on a prompt', 'Audio files', 'Structured databases'], answer: 'B' },
+        { question: 'Streaming API responses means:', options: ['Sending all tokens at once', 'Receiving tokens one by one as they are generated', 'Compressing the response', 'Using WebSockets only'], answer: 'B' },
+        { question: 'Hugging Face is primarily a:', options: ['Cloud provider', 'Model hub and ML tools platform', 'Database service', 'Frontend framework'], answer: 'B' }
+      ],
+      'Week 2': [
+        { question: 'Zero-shot prompting means:', options: ['Giving zero context', 'The model answers with no examples provided', 'Using no system prompt', 'Empty prompt'], answer: 'B' },
+        { question: 'JSON mode in LLM APIs forces:', options: ['Faster responses', 'The model to always return valid JSON', 'Smaller outputs', 'English only'], answer: 'B' },
+        { question: 'Tool schemas in LLM APIs describe:', options: ['Database schemas', 'The structure and parameters of tools the model can call', 'CSS layouts', 'API authentication'], answer: 'B' },
+        { question: 'Prompt evaluation checks:', options: ['Grammar only', 'Whether the prompt reliably produces correct and useful outputs', 'Response speed only', 'API latency'], answer: 'B' },
+        { question: 'A prompt library is useful because:', options: ['It stores images', 'It reuses tested prompts across your application', 'It speeds up the model', 'It reduces API costs automatically'], answer: 'B' }
+      ],
+      'Week 3': [
+        { question: 'In RAG, embeddings are used to:', options: ['Compress files', 'Convert text to vectors for semantic similarity search', 'Encrypt data', 'Format JSON'], answer: 'B' },
+        { question: 'FAISS is:', options: ['A Python web framework', 'A fast vector similarity search library by Facebook', 'A database ORM', 'A LLM model'], answer: 'B' },
+        { question: 'Reranking in RAG improves results by:', options: ['Adding more chunks', 'Re-scoring retrieved chunks for relevance before passing to LLM', 'Reducing chunk size', 'Changing the model'], answer: 'B' },
+        { question: 'LangChain Retrievers are:', options: ['Data scraping bots', 'Components that fetch relevant documents from a vector store', 'Model training tools', 'UI components'], answer: 'B' },
+        { question: 'Citation in RAG responses means:', options: ['Academic referencing', 'Returning the source documents that grounded the answer', 'Adding author names', 'Linking to Wikipedia'], answer: 'B' }
+      ],
+      'Week 4': [
+        { question: 'HyDE in advanced RAG stands for:', options: ['Hybrid Dense Embeddings', 'Hypothetical Document Embeddings', 'High-yield Data Extraction', 'Hierarchical Document Encoding'], answer: 'B' },
+        { question: 'RAGAS measures:', options: ['Speed of embeddings', 'Faithfulness, answer relevancy and context precision of RAG outputs', 'Database query speed', 'API uptime'], answer: 'B' },
+        { question: 'Groundedness in RAG means:', options: ['Physical grounding', 'The answer is supported by retrieved context, not hallucinated', 'Low latency responses', 'Using local models'], answer: 'B' },
+        { question: 'Parent-child chunking in RAG:', options: ['Stores files in folders', 'Uses small chunks for retrieval but passes larger parent chunks to LLM', 'Reduces embedding cost', 'Uses two models'], answer: 'B' },
+        { question: 'Multi-query RAG generates:', options: ['Multiple embeddings per chunk', 'Multiple query variants to retrieve more diverse documents', 'Multiple LLM responses', 'Multiple indexes'], answer: 'B' }
+      ],
+      'Week 5': [
+        { question: 'Function calling allows agents to:', options: ['Call Python functions locally only', 'Request the LLM to invoke specific tools with structured parameters', 'Skip the API', 'Use free models'], answer: 'B' },
+        { question: 'An agent "planner" is responsible for:', options: ['Project management', 'Breaking a goal into subtasks and deciding which tools to use', 'Storing memories', 'Generating final output'], answer: 'B' },
+        { question: 'Tool-using agents differ from chat models in that they:', options: ['Generate longer text', 'Can interact with external systems to complete tasks', 'Are always faster', 'Only work offline'], answer: 'B' },
+        { question: 'A web search tool gives an agent:', options: ['Access to local files', 'Real-time information beyond its training cutoff', 'Image generation capability', 'Code execution'], answer: 'B' },
+        { question: 'Agent memory helps with:', options: ['Speeding up inference', 'Maintaining context and facts across multiple conversation turns', 'Reducing API costs', 'Formatting outputs'], answer: 'B' }
+      ],
+      'Week 6': [
+        { question: 'In CrewAI, "agents" are defined with:', options: ['SQL schemas', 'A role, goal, backstory and set of tools', 'Only a name', 'A Docker image'], answer: 'B' },
+        { question: 'LangGraph supports cyclic workflows, which means:', options: ['Circular imports', 'The agent can loop back to earlier steps based on conditions', 'Infinite loops in code', 'Circular dependencies'], answer: 'B' },
+        { question: 'A Writer–Critic–Publisher agent crew demonstrates:', options: ['A publishing company simulation', 'Collaborative multi-agent workflow with specialised roles', 'Only text generation', 'Manual editing'], answer: 'B' },
+        { question: 'Human-in-the-loop in multi-agent means:', options: ['Humans replace agents', 'A human can review and redirect agent decisions at checkpoints', 'Only humans write prompts', 'Agents need human approval for every step'], answer: 'B' },
+        { question: 'Content ops automation using agents can:', options: ['Only format text', 'Research, draft, edit and publish content autonomously', 'Only check spelling', 'Only translate text'], answer: 'B' }
+      ],
+      'Week 7': [
+        { question: 'When should you choose fine-tuning over RAG?', options: ['Always', 'When the model needs to learn a new style, format or domain-specific behaviour', 'When you have no data', 'When you want faster responses only'], answer: 'B' },
+        { question: 'LoRA stands for:', options: ['Large Output Reduction Algorithm', 'Low-Rank Adaptation — an efficient fine-tuning technique', 'Layer Output Regularisation Approach', 'Learned Optimised Regression Algorithm'], answer: 'B' },
+        { question: 'QLoRA adds to LoRA by:', options: ['Adding more layers', 'Quantising the model to reduce GPU memory during fine-tuning', 'Using larger datasets', 'Removing dropout'], answer: 'B' },
+        { question: 'Docker is used for GenAI deployment to:', options: ['Train models', 'Package the app with all its dependencies into a portable container', 'Generate images', 'Store vectors'], answer: 'B' },
+        { question: 'A latency–cost trade-off in GenAI means:', options: ['Faster models always cost less', 'Choosing between faster expensive models and slower cheaper ones', 'Cost and latency are unrelated', 'Only latency matters'], answer: 'B' }
+      ],
+      'Week 8': [
+        { question: 'An agent-augmented GenAI app combines:', options: ['Only LLM text generation', 'LLM capabilities with autonomous tool use and multi-step reasoning', 'Only RAG', 'Only fine-tuning'], answer: 'B' },
+        { question: 'A production deployment URL requires:', options: ['Only local testing', 'Cloud hosting, a domain and proper API security', 'Only a Jupyter notebook', 'Only a README'], answer: 'B' },
+        { question: 'Peer review in a capstone helps:', options: ['Reduce competition', 'Get diverse feedback to improve architecture and code quality', 'Copy other students work', 'Skip documentation'], answer: 'B' },
+        { question: 'A portfolio-ready GenAI project should include:', options: ['Only slides', 'Working code, documentation, demo link and architecture explanation', 'Only a dataset', 'Only a model card'], answer: 'B' },
+        { question: 'Certificate of completion validates:', options: ['Only attendance', 'Practical ability to build and deploy GenAI applications', 'Theoretical knowledge only', 'Only quiz scores'], answer: 'B' }
+      ]
+    },
+    '3': { // Enterprise AI Architect
+      'Week 1': [
+        { question: 'Enterprise AI maturity model describes:', options: ['Company revenue stages', 'How organisations progress from ad-hoc AI experiments to scaled AI platforms', 'Hardware upgrade paths', 'Cloud billing tiers'], answer: 'B' },
+        { question: 'An AI Center of Excellence (CoE) is:', options: ['A gym for AI engineers', 'A central team that governs AI strategy, standards and enablement', 'A data centre', 'A model training cluster'], answer: 'B' },
+        { question: 'ROI framework for AI projects measures:', options: ['Developer satisfaction', 'Cost reduction, revenue impact, time savings and risk mitigation', 'Lines of code', 'Number of models'], answer: 'B' },
+        { question: 'Enterprise AI reference architecture includes:', options: ['Only frontend components', 'Data layer, model layer, orchestration layer and application layer', 'Only APIs', 'Only security tools'], answer: 'B' },
+        { question: 'Ollama is used for:', options: ['Cloud AI services', 'Running open-source LLMs locally on your machine', 'Data labelling', 'Model evaluation only'], answer: 'B' }
+      ],
+      'Week 2': [
+        { question: 'Tokenisation converts:', options: ['Images to vectors', 'Text into numerical tokens a model can process', 'Code to binary', 'JSON to XML'], answer: 'B' },
+        { question: 'Embedding models produce:', options: ['Generated text', 'Dense vector representations of text capturing semantic meaning', 'SQL queries', 'HTTP responses'], answer: 'B' },
+        { question: 'Which metric measures LLM response quality vs cost trade-off?', options: ['Accuracy only', 'Latency, cost per token and quality score together', 'Only speed', 'Only BLEU score'], answer: 'B' },
+        { question: 'Azure OpenAI differs from OpenAI API in that:', options: ['It uses different models', 'It runs within Azure infrastructure with enterprise compliance features', 'It is free', 'It only supports GPT-3'], answer: 'B' },
+        { question: 'Context window size determines:', options: ['Model speed', 'Maximum text the model can consider in one call', 'Training data size', 'Number of parameters'], answer: 'B' }
+      ],
+      'Week 3': [
+        { question: 'Self-consistency prompting improves accuracy by:', options: ['Asking the question once', 'Sampling multiple reasoning paths and selecting the most consistent answer', 'Using a larger model', 'Reducing temperature to 0'], answer: 'B' },
+        { question: 'A prompt template should include:', options: ['Only the user message', 'System instruction, context placeholders and output format specification', 'Only examples', 'Only the role'], answer: 'B' },
+        { question: 'Enterprise prompt versioning is needed because:', options: ['Prompts never change', 'Production prompts change and must be tracked, tested and rolled back safely', 'LLMs update automatically', 'Only developers write prompts'], answer: 'B' },
+        { question: 'Domain-specific prompts for HR mean:', options: ['Prompts that only work in HR software', 'Prompts tailored with HR context, terminology and compliance requirements', 'Random HR questions', 'Generic business prompts'], answer: 'B' },
+        { question: 'ReAct prompting enables:', options: ['React.js integration', 'Interleaved reasoning and action steps in agent prompts', 'Real-time chat', 'Reduced hallucinations only'], answer: 'B' }
+      ],
+      'Week 4': [
+        { question: 'An AI Gateway in enterprise architecture:', options: ['Is a physical gateway device', 'Centralises LLM API calls with routing, rate limiting and observability', 'Only handles authentication', 'Is optional for small teams'], answer: 'B' },
+        { question: 'The application layer in enterprise AI architecture handles:', options: ['Data storage', 'User interfaces, APIs and business logic that consume AI services', 'Model training', 'Network routing'], answer: 'B' },
+        { question: 'AI service mesh provides:', options: ['Wi-Fi coverage', 'Service discovery, load balancing and security for AI microservices', 'Only API documentation', 'Model versioning only'], answer: 'B' },
+        { question: 'Multi-tenancy in enterprise AI means:', options: ['Multiple server rooms', 'Serving multiple business units or clients from shared infrastructure safely', 'Using multiple models', 'Multiple API keys'], answer: 'B' },
+        { question: 'Draw.io is useful for architects to:', options: ['Write code', 'Create visual architecture diagrams and blueprints', 'Train models', 'Monitor systems'], answer: 'B' }
+      ],
+      'Week 5': [
+        { question: 'Semantic search differs from keyword search in that:', options: ['It is slower', 'It matches based on meaning not exact words', 'It requires SQL', 'It only works in English'], answer: 'B' },
+        { question: 'Self-query retrieval in RAG means:', options: ['The user queries themselves', 'The LLM generates structured metadata filters for the retrieval query', 'No user needed', 'Automatic data loading'], answer: 'B' },
+        { question: 'A policy search assistant built with RAG should return:', options: ['Any document', 'Relevant policy sections with source citations and confidence', 'Only summaries', 'Only table of contents'], answer: 'B' },
+        { question: 'ChromaDB is an example of:', options: ['A SQL database', 'An open-source vector database for embedding storage and retrieval', 'A cloud service', 'A Python framework'], answer: 'B' },
+        { question: 'Enterprise RAG differs from basic RAG by:', options: ['Using larger chunks', 'Adding access control, audit logging, data freshness and multi-source retrieval', 'Only using cloud', 'Having more tokens'], answer: 'B' }
+      ]
+    },
+    '4': { // AI & Machine Learning Mastery
+      'Week 1': [
+        { question: 'NumPy arrays are preferred over Python lists for ML because:', options: ['They look better', 'They support vectorised operations that are much faster', 'They use more memory', 'They work with strings only'], answer: 'B' },
+        { question: 'Pandas DataFrame is used for:', options: ['Building UIs', 'Structured data manipulation and analysis', 'Training neural networks', 'API calls'], answer: 'B' },
+        { question: 'Seaborn is built on top of:', options: ['NumPy', 'Matplotlib', 'Scikit-learn', 'TensorFlow'], answer: 'B' },
+        { question: 'EDA stands for:', options: ['Enhanced Data Architecture', 'Exploratory Data Analysis', 'Encrypted Data Access', 'External Data API'], answer: 'B' },
+        { question: 'Data wrangling refers to:', options: ['Visualising data', 'Cleaning, transforming and preparing raw data for analysis', 'Training models', 'Deploying APIs'], answer: 'B' }
+      ],
+      'Week 2': [
+        { question: 'Overfitting occurs when a model:', options: ['Has too few parameters', 'Performs well on training data but poorly on unseen data', 'Is too simple', 'Has high bias'], answer: 'B' },
+        { question: 'Which metric is best for imbalanced classification?', options: ['Accuracy', 'F1 Score or ROC-AUC', 'MSE', 'R-squared'], answer: 'B' },
+        { question: 'Random Forest is an ensemble of:', options: ['Neural networks', 'Decision trees', 'Linear models', 'SVMs'], answer: 'B' },
+        { question: 'Feature engineering means:', options: ['Building software features', 'Creating or transforming input variables to improve model performance', 'Testing code', 'Data collection'], answer: 'B' },
+        { question: 'Cross-validation helps to:', options: ['Speed up training', 'Get a more reliable estimate of model performance', 'Reduce model size', 'Increase feature count'], answer: 'B' }
+      ],
+      'Week 3': [
+        { question: 'K-means clustering groups data based on:', options: ['Labels provided', 'Proximity to cluster centroids in feature space', 'Sorted order', 'Random assignment'], answer: 'B' },
+        { question: 'PCA is used for:', options: ['Adding features', 'Reducing dimensionality while preserving variance', 'Classification tasks', 'Generating text'], answer: 'B' },
+        { question: 'Anomaly detection in ML identifies:', options: ['Wrong code', 'Data points that deviate significantly from normal patterns', 'Missing labels', 'Low accuracy models'], answer: 'B' },
+        { question: 'Customer segmentation using clustering helps businesses:', options: ['Only reduce costs', 'Understand distinct customer groups and tailor strategies accordingly', 'Only increase prices', 'Only improve UI'], answer: 'B' },
+        { question: 'Unsupervised learning differs from supervised learning in that:', options: ['It uses more data', 'It learns patterns from data without labelled examples', 'It is always better', 'It only works with images'], answer: 'B' }
+      ],
+      'Week 4': [
+        { question: 'Backpropagation computes:', options: ['Forward predictions', 'Gradients of the loss with respect to each weight', 'Data augmentation', 'Feature importance'], answer: 'B' },
+        { question: 'Dropout regularisation during training:', options: ['Removes neurons permanently', 'Randomly disables neurons to prevent overfitting', 'Reduces learning rate', 'Adds more layers'], answer: 'B' },
+        { question: 'CNNs are most effective for:', options: ['Text classification', 'Image and spatial data due to convolutional filters', 'Time series only', 'Tabular data only'], answer: 'B' },
+        { question: 'The Adam optimiser is preferred because:', options: ['It is the simplest', 'It adapts learning rates per parameter and converges faster', 'It uses no hyperparameters', 'It works only on CPUs'], answer: 'B' },
+        { question: 'Batch normalisation helps by:', options: ['Reducing dataset size', 'Stabilising training by normalising layer inputs', 'Increasing parameters', 'Removing activation functions'], answer: 'B' }
+      ]
+    },
+    '5': { // Power BI & SQL
+      'Week 1': [
+        { question: 'A SQL JOIN combines:', options: ['Two databases', 'Rows from two tables based on a related column', 'Two SQL files', 'Two servers'], answer: 'B' },
+        { question: 'Window functions in SQL allow:', options: ['Popup windows', 'Calculations across a set of rows related to the current row without collapsing', 'Only aggregations', 'Only rankings'], answer: 'B' },
+        { question: 'GROUP BY in SQL is used with:', options: ['SELECT *', 'Aggregate functions like COUNT, SUM, AVG', 'DELETE statements', 'CREATE TABLE'], answer: 'B' },
+        { question: 'A subquery is:', options: ['A stored procedure', 'A query nested inside another query', 'A view', 'A trigger'], answer: 'B' },
+        { question: 'Which SQL function counts non-null values?', options: ['SUM()', 'COUNT()', 'AVG()', 'MAX()'], answer: 'B' }
+      ],
+      'Week 2': [
+        { question: 'A CTE (Common Table Expression) is used for:', options: ['Storing permanent tables', 'Creating named temporary result sets to simplify complex queries', 'Backing up data', 'Creating indexes'], answer: 'B' },
+        { question: 'Query optimisation in SQL involves:', options: ['Writing longer queries', 'Using indexes, avoiding SELECT * and reducing joins where possible', 'Adding more columns', 'Using subqueries always'], answer: 'B' },
+        { question: 'Data quality check in SQL identifies:', options: ['Performance issues', 'Nulls, duplicates, out-of-range values and referential integrity issues', 'Query syntax errors', 'User permissions'], answer: 'B' },
+        { question: 'A metrics mart is:', options: ['A shopping app', 'A curated set of pre-calculated business metrics ready for reporting', 'A raw data store', 'A backup system'], answer: 'B' },
+        { question: 'Funnel analysis in SQL tracks:', options: ['Social media funnels', 'User progression through defined steps like sign up → purchase', 'Only revenue', 'Only page views'], answer: 'B' }
+      ],
+      'Week 3': [
+        { question: 'Power Query is used in Power BI for:', options: ['Writing DAX', 'Data connection, transformation and loading (ETL)', 'Creating visuals', 'Publishing reports'], answer: 'B' },
+        { question: 'A star schema in Power BI has:', options: ['One large table', 'A central fact table surrounded by dimension tables', 'Only one table', 'No relationships'], answer: 'B' },
+        { question: 'Slicers in Power BI are used for:', options: ['Cutting data physically', 'Interactive filtering of visuals on a report page', 'Creating measures', 'Publishing to web'], answer: 'B' },
+        { question: 'Row-level security in Power BI ensures:', options: ['Rows are deleted', 'Different users see only the data they are authorised to see', 'Data is encrypted', 'Reports load faster'], answer: 'B' },
+        { question: 'A KPI visual in Power BI shows:', options: ['Only charts', 'A metric compared to a target with status indicator', 'Only text', 'Only tables'], answer: 'B' }
+      ],
+      'Week 4': [
+        { question: 'DAX CALCULATE function modifies:', options: ['Table structure', 'The filter context for a measure evaluation', 'Column data types', 'Relationship cardinality'], answer: 'B' },
+        { question: 'Time intelligence in DAX enables:', options: ['Time zone conversion', 'Year-to-date, month-over-month and rolling calculations', 'Clock display', 'Date formatting only'], answer: 'B' },
+        { question: 'Cardinality in a relationship describes:', options: ['Cardinal directions', 'The uniqueness ratio between related columns (one-to-many, many-to-many)', 'Data volume', 'Column data types'], answer: 'B' },
+        { question: 'A measure in Power BI is:', options: ['A static column', 'A dynamic DAX calculation evaluated in the current filter context', 'A report page', 'A data source'], answer: 'B' },
+        { question: 'USERELATIONSHIP in DAX is used when:', options: ['Creating new relationships', 'Activating an inactive relationship for a specific calculation', 'Deleting relationships', 'Filtering rows'], answer: 'B' }
+      ]
+    },
+    '6': { // AI with DevOps & AWS
+      'Week 1': [
+        { question: 'A Docker image is:', options: ['A screenshot', 'A read-only template containing the application and its dependencies', 'A running container', 'A VM snapshot'], answer: 'B' },
+        { question: 'Multi-stage Docker builds are used to:', options: ['Use multiple base images simultaneously', 'Reduce final image size by separating build and runtime stages', 'Run multiple apps', 'Speed up development'], answer: 'B' },
+        { question: 'Docker Compose is used for:', options: ['Writing Dockerfiles', 'Defining and running multi-container applications', 'Cloud deployment', 'Image scanning'], answer: 'B' },
+        { question: 'Containerising a Python ML model ensures:', options: ['Faster training', 'The model runs consistently in any environment', 'Free GPU access', 'Automatic scaling'], answer: 'B' },
+        { question: 'A Docker registry stores:', options: ['Log files', 'Built Docker images for distribution and deployment', 'Environment variables', 'Source code'], answer: 'B' }
+      ],
+      'Week 2': [
+        { question: 'Kubernetes HPA stands for:', options: ['High Performance Architecture', 'Horizontal Pod Autoscaler — scales pods based on load', 'Hybrid Proxy Application', 'Host Path Access'], answer: 'B' },
+        { question: 'A Kubernetes Service provides:', options: ['Billing information', 'Stable network endpoint to access pods regardless of their IPs', 'Storage volumes', 'Secret management'], answer: 'B' },
+        { question: 'EKS is:', options: ['Elastic Key Store', 'Amazon Elastic Kubernetes Service — managed Kubernetes on AWS', 'Event Kernel System', 'Edge Kubernetes Server'], answer: 'B' },
+        { question: 'GPU workloads on Kubernetes require:', options: ['Special flavoured coffee', 'GPU-enabled nodes and NVIDIA device plugin configuration', 'Only more RAM', 'Only faster CPUs'], answer: 'B' },
+        { question: 'Model serving patterns in K8s include:', options: ['Only REST endpoints', 'REST, gRPC, batch inference and streaming serving patterns', 'Only batch jobs', 'Only websockets'], answer: 'B' }
+      ]
+    },
+    '7': { // Data Science with Python
+      'Week 1': [
+        { question: 'NumPy vectorisation is faster than Python loops because:', options: ['It skips calculations', 'It uses optimised C code and avoids Python interpreter overhead', 'It uses more RAM', 'It runs on GPU by default'], answer: 'B' },
+        { question: 'Pandas read_csv() is used to:', options: ['Write CSV files', 'Load tabular data from a CSV file into a DataFrame', 'Connect to databases', 'Generate plots'], answer: 'B' },
+        { question: 'df.dropna() in Pandas:', options: ['Drops all columns', 'Removes rows with missing values', 'Fills missing values', 'Renames columns'], answer: 'B' },
+        { question: 'Method chaining in Pandas means:', options: ['Calling methods on different libraries', 'Applying multiple operations sequentially on a DataFrame in one expression', 'Linking two CSVs', 'Chaining API calls'], answer: 'B' },
+        { question: 'df.describe() returns:', options: ['Column names only', 'Summary statistics for numerical columns', 'Data types', 'Missing value count'], answer: 'B' }
+      ],
+      'Week 2': [
+        { question: 'A p-value below 0.05 typically means:', options: ['The result is useless', 'The result is statistically significant at the 5% level', 'The sample is too small', 'The data is wrong'], answer: 'B' },
+        { question: 'Central Limit Theorem states that:', options: ['Data is always normal', 'Sample means approach normal distribution as sample size increases', 'Means equal medians', 'Only large datasets matter'], answer: 'B' },
+        { question: 'A confidence interval of 95% means:', options: ['We are 95% right', '95% of such intervals from repeated sampling would contain the true parameter', 'The data has 5% noise', 'We need 95% accuracy'], answer: 'B' },
+        { question: 'A/B testing compares:', options: ['Two programming languages', 'Two variants to determine which performs better on a metric', 'Two datasets', 'Two models'], answer: 'B' },
+        { question: 'Standard deviation measures:', options: ['The average value', 'The spread of data around the mean', 'The maximum value', 'The sample size'], answer: 'B' }
+      ]
+    },
+    '8': { // AI Product Manager
+      'Week 1': [
+        { question: 'What is a Large Language Model (LLM)?', options: ['A large spreadsheet tool', 'A deep learning model trained on massive text data to understand and generate language', 'A database', 'A project management tool'], answer: 'B' },
+        { question: 'As an AI PM, your primary role is to:', options: ['Write code for the AI model', 'Define the problem, success metrics and roadmap for AI-powered products', 'Train the ML models', 'Design the database schema'], answer: 'B' },
+        { question: 'A hallucination in LLMs refers to:', options: ['A visual effect', 'The model generating confident but factually incorrect information', 'High latency responses', 'Long outputs'], answer: 'B' },
+        { question: 'AI opportunity mapping helps PMs to:', options: ['Learn programming', 'Identify where AI can create value, reduce friction or automate in a product', 'Manage the engineering team', 'Write test cases'], answer: 'B' },
+        { question: 'Temperature in LLMs controls:', options: ['Server temperature', 'The randomness and creativity of model outputs', 'Training speed', 'Token count'], answer: 'B' }
+      ],
+      'Week 2': [
+        { question: 'An AI PRD differs from a traditional PRD in that it includes:', options: ['More wireframes', 'Model selection rationale, data requirements, evaluation metrics and AI-specific risks', 'Less detail', 'Only user stories'], answer: 'B' },
+        { question: 'Prompt design for PMs means:', options: ['Designing UI prompts', 'Crafting instructions that guide the LLM to produce the right output for your feature', 'Writing code', 'Creating database schemas'], answer: 'B' },
+        { question: 'When working with AI engineers, PMs should:', options: ['Avoid technical discussions', 'Clearly define expected inputs, outputs, quality thresholds and edge cases', 'Only review designs', 'Only manage timelines'], answer: 'B' },
+        { question: 'A feature spec for an AI feature should include:', options: ['Only the UI design', 'User story, model behaviour, fallback handling, data needs and success metrics', 'Only the business case', 'Only technical requirements'], answer: 'B' },
+        { question: 'Edge cases in AI features are:', options: ['Unusual corner cases that are unimportant', 'Rare inputs or situations where the model may behave unexpectedly', 'Only security issues', 'Only performance issues'], answer: 'B' }
+      ],
+      'Week 3': [
+        { question: 'AI product roadmapping should prioritise based on:', options: ['Random order', 'Impact on user outcomes, technical feasibility and data readiness', 'Only stakeholder requests', 'Only revenue impact'], answer: 'B' },
+        { question: 'A good AI product success metric for a search feature is:', options: ['Number of model parameters', 'Search success rate — users finding what they need without refinement', 'API response time only', 'Number of results returned'], answer: 'B' },
+        { question: 'Bias in AI products can harm users by:', options: ['Making the app slower', 'Systematically disadvantaging certain groups based on biased training data', 'Increasing costs', 'Only affecting accuracy'], answer: 'B' },
+        { question: 'The EU AI Act classifies AI systems by:', options: ['Country of origin', 'Risk level — unacceptable, high, limited and minimal risk', 'Model size', 'Training cost'], answer: 'B' },
+        { question: 'Responsible AI for PMs means:', options: ['Only legal compliance', 'Proactively identifying and mitigating bias, privacy and safety risks', 'Avoiding all AI features', 'Only documenting risks'], answer: 'B' }
+      ],
+      'Week 4': [
+        { question: 'Go-to-market strategy for an AI product includes:', options: ['Only a launch date', 'Positioning, pricing, target segment, launch plan and feedback loops', 'Only a press release', 'Only a demo video'], answer: 'B' },
+        { question: 'OKRs for an AI product manager should measure:', options: ['Lines of code', 'Objectives tied to user outcomes and business impact of AI features', 'Only model accuracy', 'Only team velocity'], answer: 'B' },
+        { question: 'A capstone AI product strategy should include:', options: ['Only a problem statement', 'Problem, solution, AI approach, success metrics, roadmap and go-to-market', 'Only wireframes', 'Only technical architecture'], answer: 'B' },
+        { question: 'AI product differentiation comes from:', options: ['Using the latest model always', 'Unique data, workflows, UX and trust-building that competitors cannot easily replicate', 'Having the biggest team', 'Using the most expensive cloud'], answer: 'B' },
+        { question: 'Iterating on an AI feature after launch involves:', options: ['Rebuilding from scratch', 'Analysing user feedback, monitoring metrics and improving model and UX', 'Only adding more features', 'Freezing the product'], answer: 'B' }
+      ]
+    }
+  };
+
+  // ── Rich lesson content bank ──────────────────────────────────────────────
+  const LESSON_CONTENT = {
+    'video': (title, section, skills) => `
+      <div style="background:linear-gradient(135deg,#0739a822,#0b5fff11);border-left:4px solid #0b5fff;padding:16px 20px;border-radius:0 12px 12px 0;margin-bottom:20px">
+        <p style="font-size:.82rem;font-weight:700;color:#0b5fff;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📹 Video Lesson</p>
+        <p style="color:#334155;font-size:.9rem;margin:0">Watch the lesson carefully. Pause at key concepts and take notes in the panel below.</p>
+      </div>
+      <h3 style="color:#07111f;margin-bottom:12px">${title}</h3>
+      <p style="color:#475569;line-height:1.8">This lesson covers <strong>${title}</strong> as part of <em>${section}</em>.</p>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:20px 0">
+        <p style="font-weight:700;color:#07111f;margin-bottom:12px">🎯 Learning objectives</p>
+        <ul style="color:#475569;line-height:2;padding-left:20px">
+          <li>Understand the core concepts of ${title}</li>
+          <li>Apply these concepts to real-world ${skills[0] || 'AI'} scenarios</li>
+          <li>Connect this topic to the broader course curriculum</li>
+          <li>Prepare for the hands-on lab that follows</li>
+        </ul>
+      </div>
+      <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:16px;margin-top:16px">
+        <p style="font-weight:700;color:#c2410c;margin-bottom:8px">💡 Pro tip</p>
+        <p style="color:#7c2d12;font-size:.88rem">Pause the video whenever you encounter a new term or concept. Write it down with your own explanation — this dramatically improves retention.</p>
+      </div>`,
+    'project': (title, section) => `
+      <div style="background:linear-gradient(135deg,#10b98122,#059669111);border-left:4px solid #10b981;padding:16px 20px;border-radius:0 12px 12px 0;margin-bottom:20px">
+        <p style="font-size:.82rem;font-weight:700;color:#10b981;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">🧪 Hands-on Lab</p>
+        <p style="color:#334155;font-size:.9rem;margin:0">This is a practical lab. Open your IDE, follow each step, and submit your work in the Assignments tab.</p>
+      </div>
+      <h3 style="color:#07111f;margin-bottom:12px">${title}</h3>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:20px;margin:16px 0">
+        <p style="font-weight:700;color:#166534;margin-bottom:12px">📋 Lab instructions</p>
+        <ol style="color:#475569;line-height:2.2;padding-left:20px">
+          <li>Set up your environment and open your IDE / notebook</li>
+          <li>Read the full lab brief before starting</li>
+          <li>Follow each step sequentially — don't skip ahead</li>
+          <li>Test your solution with the provided test cases</li>
+          <li>Capture screenshots or output logs as evidence</li>
+          <li>Submit your GitHub link or Drive folder under <strong>Assignments</strong></li>
+          <li>Mark this lesson complete after submission</li>
+        </ol>
+      </div>
+      <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:12px;padding:16px">
+        <p style="font-weight:700;color:#92400e;margin-bottom:8px">⚠️ Lab reminder</p>
+        <p style="color:#78350f;font-size:.88rem">Stuck? Check the course Slack / Discord or re-watch the preceding video lesson. Don't submit incomplete work — quality > speed.</p>
+      </div>`,
+    'assignment': (title, section) => `
+      <div style="background:linear-gradient(135deg,#7c3aed22,#8b5cf611);border-left:4px solid #7c3aed;padding:16px 20px;border-radius:0 12px 12px 0;margin-bottom:20px">
+        <p style="font-size:.82rem;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📝 Assignment</p>
+        <p style="color:#334155;font-size:.9rem;margin:0">Complete this assignment and submit in the <strong>Assignments tab</strong>. Due within 7 days.</p>
+      </div>
+      <h3 style="color:#07111f;margin-bottom:12px">${title}</h3>
+      <div style="background:#faf5ff;border:1px solid #e9d5ff;border-radius:12px;padding:20px;margin:16px 0">
+        <p style="font-weight:700;color:#6d28d9;margin-bottom:12px">✅ Submission checklist</p>
+        <ul style="color:#475569;line-height:2.2;padding-left:20px">
+          <li>Read the assignment brief fully before starting</li>
+          <li>Complete all required tasks listed in the brief</li>
+          <li>Add your written response/notes (min. 150 words)</li>
+          <li>Include a link to your work (GitHub / Google Drive / Notion)</li>
+          <li>Review your submission before saving</li>
+        </ul>
+      </div>
+      <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:12px;padding:16px">
+        <p style="font-weight:700;color:#0c4a6e;margin-bottom:8px">🏆 Marks: 100 points</p>
+        <p style="color:#075985;font-size:.88rem">Assignments are reviewed by mentors. You will receive feedback within 3 working days. A score of 60+ is required to proceed.</p>
+      </div>`,
+    'casestudy': (title, section) => `
+      <div style="background:linear-gradient(135deg,#f59e0b22,#d9770611);border-left:4px solid #f59e0b;padding:16px 20px;border-radius:0 12px 12px 0;margin-bottom:20px">
+        <p style="font-size:.82rem;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">📋 Case Study</p>
+        <p style="color:#334155;font-size:.9rem;margin:0">Analyse this real-world scenario. Think about the design choices, trade-offs and how you would approach this problem.</p>
+      </div>
+      <h3 style="color:#07111f;margin-bottom:12px">${title}</h3>
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:20px;margin:16px 0">
+        <p style="font-weight:700;color:#92400e;margin-bottom:12px">🔍 Analysis framework</p>
+        <ol style="color:#475569;line-height:2.2;padding-left:20px">
+          <li><strong>Problem:</strong> What business problem is being solved?</li>
+          <li><strong>Solution:</strong> What AI/ML approach was used and why?</li>
+          <li><strong>Architecture:</strong> How was the system designed?</li>
+          <li><strong>Results:</strong> What outcomes were achieved?</li>
+          <li><strong>Lessons:</strong> What would you do differently?</li>
+        </ol>
+      </div>
+      <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px">
+        <p style="font-weight:700;color:#166534;margin-bottom:8px">💼 Real-world connection</p>
+        <p style="color:#14532d;font-size:.88rem">Consider how the patterns in this case study apply to your own industry or role. Can you spot opportunities where similar approaches could create value?</p>
+      </div>`
+  };
+
+  // ── Build from curriculum ─────────────────────────────────────────────────
   const topics = [];
   const assignments = [];
   const quizzes = [];
@@ -2752,7 +3283,9 @@ function curriculumToLms(c) {
   const resources = [];
   let order = 0;
   let assignN = 0;
-  let quizN = 0;
+
+  const courseQuizBank = QUIZ_BANK[c.id] || {};
+  const courseSkills = c.skills || [];
 
   (c.curriculum || []).forEach((section) => {
     const raw = section.lessons || [];
@@ -2771,49 +3304,48 @@ function curriculumToLms(c) {
       if (l.type === 'project') type = 'Lab';
       else if (l.type === 'assignment') type = 'Reading';
       else if (l.type === 'casestudy') type = 'Reading';
-      else if (l.type === 'video') type = 'Video';
 
       const duration = parseLessonMinutes(l.duration);
-      let content = `<p>Part of <strong>${section.section}</strong>.</p>`;
+      let content = '';
+
       if (l.type === 'project') {
-        content += `<p>Complete this lab hands-on. Follow the steps, capture your outputs, and mark the lesson complete when finished.</p><ol><li>Open your IDE / notebook</li><li>Follow the lab brief</li><li>Save screenshots or code</li><li>Submit related work under Assignments if listed</li></ol>`;
+        content = LESSON_CONTENT.project(title, section.section);
       } else if (l.type === 'casestudy') {
-        content += `<p>Read the use-case scenario, note design choices, and reflect on how you would implement this in an enterprise setting.</p>`;
+        content = LESSON_CONTENT.casestudy(title, section.section);
       } else if (l.type === 'assignment') {
-        content += `<p>Complete the assignment brief, then open the <strong>Assignments</strong> tab to submit your work (text + link).</p>`;
+        content = LESSON_CONTENT.assignment(title, section.section);
         assignN++;
         assignments.push({
           id: `a${c.id}_${assignN}`,
           title,
-          description: `From ${section.section}. Submit your completed work with notes and a drive/GitHub link.`,
+          description: `${section.section} — ${title}. Submit your completed work with notes and a GitHub/Drive link.`,
           due: 7,
           marks: 100,
           lessonId: lid
         });
       } else {
-        content += `<p>Watch / study this lesson, take notes in the panel below, then mark complete before moving on.</p>`;
+        content = LESSON_CONTENT.video(title, section.section, courseSkills);
       }
 
-      topicLessons.push({
-        id: lid,
-        title,
-        type,
-        duration,
-        content,
-        video: ''
-      });
+      topicLessons.push({ id: lid, title, type, duration, content, video: '' });
     });
 
-    quizN++;
+    // Get week-specific quiz questions
+    const weekKey = Object.keys(courseQuizBank).find(k => section.section.includes(k));
+    const weekQuestions = weekKey ? courseQuizBank[weekKey] : null;
+
     const weekLabel = section.section.split('—')[0].trim();
+
     quizzes.push({
-      id: `q${c.id}_${quizN}`,
-      title: `${weekLabel} Quiz`,
+      id: `q${c.id}_${order}`,
+      title: `${section.section.split('(')[0].trim()} — Quiz`,
       time: 15,
-      questions: [
-        { question: `Which best describes the focus of "${weekLabel}"?`, options: ['Skip practice', 'Build skills through lessons + labs', 'Only theory', 'Certificate only'], answer: 'B' },
-        { question: 'After finishing a lab or assignment, you should:', options: ['Ignore it', 'Mark complete and submit if required', 'Only watch videos', 'Wait for next month'], answer: 'B' },
-        { question: 'Where do you submit graded assignments?', options: ['Reviews tab', 'Assignments tab in the LMS', 'Instructor bio', 'Homepage'], answer: 'B' }
+      questions: weekQuestions || [
+        { question: `What is the primary focus of "${weekLabel}"?`, options: ['Skip this module', 'Build practical skills through lessons and labs', 'Theory only', 'Certificate collection'], answer: 'B' },
+        { question: 'After completing a lab, you should:', options: ['Ignore the output', 'Mark complete and submit work under Assignments', 'Move to the next course', 'Delete your code'], answer: 'B' },
+        { question: `Which skill from ${c.title} is most relevant to this module?`, options: ['None', courseSkills[0] || 'Core AI concepts', 'Unrelated skill', 'Only soft skills'], answer: 'B' },
+        { question: 'How do you get the most from a case study?', options: ['Just skim it', 'Analyse the problem, solution, architecture and lessons', 'Skip it', 'Copy the answer'], answer: 'B' },
+        { question: 'Assignment submissions should include:', options: ['Nothing', 'Your written analysis and a link to your work', 'Only a screenshot', 'Only a grade'], answer: 'B' }
       ]
     });
 
@@ -2823,90 +3355,61 @@ function curriculumToLms(c) {
       order,
       lessons: topicLessons,
       materials: [
-        { title: `${weekLabel} — study notes`, type: 'PDF', url: '#' },
-        { title: `${weekLabel} — slide deck`, type: 'Slides', url: '#' }
+        { title: `${weekLabel} — Study notes & slides`, type: 'PDF', url: '#' },
+        { title: `${weekLabel} — Code templates & starter files`, type: 'GitHub', url: '#' },
+        { title: `${weekLabel} — Additional reading`, type: 'Link', url: '#' }
       ],
-      topicQuizzes: [
-        {
-          question: `Ready to apply what you learned in ${weekLabel}?`,
-          options: ['Yes — practice next', 'No — skip', 'Only videos', 'Quit course'],
-          answer: 'A'
-        }
-      ]
+      topicQuizzes: weekQuestions ? [
+        { question: weekQuestions[0].question, options: weekQuestions[0].options, answer: weekQuestions[0].answer }
+      ] : []
     });
   });
 
+  // Capstone project
   const capstone = (c.highlights || []).find(h => /capstone|project/i.test(h))
-    || 'Build and submit your end-to-end capstone applying the full curriculum.';
+    || `Build and deploy an end-to-end ${c.title} capstone project demonstrating all course skills.`;
   projects.push({
     id: `p${c.id}_1`,
-    title: 'Capstone Project',
+    title: `${c.title} — Capstone Project`,
     description: capstone,
     difficulty: 'Advanced',
-    stack: (c.skills || []).slice(0, 5).join(', ') || 'AI / Python',
+    stack: (c.skills || []).slice(0, 6).join(', ') || 'AI / Python',
     days: 14
   });
 
+  // Resources
   resources.push(
-    { id: `r${c.id}_1`, title: `${c.title} — Course Handbook`, type: 'PDF', url: '#' },
-    { id: `r${c.id}_2`, title: `${c.category || 'Course'} — Quick reference`, type: 'PDF', url: '#' },
-    { id: `r${c.id}_3`, title: 'Starter code / templates', type: 'GitHub', url: '#' },
-    { id: `r${c.id}_4`, title: 'Learner community', type: 'Link', url: '#' }
+    { id: `r${c.id}_1`, title: `${c.title} — Complete Course Handbook (PDF)`, type: 'PDF', url: '#' },
+    { id: `r${c.id}_2`, title: `${c.title} — All Lab Starter Code`, type: 'GitHub', url: '#' },
+    { id: `r${c.id}_3`, title: `${c.title} — Quick Reference Cheat Sheet`, type: 'PDF', url: '#' },
+    { id: `r${c.id}_4`, title: 'Learner Community & Discussion Forum', type: 'Link', url: '#' },
+    { id: `r${c.id}_5`, title: 'Live Session Recordings Archive', type: 'Video', url: '#' }
   );
 
-  // Minimal but valid LMS payload when syllabus is missing/empty
+  // Fallback for courses with no curriculum
   if (!topics.length) {
     const skills = (c.skills || []).slice(0, 6);
-    const highlights = (c.highlights || []).slice(0, 5);
-    const skillLessons = (skills.length ? skills : ['Core concepts', 'Hands-on practice', 'Capstone prep']).map((s, i) => ({
-      id: `l${c.id}_1_${i}`,
-      title: typeof s === 'string' ? s : `Lesson ${i + 1}`,
-      type: 'Video',
-      duration: 30,
-      content: `<p>Study <strong>${s}</strong> as part of ${c.title}.</p><p>Take notes, then mark complete before moving on.</p>`,
-      video: ''
-    }));
     topics.push({
       id: `t${c.id}_1`,
       title: `${c.title} — Core Modules`,
       order: 1,
-      lessons: skillLessons,
+      lessons: (skills.length ? skills : ['Core concepts', 'Hands-on practice', 'Capstone prep']).map((s, i) => ({
+        id: `l${c.id}_1_${i}`,
+        title: typeof s === 'string' ? s : `Lesson ${i + 1}`,
+        type: 'Video',
+        duration: 30,
+        content: LESSON_CONTENT.video(s, `${c.title} — Core Modules`, skills),
+        video: ''
+      })),
       materials: [{ title: `${c.title} — study notes`, type: 'PDF', url: '#' }],
-      topicQuizzes: [{ question: `Ready to apply skills from ${c.title}?`, options: ['Yes — practice next', 'No — skip', 'Only videos', 'Quit'], answer: 'A' }]
-    });
-    topics.push({
-      id: `t${c.id}_2`,
-      title: `${c.title} — Applied Practice`,
-      order: 2,
-      lessons: [
-        {
-          id: `l${c.id}_2_0`,
-          title: 'Hands-on lab',
-          type: 'Lab',
-          duration: 90,
-          content: `<p>Complete a guided lab for <strong>${c.title}</strong>.</p><ol><li>Open your IDE / notebook</li><li>Follow the lab brief</li><li>Save outputs</li><li>Submit under Assignments</li></ol>`,
-          video: ''
-        },
-        {
-          id: `l${c.id}_2_1`,
-          title: 'Reading: program outcomes',
-          type: 'Reading',
-          duration: 20,
-          content: `<p>${(highlights[0] || c.description || 'Apply what you learned in a practical project.').toString()}</p>`,
-          video: ''
-        }
-      ],
-      materials: [{ title: 'Lab brief', type: 'PDF', url: '#' }],
       topicQuizzes: []
     });
     if (!assignments.length) {
       assignments.push({
         id: `a${c.id}_1`,
-        title: `${c.title} — Practice submission`,
-        description: `Submit notes and a link to your work for ${c.title}.`,
-        due: 7,
-        marks: 100,
-        lessonId: `l${c.id}_2_0`
+        title: `${c.title} — Practice Submission`,
+        description: `Submit your notes and a link to your work for ${c.title}.`,
+        due: 7, marks: 100, lessonId: `l${c.id}_1_0`
       });
     }
     if (!quizzes.length) {
@@ -2915,22 +3418,14 @@ function curriculumToLms(c) {
         title: `${c.title} — Checkpoint Quiz`,
         time: 10,
         questions: [
-          { question: `What is the primary goal of "${c.title}"?`, options: ['Skip practice', 'Build job-ready skills', 'Only theory', 'Certificate only'], answer: 'B' },
+          { question: `What is the primary goal of "${c.title}"?`, options: ['Skip practice', 'Build job-ready skills through hands-on projects', 'Only theory', 'Certificate only'], answer: 'B' },
           { question: 'Where do you submit graded work?', options: ['Reviews tab', 'Assignments tab in the LMS', 'Instructor bio', 'Homepage'], answer: 'B' }
         ]
       });
     }
   }
 
-  return {
-    id: c.id,
-    name: c.title,
-    topics,
-    assignments,
-    quizzes,
-    projects,
-    resources
-  };
+  return { id: c.id, name: c.title, topics, assignments, quizzes, projects, resources };
 }
 
 /** Seed LMS data from syllabus and open the Udemy-style player — requires approved enrollment */
@@ -3001,7 +3496,7 @@ async function startLearning(courseId) {
 
     const user = encodeURIComponent(currentUser.name || 'Learner');
     const title = encodeURIComponent(c.title);
-    window.location.assign(`${base}/lms?course=${title}&cid=${c.id}&user=${user}`);
+    window.location.assign(`${base}/lms.html?course=${title}&cid=${c.id}&user=${user}`);
   } catch (err) {
     console.error(err);
     showToast('Could not open learning player. Is the LMS running on port 8000?');

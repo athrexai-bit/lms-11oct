@@ -80,8 +80,8 @@ function loadDashboardCourses() {
             </div>
           </div>
           <div class="dashboard-course-actions">
-            <a href="${detailUrl}" class="btn-enroll">${pct > 0 ? '▶ Continue on Program Page' : 'View Program · Enroll / Learn'}</a>
-            <a href="admin-lms" class="btn-edit-course" onclick="localStorage.setItem('lf_active_course','${id}')">✏️ Edit</a>
+            <a href="lms.html?cid=${encodeURIComponent(id)}&course=${encodeURIComponent(course.name)}" class="btn-enroll">▶ ${pct > 0 ? 'Continue Learning' : 'Start Learning'}</a>
+            <a href="admin-lms.html" class="btn-edit-course" onclick="localStorage.setItem('lf_active_course','${id}')">✏️ Edit</a>
           </div>
         </div>
       </div>`;

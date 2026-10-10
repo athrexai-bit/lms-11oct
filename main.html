@@ -39,8 +39,8 @@ a{text-decoration:none}
 @keyframes softPulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.08);opacity:.85}}
 @keyframes proofIn{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes proofOut{to{opacity:0;transform:translateY(10px)}}
-.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
-.reveal.in{opacity:1;transform:none}
+.reveal{opacity:1;transform:none}
+.reveal.in{animation:fadeUp .7s ease both}
 
 /* NAV */
 .topbar{background:linear-gradient(90deg,var(--ink),var(--brand-deep));padding:9px 16px;text-align:center;color:#fff;font-size:13px;font-weight:500;letter-spacing:.2px}
@@ -54,6 +54,9 @@ nav.site-nav{position:sticky;top:0;z-index:999;background:rgba(255,255,255,.86);
 .nav-links{display:flex;gap:4px;margin-left:auto}
 .nav-links a{padding:8px 14px;border-radius:8px;font-size:14px;font-weight:600;color:var(--muted);transition:.2s}
 .nav-links a:hover{color:var(--brand);background:var(--brand-soft)}
+.nav-links .job-portal-nav{color:var(--ink);font-weight:700}
+.nav-links .job-portal-nav:hover{background:#e8f0ff;color:var(--brand-deep)}
+.job-portal-mobile-link{display:none;align-items:center;gap:5px;padding:8px 10px;border-radius:9px;background:#e8f0ff;color:#0739a8;font-size:13px;font-weight:800;white-space:nowrap}
 .btn-outline{border:1.5px solid var(--line);padding:9px 16px;border-radius:10px;font-weight:700;font-size:14px;color:var(--text);cursor:pointer;background:#fff;transition:.2s;font-family:inherit}
 .btn-outline:hover{border-color:var(--brand);color:var(--brand)}
 .btn-primary{background:linear-gradient(135deg,var(--brand-deep),var(--brand));color:#fff;border:none;padding:10px 20px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 8px 22px rgba(11,95,255,.28);font-family:inherit;transition:.2s}
@@ -349,9 +352,13 @@ footer{background:#07111f;color:#e2e8f0;padding-top:52px}
   .hero-visual{min-height:280px}
   .footer-grid{grid-template-columns:1fr 1fr}
   .nav-links{display:none}
+  .job-portal-mobile-link{display:inline-flex}
   .sticky-cta p{display:none}
 }
 @media(max-width:600px){
+  .nav-inner{gap:8px}
+  .job-portal-mobile-link{padding:7px 9px;font-size:12px}
+  .job-portal-mobile-link span{display:none}
   .hero{padding:64px 16px 40px;min-height:auto}
   .section{padding:56px 16px}
   .footer-grid{grid-template-columns:1fr}
@@ -518,8 +525,10 @@ footer{background:#07111f;color:#e2e8f0;padding-top:52px}
       <a href="#" onclick="showPage('courses')">Courses</a>
       <a href="#" onclick="showPage('workshops')">Workshops</a>
       <a href="#" onclick="showPage('projects')">Projects</a>
-      <a href="/dashboard" rel="noopener" title="Open LMS dashboard" style="background:linear-gradient(135deg,#0739a8,#0b5fff);color:#fff!important;padding:7px 16px;border-radius:999px;font-weight:700;box-shadow:0 3px 10px rgba(11,95,255,.3);text-decoration:none">LMS</a>
+      <a href="http://127.0.0.1:8080/lms.html" target="_blank" rel="noopener" title="Open LMS dashboard" style="background:linear-gradient(135deg,#0739a8,#0b5fff);color:#fff!important;padding:7px 16px;border-radius:999px;font-weight:700;box-shadow:0 3px 10px rgba(11,95,255,.3);text-decoration:none">LMS</a>
+      <a href="job-portal.html" class="job-portal-nav">💼 Job Portal</a>
     </div>
+    <a href="job-portal.html" class="job-portal-mobile-link" aria-label="Open Job Portal" title="Job Portal">💼<span>Jobs</span></a>
     <div style="display:flex;gap:8px;margin-left:auto;flex-shrink:0">
       <span id="navUserArea">
         <button class="btn-outline" onclick="openModal('login')">Log In</button>
@@ -2093,21 +2102,118 @@ const COURSES = [
       {title:'📋 Final Demo, Interview Prep Kit Overview',duration:'1h',type:'casestudy'},
       {title:'🏆 Certification Award',duration:'30m',type:'video'}
     ]}
-  ]}
+  ]},
+
+  { id:'8', title:'AI Product Manager', slug:'ai-product-manager', category:'AI Product Manager',
+  instructor:{name:'Riya Mehta', avatar:'https://ui-avatars.com/api/?name=Riya+Mehta&background=7c3aed&color=fff&size=40', title:'Senior AI Product Manager', bio:'Ex-Microsoft & Flipkart. 9 years in product management. Specialist in AI-driven product strategy.', rating:4.9, students:4200, courses:4},
+  thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80',
+  price:34999, originalPrice:69999, discount:50, rating:4.9, reviewCount:980, enrolledCount:4200,
+  duration:'4 months', level:'Beginner to Intermediate', badge:'New', featured:false, trending:false, cohortStartDate:'1st Oct 2026',
+  skills:['AI Strategy','Product Roadmapping','LLM Integration','Prompt Design','Data-Driven Decisions','Agile for AI','Stakeholder Management','AI Ethics','Go-to-Market','OKRs'],
+  highlights:[
+    'Define and ship AI-powered product features',
+    'Work effectively with AI engineers and data scientists',
+    'Build product roadmaps for LLM & agent-based products',
+    'Measure AI product success with the right metrics',
+    'Navigate AI ethics, bias, and governance as a PM',
+    'Capstone: End-to-end AI product strategy presentation'
+  ],
+  description:'The only product management program built for the AI era. Over 4 months you will learn how to ideate, prioritise, and ship AI-powered products — from prompt design to LLM integration to go-to-market. Perfect for PMs, aspiring PMs, and engineers moving into product roles.',
+  curriculum:[
+    {section:'MONTH 1 — AI Fundamentals for PMs', lessons:[
+      {title:'How AI & LLMs Work — A PM Perspective', duration:'45m', type:'video'},
+      {title:'The AI Product Landscape in 2026', duration:'30m', type:'video'},
+      {title:'Identifying AI Opportunities in Your Product', duration:'45m', type:'video'},
+      {title:'🛠 Lab: Audit an existing product for AI opportunities', duration:'1h', type:'project'}
+    ]},
+    {section:'MONTH 2 — Building AI Products', lessons:[
+      {title:'Writing AI Product Requirements (PRDs)', duration:'1h', type:'video'},
+      {title:'Prompt Design for PMs — No Code Required', duration:'45m', type:'video'},
+      {title:'Working with AI Engineers & Data Scientists', duration:'45m', type:'video'},
+      {title:'🛠 Lab: Build a mini AI feature spec', duration:'1.5h', type:'project'}
+    ]},
+    {section:'MONTH 3 — Strategy, Metrics & Ethics', lessons:[
+      {title:'AI Product Roadmapping & Prioritisation', duration:'1h', type:'video'},
+      {title:'Measuring AI Product Success', duration:'45m', type:'video'},
+      {title:'AI Ethics, Bias & Responsible AI for PMs', duration:'45m', type:'video'},
+      {title:'🛠 Lab: Define KPIs for an AI product', duration:'1h', type:'project'}
+    ]},
+    {section:'MONTH 4 — Capstone & Career', lessons:[
+      {title:'Go-to-Market Strategy for AI Products', duration:'1h', type:'video'},
+      {title:'Live Q&A with Senior AI PMs', duration:'1h', type:'live'},
+      {title:'🛠 Capstone: End-to-end AI product strategy', duration:'3h', type:'project'},
+      {title:'🏆 Certification Award', duration:'30m', type:'video'}
+    ]}
+  ]},
+
 ];
 
 const CATEGORIES = [
-  {name:'Agentic AI',          icon:'🤖', count:18, color:'#1E40AF', bg:'#EFF6FF'},
-  {name:'Generative AI',       icon:'✨', count:22, color:'#7C3AED', bg:'#F5F3FF'},
-  {name:'AI & Machine Learning',icon:'🧠', count:24, color:'#2563EB', bg:'#DBEAFE'},
-  {name:'Data Science',        icon:'📊', count:16, color:'#0891B2', bg:'#ECFEFF'},
-  {name:'Data Analytics',      icon:'📈', count:14, color:'#059669', bg:'#ECFDF5'},
-  {name:'Programming',         icon:'💻', count:20, color:'#4F46E5', bg:'#EEF2FF'},
-  {name:'Software Development', icon:'🛠', count:28, color:'#16A34A', bg:'#F0FDF4'},
-  {name:'Data Structures',     icon:'🗂', count:10, color:'#DC2626', bg:'#FEF2F2'},
-  {name:'DevOps & AWS',        icon:'☁️', count:15, color:'#EA580C', bg:'#FFF7ED'},
-  {name:'Robotics & AI',       icon:'🦾', count:8,  color:'#6D28D9', bg:'#F3E8FF'},
+  {name:'Agentic AI',                   icon:'🤖', count:17, color:'#1E40AF', bg:'#EFF6FF'},
+  {name:'Generative AI',                icon:'✨', count:21, color:'#7C3AED', bg:'#F5F3FF'},
+  {name:'Forward Deployment Engineer',  icon:'🚀', count:1,  color:'#0E7490', bg:'#ECFEFF'},
+  {name:'AI DevOps & AWS',              icon:'☁️', count:1,  color:'#EA580C', bg:'#FFF7ED'},
+  {name:'AI Product Manager',           icon:'🗂️', count:1,  color:'#7C3AED', bg:'#F5F3FF'},
+  {name:'AI & Machine Learning',        icon:'🧠', count:24, color:'#2563EB', bg:'#DBEAFE'},
+  {name:'Data Science',                 icon:'📊', count:6,  color:'#0891B2', bg:'#ECFEFF'},
+  {name:'Data Analytics',               icon:'📈', count:3,  color:'#059669', bg:'#ECFDF5'},
+  {name:'Robotics & AI',                icon:'🦾', count:1,  color:'#6D28D9', bg:'#F3E8FF'},
+  {name:'Full Stack Development',       icon:'🛠️', count:1,  color:'#16A34A', bg:'#F0FDF4'},
 ];
+
+// ── Map COURSE_DATABASE category keys to display names ───────────────────────
+const DB_CAT_MAP = {
+  genai:       'Generative AI',
+  agentic:     'Agentic AI',
+  datascience: 'Data Science',
+  domainai:    'Robotics & AI',
+  programming: 'Full Stack Development'
+};
+
+// ── Build a merged flat list: COURSES (flagship) + COURSE_DATABASE (all others) ─
+function buildAllCourses() {
+  const extra = [];
+  if (typeof COURSE_DATABASE !== 'undefined') {
+    Object.entries(COURSE_DATABASE).forEach(([catKey, catData]) => {
+      const catName = DB_CAT_MAP[catKey] || catData.name;
+      Object.values(catData.subcategories || {}).forEach(sub => {
+        (sub.courses || []).forEach(course => {
+          if (COURSES.some(c => c.title.toLowerCase() === course.name.toLowerCase())) return;
+          extra.push({
+            id: course.id,
+            title: course.name,
+            slug: course.id,
+            category: catName,
+            badge: course.badge || null,
+            badgeType: course.badgeType || null,
+            thumbnail: `https://placehold.co/400x200/0b1f3a/ffffff?text=${encodeURIComponent(course.name.slice(0,24))}`,
+            instructor: { name: 'Expert Instructor', avatar: `https://ui-avatars.com/api/?name=Expert+Instructor&background=1e40af&color=fff&size=40` },
+            rating: course.rating || 4.8,
+            reviewCount: parseInt((course.enrolled || '1K').replace(/[^0-9]/g,'')) * 10 || 500,
+            enrolledCount: parseInt((course.enrolled || '1K').replace(/[^0-9]/g,'')) * 1000 || 1000,
+            level: 'Intermediate',
+            duration: course.duration || 'Self-paced',
+            price: parseInt((course.price || '₹9,999').replace(/[^0-9]/g,'')) || 9999,
+            originalPrice: parseInt((course.price || '₹9,999').replace(/[^0-9]/g,'')) * 2 || 19998,
+            discount: 50,
+            description: course.description || '',
+            skills: [],
+            highlights: [],
+            curriculum: [],
+            cohortStartDate: null
+          });
+        });
+      });
+    });
+  }
+  return [...COURSES, ...extra];
+}
+
+let ALL_COURSES = null;
+function getAllCourses() {
+  if (!ALL_COURSES) ALL_COURSES = buildAllCourses();
+  return ALL_COURSES;
+}
 
 const TESTIMONIALS = [
   {name:'Karthik Reddy',role:'ML Engineer at Google',avatar:'https://ui-avatars.com/api/?name=Karthik+Reddy&background=4285F4&color=fff&size=56',text:'The AI & ML Bootcamp transformed my career. Within 3 months of completing the course, I landed a role at Google. The hands-on projects and mentorship were invaluable.',course:'AI & ML Bootcamp',rating:5},
@@ -2322,14 +2428,19 @@ function showPage(page, opts={}) {
 
 // ── HOME ─────────────────────────────────────────────────────────────
 function renderCategories() {
-  document.getElementById('categoriesGrid').innerHTML = CATEGORIES.map(cat => `
+  const all = getAllCourses();
+  document.getElementById('categoriesGrid').innerHTML = CATEGORIES.map(cat => {
+    const realCount = all.filter(c => c.category === cat.name).length;
+    const display = realCount || cat.count;
+    return `
     <div class="cat-card" style="border-color:${cat.bg}" onclick="filterByCategory('${cat.name}')"
       onmouseover="this.style.borderColor='${cat.color}';this.style.boxShadow='0 12px 32px ${cat.color}22'"
       onmouseout="this.style.borderColor='${cat.bg}';this.style.boxShadow='none'">
       <div class="cat-icon">${cat.icon}</div>
       <div class="cat-name">${cat.name}</div>
-      <div class="cat-count" style="color:${cat.color}">${cat.count} Courses</div>
-    </div>`).join('');
+      <div class="cat-count" style="color:${cat.color}">${display} Courses</div>
+    </div>`;
+  }).join('');
 }
 
 function renderHomeCoursesGrid() {
@@ -2408,16 +2519,20 @@ function renderCoursesPage(opts={}) {
 function renderSidebarCats() {
   const el = document.getElementById('sidebarCats');
   if (!el) return;
+  const all = getAllCourses();
   el.innerHTML = `
     <button class="cf-cat ${!activeCategory?'active':''}" onclick="activeCategory='';renderAllCourses()">
       <span class="name">All categories</span>
-      <span class="count">${COURSES.length}</span>
+      <span class="count">${all.length}</span>
     </button>
-    ${CATEGORIES.map(cat=>`
+    ${CATEGORIES.map(cat => {
+      const realCount = all.filter(c => c.category === cat.name).length;
+      return `
     <button class="cf-cat ${activeCategory===cat.name?'active':''}" onclick="activeCategory='${cat.name}';renderAllCourses()">
       <span class="name">${cat.name}</span>
-      <span class="count">${cat.count}</span>
-    </button>`).join('')}`;
+      <span class="count">${realCount || cat.count}</span>
+    </button>`;
+    }).join('')}`;
 }
 
 function getSelectedLevels() {
@@ -2435,7 +2550,7 @@ function matchesLevel(courseLevel, selected) {
 }
 
 function renderAllCourses() {
-  let res = [...COURSES];
+  let res = [...getAllCourses()];
   if(activeCategory) res = res.filter(c=>c.category===activeCategory||c.subcategory===activeCategory);
   if(searchQuery) {
     const q = searchQuery.toLowerCase();
@@ -2739,10 +2854,10 @@ async function enrollCourse(id) {
 }
 
 function getLmsBase() {
-  // Local: marketing :8080 + Flask :8000. Production (Render): same origin.
+  // Local: marketing :8080 + Flask :5000. Production (Render): same origin.
   const host = location.hostname;
   if (host === 'localhost' || host === '127.0.0.1') {
-    return `${location.protocol}//${host}:8000`;
+    return `${location.protocol}//${host}:8080`;
   }
   return location.origin;
 }
@@ -3020,7 +3135,7 @@ async function startLearning(courseId) {
 
     const user = encodeURIComponent(currentUser.name || 'Learner');
     const title = encodeURIComponent(c.title);
-    window.location.assign(`${base}/lms?course=${title}&cid=${c.id}&user=${user}`);
+    window.location.assign(`${base}/lms.html?course=${title}&cid=${c.id}&user=${user}`);
   } catch (err) {
     console.error(err);
     showToast('Could not open learning player. Is the LMS running on port 8000?');

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#10232d"/>
+  <title>Job Portal — Athrexai</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="job-portal.css"/>
+</head>
+<body>
+  <header class="portal-header">
+    <a class="brand" href="/" aria-label="Athrexai home">Athrex<span>ai</span></a>
+    <nav aria-label="Main navigation">
+      <a href="/#page-home">Home</a>
+      <a href="/lms.html">LMS</a>
+      <a href="#role-searches" aria-current="page">Job Portal</a>
+    </nav>
+    <a class="header-action" href="/">Athrexai home <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="portal-intro" aria-labelledby="page-title">
+      <div class="intro-copy">
+        <p class="eyebrow"><span></span> Career launchpad</p>
+        <h1 id="page-title">Find your next role.<br/><em>Prepare with purpose.</em></h1>
+        <p class="intro-text">Browse trusted job boards, search roles aligned with your skills, and use the prep links to make your application stronger.</p>
+        <div class="intro-actions">
+          <a class="primary-action" href="#role-searches">Explore job searches <span aria-hidden="true">↓</span></a>
+          <a class="prep-action" href="#prepare">Start preparation today <span aria-hidden="true">→</span></a>
+          <a class="text-action" href="#prepare">Open preparation kit <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <figure class="intro-image">
+        <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1100&q=85" alt="Colleagues preparing and collaborating around a laptop"/>
+        <figcaption><span>01 / 03</span> Skills. Portfolio. Opportunity.</figcaption>
+      </figure>
+    </section>
+
+    <section class="board-section" aria-labelledby="boards-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Start browsing</p>
+          <h2 id="boards-title">Job sites worth checking</h2>
+        </div>
+        <p>Open a trusted board and search roles, locations, and experience levels that suit you.</p>
+      </div>
+      <div class="board-list">
+        <a class="board-link board-link-teal" href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener noreferrer">
+          <span class="board-mark">in</span><span><strong>LinkedIn Jobs</strong><small>Professional roles and networking</small></span><span class="out-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="board-link board-link-orange" href="https://www.naukri.com/" target="_blank" rel="noopener noreferrer">
+          <span class="board-mark">N</span><span><strong>Naukri</strong><small>India-wide job listings</small></span><span class="out-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="board-link board-link-blue" href="https://in.indeed.com/" target="_blank" rel="noopener noreferrer">
+          <span class="board-mark">i</span><span><strong>Indeed India</strong><small>Search roles across employers</small></span><span class="out-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="board-link board-link-green" href="https://wellfound.com/jobs" target="_blank" rel="noopener noreferrer">
+          <span class="board-mark">W</span><span><strong>Wellfound</strong><small>Startup and technology teams</small></span><span class="out-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="board-link board-link-coral" href="https://www.instahyre.com/" target="_blank" rel="noopener noreferrer">
+          <span class="board-mark">I</span><span><strong>Instahyre</strong><small>Technology and product careers</small></span><span class="out-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="board-link board-link-violet" href="https://cutshort.io/jobs" target="_blank" rel="noopener noreferrer">
+          <span class="board-mark">C</span><span><strong>Cutshort</strong><small>Curated startup and tech jobs</small></span><span class="out-arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <p class="external-note">Job listings are hosted by the linked sites. Availability, eligibility, and application requirements are set by each employer.</p>
+    </section>
+
+    <section class="roles-section" id="role-searches" aria-labelledby="roles-title">
+      <div class="section-heading role-heading">
+        <div>
+          <p class="eyebrow">Role finder</p>
+          <h2 id="roles-title">Popular job searches</h2>
+        </div>
+        <label class="role-search" for="roleSearch">
+          <span aria-hidden="true">⌕</span>
+          <input id="roleSearch" type="search" placeholder="Filter roles or skills" autocomplete="off"/>
+          <kbd>/</kbd>
+        </label>
+      </div>
+      <div class="role-grid" id="roleGrid">
+        <article class="role-card" data-search="ai engineer artificial intelligence python machine learning">
+          <div class="role-card-top"><span class="role-icon icon-teal">✳</span><span class="role-index">01</span></div>
+          <p class="role-family">AI &amp; Engineering</p>
+          <h3>AI Engineer</h3>
+          <p class="role-description">Build AI features, model integrations, and production-ready applications.</p>
+          <div class="skill-list"><span>Python</span><span>APIs</span><span>LLMs</span></div>
+          <div class="role-links"><a href="https://www.linkedin.com/jobs/search/?keywords=AI%20Engineer&location=India" target="_blank" rel="noopener noreferrer">LinkedIn search ↗</a><a href="https://www.naukri.com/ai-engineer-jobs" target="_blank" rel="noopener noreferrer">Naukri ↗</a></div>
+        </article>
+        <article class="role-card" data-search="generative ai genai llm engineer rag prompt langchain">
+          <div class="role-card-top"><span class="role-icon icon-coral">✦</span><span class="role-index">02</span></div>
+          <p class="role-family">Generative AI</p>
+          <h3>GenAI / LLM Engineer</h3>
+          <p class="role-description">Create LLM-powered products with retrieval, evaluation, and guardrails.</p>
+          <div class="skill-list"><span>RAG</span><span>LLMs</span><span>Evaluation</span></div>
+          <div class="role-links"><a href="https://www.linkedin.com/jobs/search/?keywords=Generative%20AI%20Engineer&location=India" target="_blank" rel="noopener noreferrer">LinkedIn search ↗</a><a href="https://www.naukri.com/generative-ai-engineer-jobs" target="_blank" rel="noopener noreferrer">Naukri ↗</a></div>
+        </article>
+        <article class="role-card" data-search="machine learning ml engineer pytorch tensorflow model deployment">
+          <div class="role-card-top"><span class="role-icon icon-blue">⌘</span><span class="role-index">03</span></div>
+          <p class="role-family">Machine Learning</p>
+          <h3>Machine Learning Engineer</h3>
+          <p class="role-description">Train, deploy, and monitor models that solve real product problems.</p>
+          <div class="skill-list"><span>Python</span><span>PyTorch</span><span>MLOps</span></div>
+          <div class="role-links"><a href="https://www.linkedin.com/jobs/search/?keywords=Machine%20Learning%20Engineer&location=India" target="_blank" rel="noopener noreferrer">LinkedIn search ↗</a><a href="https://www.naukri.com/machine-learning-engineer-jobs" target="_blank" rel="noopener noreferrer">Naukri ↗</a></div>
+        </article>
+        <article class="role-card" data-search="data scientist analytics statistics sql python">
+          <div class="role-card-top"><span class="role-icon icon-orange">▥</span><span class="role-index">04</span></div>
+          <p class="role-family">Data &amp; Research</p>
+          <h3>Data Scientist</h3>
+          <p class="role-description">Turn messy data into reliable insights, experiments, and predictive models.</p>
+          <div class="skill-list"><span>SQL</span><span>Statistics</span><span>Python</span></div>
+          <div class="role-links"><a href="https://www.linkedin.com/jobs/search/?keywords=Data%20Scientist&location=India" target="_blank" rel="noopener noreferrer">LinkedIn search ↗</a><a href="https://www.naukri.com/data-scientist-jobs" target="_blank" rel="noopener noreferrer">Naukri ↗</a></div>
+        </article>
+        <article class="role-card" data-search="data analyst business intelligence power bi sql excel">
+          <div class="role-card-top"><span class="role-icon icon-green">▤</span><span class="role-index">05</span></div>
+          <p class="role-family">Analytics</p>
+          <h3>Data Analyst</h3>
+          <p class="role-description">Answer business questions through analysis, dashboards, and clear reporting.</p>
+          <div class="skill-list"><span>SQL</span><span>Power BI</span><span>Excel</span></div>
+          <div class="role-links"><a href="https://www.linkedin.com/jobs/search/?keywords=Data%20Analyst&location=India" target="_blank" rel="noopener noreferrer">LinkedIn search ↗</a><a href="https://www.naukri.com/data-analyst-jobs" target="_blank" rel="noopener noreferrer">Naukri ↗</a></div>
+        </article>
+        <article class="role-card" data-search="ai product manager product strategy prompt workflows">
+          <div class="role-card-top"><span class="role-icon icon-violet">◈</span><span class="role-index">06</span></div>
+          <p class="role-family">Product &amp; Strategy</p>
+          <h3>AI Product Manager</h3>
+          <p class="role-description">Shape AI product strategy, define outcomes, and align technical teams.</p>
+          <div class="skill-list"><span>Discovery</span><span>AI strategy</span><span>Metrics</span></div>
+          <div class="role-links"><a href="https://www.linkedin.com/jobs/search/?keywords=AI%20Product%20Manager&location=India" target="_blank" rel="noopener noreferrer">LinkedIn search ↗</a><a href="https://www.naukri.com/ai-product-manager-jobs" target="_blank" rel="noopener noreferrer">Naukri ↗</a></div>
+        </article>
+      </div>
+      <p class="no-results" id="noResults" hidden>No matching role yet. Try a skill such as Python, SQL, or RAG.</p>
+    </section>
+
+    <section class="prepare-section" id="prepare" aria-labelledby="prepare-title">
+      <div class="prepare-heading">
+        <p class="eyebrow">Before you apply</p>
+        <h2 id="prepare-title">A focused prep checklist</h2>
+        <p>Small, concrete steps make your applications easier to review and your interviews easier to navigate.</p>
+      </div>
+      <div class="prepare-grid">
+        <a class="prepare-item" href="https://github.com/" target="_blank" rel="noopener noreferrer"><span class="prepare-number">01</span><span><strong>Show your work</strong><small>Pin two or three well-documented projects with a clear README and demo.</small></span><span class="out-arrow">↗</span></a>
+        <a class="prepare-item" href="https://www.kaggle.com/learn" target="_blank" rel="noopener noreferrer"><span class="prepare-number">02</span><span><strong>Practice with real data</strong><small>Build a small analysis or model and explain your decisions, not just the result.</small></span><span class="out-arrow">↗</span></a>
+        <a class="prepare-item" href="https://leetcode.com/problemset/" target="_blank" rel="noopener noreferrer"><span class="prepare-number">03</span><span><strong>Rehearse technical rounds</strong><small>Practice fundamentals in short sessions and talk through your approach.</small></span><span class="out-arrow">↗</span></a>
+        <a class="prepare-item" href="https://www.linkedin.com/learning/" target="_blank" rel="noopener noreferrer"><span class="prepare-number">04</span><span><strong>Polish your profile</strong><small>Make your headline, skills, and project links match the roles you want.</small></span><span class="out-arrow">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="portal-footer"><a class="brand" href="/">Athrex<span>ai</span></a><p>Role searches open external job sites. Always verify the employer and listing before sharing personal information.</p><a href="/">Return to Athrexai ↗</a></footer>
+
+  <script>
+    const roleSearch = document.getElementById('roleSearch');
+    const roleCards = [...document.querySelectorAll('.role-card')];
+    const noResults = document.getElementById('noResults');
+    roleSearch.addEventListener('input', () => {
+      const query = roleSearch.value.trim().toLowerCase();
+      let visible = 0;
+      roleCards.forEach(card => {
+        const match = !query || `${card.dataset.search} ${card.textContent}`.toLowerCase().includes(query);
+        card.hidden = !match;
+        if (match) visible++;
+      });
+      noResults.hidden = visible > 0;
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        event.preventDefault();
+        roleSearch.focus();
+      }
+    });
+  </script>
+</body>
+</html>
