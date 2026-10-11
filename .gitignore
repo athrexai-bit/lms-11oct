@@ -5,3 +5,4 @@ node_modules/
 arthrex.db
 __pycache__/
 *.pyc
+agents-api/.state/
