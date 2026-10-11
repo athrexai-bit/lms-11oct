@@ -6,11 +6,21 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import sqlite3, json, os
 from datetime import datetime
+import uuid
+import hashlib
+from dotenv import load_dotenv
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins="*")
+CORS(app, origins=os.getenv('CORS_ORIGINS', '*').split(','))
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'arthrex.db')
+# Database path
+DB_PATH = os.getenv('DATABASE_URL', os.path.join(os.path.dirname(__file__), 'arthrex.db'))
+if DB_PATH.startswith('sqlite:///'):
+    DB_PATH = DB_PATH.replace('sqlite:///', '')
 
 # ── DB init ───────────────────────────────────────────────────────────────────
 def get_db():
@@ -637,4 +647,6 @@ init_db()
 handler = app
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    port = int(os.getenv('PORT', 5001))
+    debug = os.getenv('FLASK_ENV') == 'development'
+    app.run(host='0.0.0.0', port=port, debug=debug)
