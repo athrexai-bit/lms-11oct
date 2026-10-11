@@ -3,31 +3,20 @@ services:
     name: arthrex-lms-api
     env: python
     plan: free
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "cd api && python index.py"
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd api && gunicorn -w 4 -b 0.0.0.0:$PORT index:app --timeout 120
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11
-      - key: PORT
-        value: 10000
       - key: FLASK_ENV
         value: production
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: PORT
+        value: "10000"
 
   - type: static_site
     name: arthrex-lms-frontend
-    staticPublishPath: ./
-    buildCommand: "echo 'Static files ready'"
+    staticPublishPath: .
+    buildCommand: echo "Static files ready"
     routes:
-      - path: /
+      - path: /*
         destination: /index.html
-      - path: /lms.html
-        destination: /lms.html
-      - path: /admin-lms.html
-        destination: /admin-lms.html
-      - path: /certificate.html
-        destination: /certificate.html
-
-databases:
-  - name: arthrex-lms-db
-    engine: sqlite
-    plan: free
