@@ -126,6 +126,103 @@ def init_db():
             vote_type    INTEGER NOT NULL,
             UNIQUE(item_type, item_id, user_email)
         );
+
+        CREATE TABLE IF NOT EXISTS progress (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_email TEXT NOT NULL,
+            course_id     TEXT NOT NULL,
+            lesson_id     TEXT NOT NULL,
+            percentage    INTEGER DEFAULT 0,
+            updated_at    TEXT,
+            UNIQUE(student_email, course_id, lesson_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS notifications (
+            id        INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id   TEXT NOT NULL,
+            type      TEXT DEFAULT 'general',
+            message   TEXT NOT NULL,
+            data      TEXT DEFAULT '{}',
+            read      INTEGER DEFAULT 0,
+            created_at TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS attendance (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_email TEXT NOT NULL,
+            session_id    TEXT NOT NULL,
+            course_id     TEXT DEFAULT '',
+            status        TEXT DEFAULT 'present',
+            marked_at     TEXT,
+            UNIQUE(student_email, session_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS grades (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            student_email TEXT NOT NULL,
+            course_id     TEXT DEFAULT '',
+            assignment_id TEXT NOT NULL,
+            grade         INTEGER DEFAULT 0,
+            feedback      TEXT DEFAULT '',
+            graded_at     TEXT,
+            UNIQUE(student_email, assignment_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS messages (
+            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            sender_email    TEXT NOT NULL,
+            receiver_email  TEXT NOT NULL,
+            subject         TEXT NOT NULL,
+            content         TEXT NOT NULL,
+            read            INTEGER DEFAULT 0,
+            created_at      TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS videos (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            course_id     TEXT NOT NULL,
+            lesson_id     TEXT,
+            title         TEXT NOT NULL,
+            description   TEXT DEFAULT '',
+            file_path     TEXT NOT NULL,
+            file_type     TEXT DEFAULT 'video/mp4',
+            file_size     INTEGER,
+            duration      INTEGER DEFAULT 0,
+            views         INTEGER DEFAULT 0,
+            storage_type  TEXT DEFAULT 'local',
+            url           TEXT DEFAULT '',
+            uploaded_at   TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS payments (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            payment_id    TEXT UNIQUE,
+            email         TEXT DEFAULT '',
+            course_id     TEXT NOT NULL,
+            amount        REAL NOT NULL,
+            currency      TEXT DEFAULT 'USD',
+            status        TEXT DEFAULT 'pending',
+            transaction_id TEXT DEFAULT '',
+            created_at    TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS two_factor (
+            id       INTEGER PRIMARY KEY AUTOINCREMENT,
+            email    TEXT UNIQUE NOT NULL,
+            secret   TEXT NOT NULL,
+            enabled  INTEGER DEFAULT 0,
+            backup_codes TEXT DEFAULT ''
+        );
+
+        CREATE TABLE IF NOT EXISTS calendar_events (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            course_id   TEXT NOT NULL,
+            title       TEXT NOT NULL,
+            start_date  TEXT NOT NULL,
+            end_date    TEXT NOT NULL,
+            description TEXT DEFAULT '',
+            created_at  TEXT
+        );
     ''')
     # Seed default users if empty
     c.execute('SELECT COUNT(*) FROM users')
@@ -627,6 +724,424 @@ def mark_as_answer():
     conn.close()
     
     return jsonify({'success': True})
+
+# ── PROGRESS TRACKING ────────────────────────────────────────────────────────
+@app.route('/api/progress', methods=['POST'])
+def save_progress():
+    """Save student progress on a lesson"""
+    d = request.json or {}
+    email = (d.get('studentEmail') or '').strip().lower()
+    course_id = d.get('courseId', '')
+    lesson_id = d.get('lessonId', '')
+    percentage = d.get('percentage', 0)
+    
+    if not email or not course_id or not lesson_id:
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO progress (student_email, course_id, lesson_id, percentage, updated_at) VALUES (?,?,?,?,?) '
+        'ON CONFLICT(student_email, course_id, lesson_id) DO UPDATE SET percentage=excluded.percentage, updated_at=excluded.updated_at',
+        (email, course_id, lesson_id, percentage, now())
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+@app.route('/api/progress', methods=['GET'])
+def get_progress():
+    """Get progress for a student in a course"""
+    email = (request.args.get('email') or '').strip().lower()
+    course_id = request.args.get('course', '')
+    
+    conn = get_db()
+    query = 'SELECT * FROM progress WHERE student_email=?'
+    params = [email]
+    
+    if course_id:
+        query += ' AND course_id=?'
+        params.append(course_id)
+    
+    rows = rows_to_list(conn.execute(query, params).fetchall())
+    conn.close()
+    return jsonify(rows)
+
+# ── NOTIFICATIONS ────────────────────────────────────────────────────────────
+@app.route('/api/notifications', methods=['POST'])
+def create_notification():
+    """Create a notification for a user"""
+    d = request.json or {}
+    user_id = (d.get('userId') or '').strip().lower()
+    notif_type = d.get('type', 'general')
+    message = d.get('message', '')
+    data = d.get('data', {})
+    read = d.get('read', False)
+    
+    if not user_id or not message:
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO notifications (user_id, type, message, data, read, created_at) VALUES (?,?,?,?,?,?)',
+        (user_id, notif_type, message, json.dumps(data), read, now())
+    )
+    conn.commit()
+    nid = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
+    row = row_to_dict(conn.execute('SELECT * FROM notifications WHERE id=?', (nid,)).fetchone())
+    conn.close()
+    return jsonify({'success': True, 'notification': row})
+
+@app.route('/api/notifications', methods=['GET'])
+def get_notifications():
+    """Get notifications for a user"""
+    user_id = (request.args.get('user') or '').strip().lower()
+    
+    conn = get_db()
+    rows = rows_to_list(conn.execute(
+        'SELECT * FROM notifications WHERE user_id=? ORDER BY created_at DESC', (user_id,)
+    ).fetchall())
+    conn.close()
+    return jsonify(rows)
+
+@app.route('/api/notifications/<int:nid>', methods=['PATCH'])
+def update_notification(nid):
+    """Mark notification as read"""
+    d = request.json or {}
+    read = d.get('read', True)
+    
+    conn = get_db()
+    conn.execute('UPDATE notifications SET read=? WHERE id=?', (read, nid))
+    conn.commit()
+    row = row_to_dict(conn.execute('SELECT * FROM notifications WHERE id=?', (nid,)).fetchone())
+    conn.close()
+    return jsonify({'success': True, 'notification': row})
+
+# ── EMAIL NOTIFICATIONS ──────────────────────────────────────────────────────
+@app.route('/api/email-notification', methods=['POST'])
+def send_email_notification():
+    """Send email notification (mock implementation)"""
+    d = request.json or {}
+    email = d.get('email', '')
+    subject = d.get('subject', '')
+    message = d.get('message', '')
+    
+    if not email or not subject or not message:
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    # Mock email sending - in production use SendGrid, Mailgun, etc.
+    print(f"📧 EMAIL: To={email}, Subject={subject}")
+    print(f"   Message: {message}\n")
+    
+    return jsonify({'success': True, 'message': 'Email queued for sending'})
+
+# ── ATTENDANCE ───────────────────────────────────────────────────────────────
+@app.route('/api/attendance', methods=['POST'])
+def mark_attendance():
+    """Mark attendance for a student"""
+    d = request.json or {}
+    email = (d.get('studentEmail') or '').strip().lower()
+    session_id = d.get('sessionId', '')
+    course_id = d.get('courseId', '')
+    status = d.get('status', 'present')  # present, absent, late
+    
+    if not email or not session_id:
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO attendance (student_email, session_id, course_id, status, marked_at) VALUES (?,?,?,?,?) '
+        'ON CONFLICT(student_email, session_id) DO UPDATE SET status=excluded.status, marked_at=excluded.marked_at',
+        (email, session_id, course_id, status, now())
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+@app.route('/api/attendance', methods=['GET'])
+def get_attendance():
+    """Get attendance for a student"""
+    email = (request.args.get('email') or '').strip().lower()
+    course_id = request.args.get('course', '')
+    
+    conn = get_db()
+    query = 'SELECT * FROM attendance WHERE student_email=?'
+    params = [email]
+    
+    if course_id:
+        query += ' AND course_id=?'
+        params.append(course_id)
+    
+    rows = rows_to_list(conn.execute(query, params).fetchall())
+    conn.close()
+    return jsonify(rows)
+
+# ── GRADES ───────────────────────────────────────────────────────────────────
+@app.route('/api/grades', methods=['POST'])
+def save_grade():
+    """Save a grade for a student"""
+    d = request.json or {}
+    email = (d.get('studentEmail') or '').strip().lower()
+    course_id = d.get('courseId', '')
+    assignment_id = d.get('assignmentId', '')
+    grade = d.get('grade', 0)
+    feedback = d.get('feedback', '')
+    
+    if not email or not assignment_id:
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO grades (student_email, course_id, assignment_id, grade, feedback, graded_at) VALUES (?,?,?,?,?,?) '
+        'ON CONFLICT(student_email, assignment_id) DO UPDATE SET grade=excluded.grade, feedback=excluded.feedback, graded_at=excluded.graded_at',
+        (email, course_id, assignment_id, grade, feedback, now())
+    )
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+@app.route('/api/grades', methods=['GET'])
+def get_grades():
+    """Get grades for a student"""
+    email = (request.args.get('email') or '').strip().lower()
+    course_id = request.args.get('course', '')
+    
+    conn = get_db()
+    query = 'SELECT * FROM grades WHERE student_email=?'
+    params = [email]
+    
+    if course_id:
+        query += ' AND course_id=?'
+        params.append(course_id)
+    
+    rows = rows_to_list(conn.execute(query, params).fetchall())
+    conn.close()
+    return jsonify(rows)
+
+# ── MESSAGES ─────────────────────────────────────────────────────────────────
+@app.route('/api/messages', methods=['POST'])
+def send_message():
+    """Send a message between users"""
+    d = request.json or {}
+    sender_email = (d.get('senderEmail') or '').strip().lower()
+    receiver_email = (d.get('receiverEmail') or '').strip().lower()
+    subject = d.get('subject', '')
+    content = d.get('content', '')
+    
+    if not sender_email or not receiver_email or not subject or not content:
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO messages (sender_email, receiver_email, subject, content, read, created_at) VALUES (?,?,?,?,?,?)',
+        (sender_email, receiver_email, subject, content, 0, now())
+    )
+    conn.commit()
+    mid = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
+    row = row_to_dict(conn.execute('SELECT * FROM messages WHERE id=?', (mid,)).fetchone())
+    conn.close()
+    return jsonify({'success': True, 'message': row})
+
+@app.route('/api/messages', methods=['GET'])
+def get_messages():
+    """Get messages for a user"""
+    user_email = (request.args.get('user') or '').strip().lower()
+    
+    conn = get_db()
+    rows = rows_to_list(conn.execute(
+        'SELECT * FROM messages WHERE receiver_email=? ORDER BY created_at DESC', (user_email,)
+    ).fetchall())
+    conn.close()
+    return jsonify(rows)
+
+@app.route('/api/messages/<int:mid>', methods=['PATCH'])
+def update_message(mid):
+    """Mark message as read"""
+    d = request.json or {}
+    read = d.get('read', True)
+    
+    conn = get_db()
+    conn.execute('UPDATE messages SET read=? WHERE id=?', (read, mid))
+    conn.commit()
+    row = row_to_dict(conn.execute('SELECT * FROM messages WHERE id=?', (mid,)).fetchone())
+    conn.close()
+    return jsonify({'success': True, 'message': row})
+
+# ── VIDEOS ───────────────────────────────────────────────────────────────────
+@app.route('/api/videos', methods=['POST'])
+def upload_video():
+    """Upload video file"""
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+    
+    file = request.files['file']
+    course_id = request.form.get('courseId', '')
+    lesson_id = request.form.get('lessonId', '')
+    title = request.form.get('title', file.filename)
+    description = request.form.get('description', '')
+    
+    # Save file (in production, use cloud storage like S3)
+    filename = f"{uuid.uuid4()}_{file.filename}"
+    file.save(f"/tmp/{filename}")
+    
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO videos (course_id, lesson_id, title, description, file_path, file_type, file_size, uploaded_at) VALUES (?,?,?,?,?,?,?,?)',
+        (course_id, lesson_id, title, description, filename, file.content_type, len(file.read()), now())
+    )
+    conn.commit()
+    vid = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
+    row = row_to_dict(conn.execute('SELECT * FROM videos WHERE id=?', (vid,)).fetchone())
+    conn.close()
+    
+    return jsonify({'success': True, 'video': row})
+
+@app.route('/api/videos', methods=['GET'])
+def get_videos():
+    """Get videos for course/lesson"""
+    course_id = request.args.get('course', '')
+    lesson_id = request.args.get('lesson', '')
+    
+    conn = get_db()
+    query = 'SELECT * FROM videos'
+    params = []
+    
+    if course_id:
+        query += ' WHERE course_id=?'
+        params.append(course_id)
+        if lesson_id:
+            query += ' AND lesson_id=?'
+            params.append(lesson_id)
+    
+    rows = rows_to_list(conn.execute(query, params).fetchall())
+    conn.close()
+    return jsonify(rows)
+
+@app.route('/api/videos/<int:vid>', methods=['DELETE'])
+def delete_video(vid):
+    """Delete video"""
+    conn = get_db()
+    conn.execute('DELETE FROM videos WHERE id=?', (vid,))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+@app.route('/api/videos/<int:vid>/view', methods=['POST'])
+def record_video_view(vid):
+    """Record video view"""
+    conn = get_db()
+    conn.execute('UPDATE videos SET views = views + 1 WHERE id=?', (vid,))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+# ── PAYMENTS ──────────────────────────────────────────────────────────────────
+@app.route('/api/payments/initialize', methods=['POST'])
+def initialize_payment():
+    """Initialize payment with Stripe/Razorpay"""
+    d = request.json or {}
+    course_id = d.get('courseId', '')
+    amount = d.get('amount', 0)
+    currency = d.get('currency', 'USD')
+    
+    if not course_id or not amount:
+        return jsonify({'error': 'Missing required fields'}), 400
+    
+    # In production, call Stripe or Razorpay API
+    payment_id = f"pay_{uuid.uuid4().hex[:12]}"
+    
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO payments (payment_id, course_id, amount, currency, status, created_at) VALUES (?,?,?,?,?,?)',
+        (payment_id, course_id, amount, currency, 'pending', now())
+    )
+    conn.commit()
+    conn.close()
+    
+    return jsonify({
+        'success': True,
+        'payment_id': payment_id,
+        'amount': amount,
+        'currency': currency,
+        'status': 'pending'
+    })
+
+@app.route('/api/payments', methods=['GET'])
+def get_payments():
+    """Get payment history"""
+    email = (request.args.get('email') or '').strip().lower()
+    
+    conn = get_db()
+    rows = rows_to_list(conn.execute(
+        'SELECT * FROM payments WHERE email=? ORDER BY created_at DESC', (email,)
+    ).fetchall())
+    conn.close()
+    return jsonify(rows)
+
+# ── TWO-FACTOR AUTH ───────────────────────────────────────────────────────────
+@app.route('/api/2fa/enable', methods=['POST'])
+def enable_2fa():
+    """Enable 2FA for user"""
+    d = request.json or {}
+    email = (d.get('email') or '').strip().lower()
+    
+    # Generate secret (in production, use pyotp library)
+    secret = f"secret_{uuid.uuid4().hex[:10]}"
+    
+    conn = get_db()
+    conn.execute('INSERT OR REPLACE INTO two_factor (email, secret, enabled) VALUES (?,?,?)',
+                 (email, secret, 1))
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'success': True, 'secret': secret})
+
+@app.route('/api/2fa/verify', methods=['POST'])
+def verify_2fa():
+    """Verify 2FA code"""
+    d = request.json or {}
+    email = (d.get('email') or '').strip().lower()
+    code = d.get('code', '')
+    
+    # In production, verify against pyotp
+    if len(code) == 6 and code.isdigit():
+        return jsonify({'success': True, 'verified': True})
+    
+    return jsonify({'success': False, 'verified': False})
+
+# ── CALENDAR INTEGRATION ──────────────────────────────────────────────────────
+@app.route('/api/calendar/events', methods=['POST'])
+def create_calendar_event():
+    """Create calendar event"""
+    d = request.json or {}
+    course_id = d.get('courseId', '')
+    title = d.get('title', '')
+    start_date = d.get('startDate', '')
+    end_date = d.get('endDate', '')
+    description = d.get('description', '')
+    
+    conn = get_db()
+    conn.execute(
+        'INSERT INTO calendar_events (course_id, title, start_date, end_date, description, created_at) VALUES (?,?,?,?,?,?)',
+        (course_id, title, start_date, end_date, description, now())
+    )
+    conn.commit()
+    eid = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
+    row = row_to_dict(conn.execute('SELECT * FROM calendar_events WHERE id=?', (eid,)).fetchone())
+    conn.close()
+    
+    return jsonify({'success': True, 'event': row})
+
+@app.route('/api/calendar/events', methods=['GET'])
+def get_calendar_events():
+    """Get calendar events"""
+    email = (request.args.get('email') or '').strip().lower()
+    
+    conn = get_db()
+    rows = rows_to_list(conn.execute(
+        'SELECT * FROM calendar_events ORDER BY start_date ASC'
+    ).fetchall())
+    conn.close()
+    return jsonify(rows)
 
 # ── DEBUG ─────────────────────────────────────────────────────────────────────
 @app.route('/api/debug', methods=['GET'])

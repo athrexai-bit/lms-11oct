@@ -20,11 +20,17 @@
     </div>
     <div class="topbar-right">
       <a href="#" class="btn-back btn-edit-lms" id="editCourseBtn" style="display:none">✏️ Edit Course</a>
+      <a href="#" class="btn-back btn-enroll-lms" id="enrollBtn" style="display:none" onclick="requestEnrollment()">📝 Request Enrollment</a>
+      <a href="admin-portal.html" class="btn-back" id="adminDashBtn" style="display:none">👨‍💼 Admin Portal</a>
       <a href="#" class="btn-back" id="backToDashBtn" onclick="showStudentDashboard()" style="display:none">← My Courses</a>
       <a href="/" class="btn-back">← Main Site</a>
       <div class="lms-progress-wrap" id="progressWrap" style="display:none">
         <div class="lms-progress-bar"><div class="lms-progress-fill" id="topProgress" style="width:0%"></div></div>
         <span id="topProgressLabel">0%</span>
+      </div>
+      <div id="notificationBell" style="position: relative; cursor: pointer; font-size: 1.5rem; margin-right: 1rem;" onclick="toggleNotificationPanel()">
+        🔔
+        <span id="notificationBadge" style="position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold; display: none;">0</span>
       </div>
       <div class="user-avatar" id="userInitials" title="Log out" onclick="lmsLogout()" style="cursor:pointer">U</div>
     </div>
@@ -141,9 +147,41 @@
     </div>
   </div>
 
+  <!-- NOTIFICATIONS PANEL -->
+  <div id="notificationPanel" style="position: fixed; top: 72px; right: 0; width: 360px; max-height: 500px; background: white; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 1000; display: none; flex-direction: column; overflow: hidden;">
+    <div style="padding: 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa;">
+      <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">🔔 Notifications</h3>
+      <button onclick="toggleNotificationPanel()" style="background: none; border: none; cursor: pointer; font-size: 1.2rem;">✕</button>
+    </div>
+    <div id="notificationPanelContent" style="flex: 1; overflow-y: auto; padding: 1rem;">
+      <div style="text-align: center; padding: 2rem; color: #999;">Loading...</div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <script>mermaid.initialize({ startOnLoad: false, theme: 'dark' });</script>
-  <script src="lms.js"></script>
+  <script src="features.js?v=20261014"></script>
+  <script src="lms.js?v=20261014"></script>
+  <script>
+    // Debug: Log when page loads
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('🔧 DEBUG: Page loaded');
+      console.log('🔧 loadLesson function exists:', typeof loadLesson !== 'undefined');
+      console.log('🔧 courseData exists:', typeof courseData !== 'undefined');
+      
+      // Test clicking first lesson after 2 seconds
+      setTimeout(() => {
+        console.log('🔧 Auto-testing first lesson click...');
+        const firstLesson = document.querySelector('[id^="tl-0-"]');
+        if (firstLesson) {
+          console.log('🔧 First lesson element found:', firstLesson.id);
+          firstLesson.click();
+        } else {
+          console.error('🔧 First lesson element NOT found');
+        }
+      }, 2000);
+    });
+  </script>
 
   <!-- LOGIN GATE — shown if not logged in -->
   <style>
@@ -211,8 +249,9 @@
   <script>
     // ── LMS Login Gate ──────────────────────────────────────────────
     const GATE_DEMO = {
-      'user@athrexai.com':  { password: 'user123',  name: 'User' },
-      'admin@athrexai.com': { password: 'admin123', name: 'Admin' },
+      'user@athrexai.com':  { password: 'user123',  name: 'User', role: 'user' },
+      'admin@athrexai.com': { password: 'admin123', name: 'Admin', role: 'admin' },
+      'admin@arthrex.com':  { password: 'admin@12345', name: 'Admin', role: 'admin' },
     };
 
     function gateSwitch(tab) {
@@ -242,10 +281,18 @@
       }
 
       if (ok) {
-        localStorage.setItem('lms_user', JSON.stringify({ email, name }));
+        localStorage.setItem('lms_user', JSON.stringify({ email, name, role: GATE_DEMO[email].role }));
         document.getElementById('lmsLoginGate').classList.remove('active');
         document.getElementById('userInitials').textContent = name.slice(0,2).toUpperCase();
+        document.getElementById('notificationBell').style.display = 'flex';
+        checkEditCoursePermission();
         document.getElementById('dashUserName').textContent = name.split(' ')[0];
+        
+        // Load notifications
+        if (typeof loadNotificationsForStudent === 'function') {
+          setTimeout(loadNotificationsForStudent, 500);
+        }
+        
         const params = new URLSearchParams(location.search);
         if (params.get('cid') || params.get('course')) { showPlayer(); }
         else { showStudentDashboard(); }
@@ -266,10 +313,18 @@
         if (!res.ok) throw new Error(d.error || 'Signup failed');
       } catch(e) { /* fallback — save locally */ }
 
-      localStorage.setItem('lms_user', JSON.stringify({ email, name }));
+      localStorage.setItem('lms_user', JSON.stringify({ email, name, role: GATE_DEMO[email].role }));
       document.getElementById('lmsLoginGate').classList.remove('active');
       document.getElementById('userInitials').textContent = name.slice(0,2).toUpperCase();
+      document.getElementById('notificationBell').style.display = 'flex';
+      checkEditCoursePermission();
       document.getElementById('dashUserName').textContent = name.split(' ')[0];
+      
+      // Load notifications
+      if (typeof loadNotificationsForStudent === 'function') {
+        setTimeout(loadNotificationsForStudent, 500);
+      }
+      
       const params = new URLSearchParams(location.search);
       if (params.get('cid') || params.get('course')) { showPlayer(); }
       else { showStudentDashboard(); }
@@ -337,6 +392,47 @@
       document.getElementById('progressWrap').style.display     = 'flex';
     }
 
+    function checkEditCoursePermission() {
+      const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+      const isAdmin = user.role === 'admin';
+      document.getElementById('editCourseBtn').style.display = isAdmin ? 'inline-flex' : 'none';
+      document.getElementById('enrollBtn').style.display = !isAdmin ? 'inline-flex' : 'none';
+      document.getElementById('adminDashBtn').style.display = isAdmin ? 'inline-flex' : 'none';
+    }
+
+    function requestEnrollment() {
+      const courseName = document.getElementById('topCourseTitle').textContent;
+      const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+      
+      if (!courseName) {
+        alert('Please select a course first');
+        return;
+      }
+
+      // Send to backend API
+      fetch('/api/enrollments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: user.name,
+          email: user.email,
+          course: courseName,
+          status: 'pending'
+        })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          alert(`✅ Enrollment request sent for "${courseName}"!\nAdmin will review and approve soon.`);
+        } else {
+          alert('Error: ' + (data.error || 'Could not send request'));
+        }
+      })
+      .catch(err => {
+        alert('Error: ' + err.message);
+      });
+    }
+
     function renderDashCourses() {
       loadCertificatesGallery();
       const grid = document.getElementById('dashCourseGrid');
@@ -391,7 +487,7 @@
       showPlayer();
       // Update topbar
       document.getElementById('topCourseTitle').textContent = c.name;
-      document.getElementById('editCourseBtn').style.display = 'inline-flex';
+      checkEditCoursePermission();
     }
 
     function lmsLogout() {
@@ -399,6 +495,100 @@
       localStorage.removeItem('lms_user');
       location.reload();
     }
+
+    // ═══ NOTIFICATIONS DASHBOARD ═══
+    function toggleNotificationPanel() {
+      const panel = document.getElementById('notificationPanel');
+      panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+      if (panel.style.display === 'flex') {
+        loadNotificationsForStudent();
+      }
+    }
+
+    function loadNotificationsForStudent() {
+      const user = JSON.parse(localStorage.getItem('lms_user') || '{}');
+      if (!user.email) return;
+
+      NotificationManager.getNotifications(user.email).then(notifications => {
+        const content = document.getElementById('notificationPanelContent');
+        
+        if (!notifications || notifications.length === 0) {
+          content.innerHTML = '<div style="text-align: center; padding: 2rem; color: #999;">No notifications yet</div>';
+          document.getElementById('notificationBadge').style.display = 'none';
+          return;
+        }
+
+        const unread = notifications.filter(n => !n.read).length;
+        
+        // Update badge
+        if (unread > 0) {
+          document.getElementById('notificationBadge').textContent = unread;
+          document.getElementById('notificationBadge').style.display = 'flex';
+        } else {
+          document.getElementById('notificationBadge').style.display = 'none';
+        }
+
+        // Render notifications
+        content.innerHTML = notifications.map(n => `
+          <div style="background: ${n.read ? '#f8f9fa' : '#e8f5ff'}; padding: 1rem; border-radius: 8px; margin-bottom: 0.8rem; border-left: 4px solid #3b82f6; cursor: pointer; transition: all 0.2s;" 
+               onclick="markNotificationAsRead('${n.id}')"
+               onmouseover="this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'"
+               onmouseout="this.style.boxShadow=''">
+            <div style="display: flex; justify-content: space-between; align-items: start; gap: 0.8rem;">
+              <div style="flex: 1;">
+                <div style="font-weight: 600; color: #333; margin-bottom: 0.25rem;">
+                  ${getNotificationIcon(n.type)} ${n.message}
+                </div>
+                <div style="font-size: 0.75rem; color: #999;">
+                  ${formatNotificationTime(n.createdAt)}
+                </div>
+              </div>
+              ${!n.read ? '<div style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%; margin-top: 0.5rem; flex-shrink: 0;"></div>' : ''}
+            </div>
+          </div>
+        `).join('');
+      });
+    }
+
+    function getNotificationIcon(type) {
+      const icons = {
+        'enrollment': '📝',
+        'assignment': '📋',
+        'grade': '⭐',
+        'attendance': '✓',
+        'session': '🎥',
+        'progress': '📊'
+      };
+      return icons[type] || '🔔';
+    }
+
+    function formatNotificationTime(date) {
+      const now = new Date();
+      const then = new Date(date);
+      const diff = now - then;
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+
+      if (minutes < 1) return 'Just now';
+      if (minutes < 60) return `${minutes}m ago`;
+      if (hours < 24) return `${hours}h ago`;
+      if (days < 7) return `${days}d ago`;
+      return then.toLocaleDateString();
+    }
+
+    function markNotificationAsRead(notificationId) {
+      NotificationManager.markAsRead(notificationId).then(() => {
+        loadNotificationsForStudent();
+      });
+    }
+
+    // Refresh notifications every 30 seconds
+    setInterval(() => {
+      if (document.getElementById('notificationPanel').style.display === 'flex') {
+        loadNotificationsForStudent();
+      }
+    }, 30000);
 
     // ── Check on load ─────────────────────────────────────────────────
     (function() {
@@ -413,12 +603,19 @@
       } else {
         const user = JSON.parse(u);
         document.getElementById('userInitials').textContent = (user.name||'U').slice(0,2).toUpperCase();
+        document.getElementById('notificationBell').style.display = 'flex';
         document.getElementById('dashUserName').textContent = user.name.split(' ')[0];
+        
+        // Load notifications
+        if (typeof loadNotificationsForStudent === 'function') {
+          setTimeout(loadNotificationsForStudent, 500);
+        }
+        
         if (hasCourse) {
           showPlayer();
           const courseTitle = params.get('course') ? decodeURIComponent(params.get('course')) : '';
           if (courseTitle) document.getElementById('topCourseTitle').textContent = courseTitle;
-          document.getElementById('editCourseBtn').style.display = 'inline-flex';
+          checkEditCoursePermission();
         } else {
           showStudentDashboard();
         }

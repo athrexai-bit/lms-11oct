@@ -24,6 +24,7 @@
   --radius:14px;
   --font-display:'Outfit',sans-serif;
   --font-body:'Plus Jakarta Sans',sans-serif;
+  --font-emoji:'Apple Color Emoji','Segoe Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -31,6 +32,7 @@ body{font-family:var(--font-body);background:var(--white);color:var(--text);-web
 img{max-width:100%}
 a{text-decoration:none}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--brand);border-radius:3px}
+.emoji{font-family:var(--font-emoji)}
 
 /* Motion */
 @keyframes riseIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
@@ -1639,64 +1641,133 @@ const COURSES = [
   ]},
   { id:'2', title:'Generative AI with Agents', slug:'generative-ai-with-agents', category:'Generative AI', instructor:{name:'Arjun Nair',avatar:'https://ui-avatars.com/api/?name=Arjun+Nair&background=7c3aed&color=fff&size=40',title:'GenAI Solutions Architect',bio:'Ex-Google Brain. 12 years in AI/ML. Designed GenAI systems at enterprise scale.',rating:4.8,students:9800,courses:6}, thumbnail:'https://images.unsplash.com/photo-1686191128892-3b37add4c844?w=600&q=80', price:39999, originalPrice:79999, discount:50, rating:4.8, reviewCount:2800, enrolledCount:9800, duration:'4 months', level:'Beginner to Advanced', badge:'New', featured:true, trending:true, cohortStartDate:'20th Sept 2026', skills:['GPT-4','Gemini','LangChain','RAG','Prompt Engineering','Fine-tuning'], highlights:['Build GenAI-powered apps from scratch','RAG pipelines with real datasets','Agent-augmented GenAI workflows','Deployed capstone project','Certificate + LinkedIn badge'], description:'Go beyond prompting. Learn to build full-stack Generative AI applications powered by autonomous agents, RAG pipelines and fine-tuned LLMs — deployed to production.',
   curriculum:[
-    {section:'MONTH 1 — GenAI Foundations',lessons:[{title:'',duration:'',type:'divider'}]},
-    {section:'Week 1 — LLMs & Transformers (6 hrs)',lessons:[
-      {title:'How LLMs Work: Tokens, Attention & Context',duration:'45m',type:'video'},
-      {title:'GPT-4, Gemini & Open-Source Model Landscape',duration:'45m',type:'video'},
-      {title:'API Setup: OpenAI, Google AI Studio & Hugging Face',duration:'30m',type:'video'},
+    {section:'MONTH 1 — GenAI Foundations & Prompt Engineering',lessons:[{title:'',duration:'',type:'divider'}]},
+    {section:'Week 1 — LLMs, Transformers & GenAI Fundamentals (6 hrs)',lessons:[
+      {title:'🎓 AI Evolution & GenAI Fundamentals',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=kCc8FjSHcX0'},
+      {title:'🎓 Foundation Models (GPT, Claude, Gemini)',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=eMlx5aFysWQ'},
+      {title:'🎓 Tokens, Context & Model Capabilities',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=bZQun8Y4L2A'},
+      {title:'🎓 LLM APIs & Tools Setup',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=dIUTsFT2MeQ'},
       {title:'🛠 Lab: First Chat Completions + Streaming Apps',duration:'2h',type:'project'},
-      {title:'📝 Assignment: Compare 3 models on the same task',duration:'1h',type:'assignment'}
+      {title:'📝 Assignment: Compare GPT-4, Claude & Gemini on 5 business prompts',duration:'1h',type:'assignment'}
     ]},
-    {section:'Week 2 — Prompt Engineering Mastery (6 hrs)',lessons:[
-      {title:'Zero-shot, Few-shot & Chain-of-Thought',duration:'45m',type:'video'},
-      {title:'Structured Outputs, JSON Mode & Tool Schemas',duration:'45m',type:'video'},
-      {title:'Prompt Evaluation & Anti-patterns',duration:'30m',type:'video'},
-      {title:'🛠 Lab: Build a Prompt Library & Eval Harness',duration:'2h',type:'project'},
-      {title:'📋 Case Study: Customer Support Prompt Pack',duration:'30m',type:'casestudy'},
-      {title:'📝 Assignment: Domain prompt set for HR + Finance',duration:'1h',type:'assignment'}
+    {section:'Week 2 — Transformer Architecture & LLM Training (6 hrs)',lessons:[
+      {title:'🎓 Transformers Architecture Deep-Dive',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=XfpMkf4rD6E'},
+      {title:'🎓 Attention Mechanisms Explained',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=P127jhj-8-Y'},
+      {title:'🎓 LLM Training: Pretraining, Instruction Tuning & RLHF',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=tvsB0Yd-G6w'},
+      {title:'🎓 Tokenizers & Embeddings',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=gJnt3xfK41A'},
+      {title:'🛠 Lab: Tokenizer Exploration & Embedding Similarity',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Transformer Architecture Diagram + Colab Notebook',duration:'1h',type:'assignment'}
     ]},
-    {section:'MONTH 2 — RAG & Knowledge Apps',lessons:[{title:'',duration:'',type:'divider'}]},
-    {section:'Week 3 — RAG Architecture (6 hrs)',lessons:[
-      {title:'Chunking, Embeddings & Vector Search',duration:'45m',type:'video'},
-      {title:'Hybrid Search, Reranking & Citations',duration:'45m',type:'video'},
-      {title:'LangChain Retrievers & Chains',duration:'30m',type:'video'},
-      {title:'🛠 Lab: RAG over PDFs with Chroma / FAISS',duration:'2h',type:'project'},
-      {title:'📝 Assignment: Build a policy Q&A assistant',duration:'1h',type:'assignment'}
+    {section:'Week 3 — Prompt Engineering & Context Engineering (6 hrs)',lessons:[
+      {title:'🎓 Prompt Engineering Fundamentals',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=MJZCCpCGkP8'},
+      {title:'🎓 Few-Shot & Chain-of-Thought Prompting',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=L_Guz73nwvA'},
+      {title:'🎓 Structured Outputs & JSON Mode',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=5c00o75Yt-0'},
+      {title:'🎓 Hallucination Reduction & Prompt Injection',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=xUp5bCPgaZs'},
+      {title:'🛠 Lab: Banking Document Extractor with Structured Outputs',duration:'2h',type:'project'},
+      {title:'📝 Assignment: 10 Prompt Templates Across 5 Domains',duration:'1h',type:'assignment'}
     ]},
-    {section:'Week 4 — Production RAG Patterns (6 hrs)',lessons:[
-      {title:'Advanced RAG: HyDE, Parent-Child, Multi-Query',duration:'45m',type:'video'},
-      {title:'Evaluation with RAGAS & Groundedness',duration:'45m',type:'video'},
-      {title:'🛠 Lab: Add citations + confidence scores',duration:'2h',type:'project'},
-      {title:'📋 Case Study: Enterprise Knowledge Assistant',duration:'30m',type:'casestudy'},
-      {title:'📝 Assignment: RAG eval report on your corpus',duration:'1h',type:'assignment'}
+    {section:'Week 4 — LLM Application Development & Frameworks (6 hrs)',lessons:[
+      {title:'🎓 LangChain Introduction & Components',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=HjUpnfr8V5Y'},
+      {title:'🎓 LlamaIndex for Document Intelligence',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=k5oC9fhY9Uk'},
+      {title:'🎓 Building Production LLM Apps',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=VaWWh1czJek'},
+      {title:'🛠 Lab: Build End-to-End Q&A System with LangChain',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Deploy & Test LLM App with Multiple Backends',duration:'1h',type:'assignment'},
+      {title:'🏆 Mini Capstone 1: Customer Service Bot with Memory',duration:'2h',type:'project'}
     ]},
-    {section:'MONTH 3 — Agents + GenAI',lessons:[{title:'',duration:'',type:'divider'}]},
-    {section:'Week 5 — Tool-Using Agents (6 hrs)',lessons:[
-      {title:'Agents vs Chatbots: Planner, Tools, Memory',duration:'45m',type:'video'},
-      {title:'Function Calling & External APIs',duration:'45m',type:'video'},
-      {title:'🛠 Lab: Research Agent with web + calculator tools',duration:'2h',type:'project'},
-      {title:'📝 Assignment: Design a domain agent with 3 tools',duration:'1h',type:'assignment'}
+    
+    {section:'MONTH 2 — Enterprise RAG & Knowledge Systems',lessons:[{title:'',duration:'',type:'divider'}]},
+    {section:'Week 5 — RAG Architecture & Vector Databases (6 hrs)',lessons:[
+      {title:'🎓 RAG Fundamentals: Chunking, Embeddings & Retrieval',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=BrsocJb-fAo'},
+      {title:'🎓 Vector Databases (Pinecone, Chroma, FAISS)',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=dGT9aH2n2VE'},
+      {title:'🎓 Semantic Search & Hybrid Retrieval',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=jM1e20D_gDk'},
+      {title:'🛠 Lab: Build RAG Pipeline with PDF Documents',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Policy Q&A Assistant with Citations',duration:'1h',type:'assignment'}
     ]},
-    {section:'Week 6 — Multi-Agent Workflows (6 hrs)',lessons:[
-      {title:'CrewAI & LangGraph Orchestration Patterns',duration:'45m',type:'video'},
-      {title:'Human-in-the-Loop & Guardrails',duration:'45m',type:'video'},
-      {title:'🛠 Lab: Writer–Critic–Publisher Agent Crew',duration:'2h',type:'project'},
-      {title:'📋 Case Study: Content Ops Automation',duration:'30m',type:'casestudy'},
-      {title:'📝 Mid-term: Multi-agent workflow design doc',duration:'1h',type:'assignment'}
+    {section:'Week 6 — Advanced RAG Patterns (6 hrs)',lessons:[
+      {title:'🎓 HyDE, Parent-Child & Multi-Query RAG',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=KZfL0XuLFGE'},
+      {title:'🎓 Reranking & Query Expansion',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=X0Z4NsMz1_w'},
+      {title:'🎓 RAG Evaluation with RAGAS',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=VnztYiDSVZ4'},
+      {title:'🛠 Lab: Implement Advanced RAG Techniques',duration:'2h',type:'project'},
+      {title:'📝 Assignment: RAG Evaluation Report on Custom Corpus',duration:'1h',type:'assignment'},
+      {title:'📋 Case Study: Enterprise Knowledge Assistant',duration:'30m',type:'casestudy'}
     ]},
-    {section:'MONTH 4 — Deploy & Capstone',lessons:[{title:'',duration:'',type:'divider'}]},
-    {section:'Week 7 — Fine-tuning & Deployment (6 hrs)',lessons:[
-      {title:'When to Fine-tune vs RAG vs Prompt',duration:'45m',type:'video'},
-      {title:'LoRA / QLoRA Basics & Evaluation',duration:'45m',type:'video'},
-      {title:'Deploying GenAI Apps (API, Docker, Cloud)',duration:'30m',type:'video'},
-      {title:'🛠 Lab: Containerise and deploy a GenAI API',duration:'2h',type:'project'},
-      {title:'📝 Assignment: Cost + latency trade-off write-up',duration:'1h',type:'assignment'}
+    {section:'Week 7 — GraphRAG & Multimodal RAG (6 hrs)',lessons:[
+      {title:'🎓 Knowledge Graphs for AI',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=2HaWtvqlF9Y'},
+      {title:'🎓 GraphRAG Architecture & Implementation',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=pAlU3kP9wK4'},
+      {title:'🎓 Multimodal RAG: Text + Images + Tables',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=VguAJGzp6vI'},
+      {title:'🛠 Lab: Build GraphRAG System with Neo4j',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Multimodal Document Search System',duration:'1h',type:'assignment'}
     ]},
-    {section:'Week 8 — Capstone Project (6 hrs)',lessons:[
-      {title:'Capstone Briefing: Agent-augmented GenAI App',duration:'30m',type:'video'},
-      {title:'🛠 Capstone Lab: Build, deploy and demo your app',duration:'3h',type:'project'},
-      {title:'📋 Final Demo Presentation & Peer Review',duration:'1h',type:'casestudy'},
-      {title:'🏆 Certification Award & Portfolio Review',duration:'30m',type:'video'}
+    {section:'Week 8 — Enterprise Knowledge Management (6 hrs)',lessons:[
+      {title:'🎓 Document Processing & ETL Pipelines',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=z3tXDGLj9tE'},
+      {title:'🎓 Metadata, Taxonomy & Enterprise Search',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=HjTNRWTOLFY'},
+      {title:'🎓 Content Updates & Incremental Indexing',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=Ktr8KOcJIeQ'},
+      {title:'🛠 Lab: Load 500-page PDF Corpus, Build Search API',duration:'2h',type:'project'},
+      {title:'📝 Mid-term Project: Enterprise Document Intelligence System',duration:'2h',type:'assignment'},
+      {title:'📋 Case Study: Legal Document Search & Contract Analysis',duration:'30m',type:'casestudy'}
+    ]},
+
+    {section:'MONTH 3 — Agentic AI & Orchestration',lessons:[{title:'',duration:'',type:'divider'}]},
+    {section:'Week 9 — AI Agents & Tool Calling (6 hrs)',lessons:[
+      {title:'🎓 Agent Architecture: Planner, Tools, Memory',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=F8NKVhkZZWI'},
+      {title:'🎓 Function Calling & Tool Use',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=D1YqQw9s-8I'},
+      {title:'🎓 ReAct Pattern & Chain-of-Thought Agents',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=Eug2clsLtFs'},
+      {title:'🛠 Lab: Build Research Agent with Web Search + Calculator',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Domain Agent with 3 Custom Tools',duration:'1h',type:'assignment'}
+    ]},
+    {section:'Week 10 — Multi-Agent Systems (6 hrs)',lessons:[
+      {title:'🎓 Multi-Agent Orchestration Patterns',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=vv8m9xJYXhE'},
+      {title:'🎓 CrewAI Framework Deep-Dive',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=VYDqwzOjQSA'},
+      {title:'🎓 LangGraph State Management',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=4nzWdJSNSJ0'},
+      {title:'🛠 Lab: Writer-Critic-Publisher Agent Crew',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Multi-Agent Workflow Design Document',duration:'1h',type:'assignment'},
+      {title:'📋 Case Study: Content Operations Automation',duration:'30m',type:'casestudy'}
+    ]},
+    {section:'Week 11 — Cloud-Native Agentic AI (6 hrs)',lessons:[
+      {title:'🎓 AWS Bedrock Agents',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=EXjTupj6GgM'},
+      {title:'🎓 Microsoft Copilot Studio & AutoGen',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=awBLm7XFiVY'},
+      {title:'🎓 Google Gemini ADK & Vertex AI Agents',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=R8PLlNFRg1s'},
+      {title:'🛠 Lab: Deploy Agent on AWS Bedrock + Azure',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Cloud Platform Comparison Matrix',duration:'1h',type:'assignment'}
+    ]},
+    {section:'Week 12 — Agent Security, Guardrails & Human-in-Loop (6 hrs)',lessons:[
+      {title:'🎓 OWASP LLM Top 10 & Agent Security',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=aL7lKq5hIhM'},
+      {title:'🎓 Guardrails, Input Validation & Output Filtering',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=hy-BN-bJv2I'},
+      {title:'🎓 Human-in-the-Loop Patterns',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=B0LKHlXkUH8'},
+      {title:'🛠 Lab: Add Security Guardrails to Banking Agent',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Agent Threat Model & Security Audit',duration:'1h',type:'assignment'},
+      {title:'📋 Case Study: Insurance Claims Agent with Compliance',duration:'30m',type:'casestudy'}
+    ]},
+
+    {section:'MONTH 4 — Production AI & Capstone',lessons:[{title:'',duration:'',type:'divider'}]},
+    {section:'Week 13 — LLM Fine-Tuning & Optimization (6 hrs)',lessons:[
+      {title:'🎓 When to Fine-tune vs RAG vs Prompt',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=eC6Hd1hFvos'},
+      {title:'🎓 LoRA, QLoRA & Parameter-Efficient Fine-Tuning',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=Us5ZFp16PaU'},
+      {title:'🎓 Evaluation & Testing for Fine-Tuned Models',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=q4MYX5qFZIY'},
+      {title:'🛠 Lab: Fine-Tune Llama 3 with Your Domain Data',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Cost-Benefit Analysis: Fine-Tuning vs RAG',duration:'1h',type:'assignment'}
+    ]},
+    {section:'Week 14 — LLMOps, Monitoring & Observability (6 hrs)',lessons:[
+      {title:'🎓 LLMOps Fundamentals & Best Practices',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=Fquj2u7ay40'},
+      {title:'🎓 LangSmith, Weights & Biases for LLM Monitoring',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=DGJhrZLm8_8'},
+      {title:'🎓 Cost Optimization & Latency Reduction',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=ABFHB5vOpyU'},
+      {title:'🛠 Lab: Deploy GenAI App with Monitoring Dashboard',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Production Readiness Checklist',duration:'1h',type:'assignment'}
+    ]},
+    {section:'Week 15 — Deployment & Production Best Practices (6 hrs)',lessons:[
+      {title:'🎓 Containerization with Docker & Kubernetes',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=PziYflu8cB8'},
+      {title:'🎓 API Design for GenAI Applications',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=JKvWjiV3esM'},
+      {title:'🎓 Serverless AI Deployment Patterns',duration:'60m',type:'video',videoUrl:'https://www.youtube.com/watch?v=gCRPRNUJQKk'},
+      {title:'🛠 Lab: Containerize & Deploy GenAI API to Cloud',duration:'2h',type:'project'},
+      {title:'📝 Assignment: Deployment Architecture Diagram + Cost Estimate',duration:'1h',type:'assignment'},
+      {title:'📋 Case Study: Production AI at Scale (Netflix/Uber)',duration:'30m',type:'casestudy'}
+    ]},
+    {section:'Week 16 — Final Capstone Project (6 hrs)',lessons:[
+      {title:'🏁 Capstone Briefing: Build Your GenAI Application',duration:'30m',type:'video'},
+      {title:'🛠 Capstone Week: Build, Test & Deploy',duration:'4h',type:'project'},
+      {title:'📋 Final Demo Presentation',duration:'1h',type:'presentation'},
+      {title:'🏆 Peer Review & Feedback Session',duration:'30m',type:'discussion'},
+      {title:'🎓 Certification Award & Career Guidance',duration:'30m',type:'video'}
     ]}
   ]},
 
@@ -1921,7 +1992,7 @@ const COURSES = [
     ]}
   ]},
 
-  { id:'5', title:'Power BI & SQL for Data Analysts', slug:'power-bi-sql-data-analysts', category:'Data Analytics', instructor:{name:'Rahul Verma',avatar:'https://ui-avatars.com/api/?name=Rahul+Verma&background=059669&color=fff&size=40',title:'Senior Data Analyst',bio:'8 years in data analytics. Ex-Deloitte & KPMG. Trained 15,000+ analysts.',rating:4.8,students:14000,courses:7}, thumbnail:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80', price:21999, originalPrice:43999, discount:50, rating:4.8, reviewCount:4100, enrolledCount:14000, duration:'3 months', level:'Beginner to Intermediate', badge:'Bestseller', featured:true, trending:true, cohortStartDate:'10th Sept 2026', skills:['Power BI','SQL','DAX','Data Modelling','Tableau','Excel'], highlights:['Build executive dashboards in Power BI','Advanced SQL for analytics','DAX formulas & data modelling','Real business datasets','Microsoft certification prep'], description:'Become a job-ready Data Analyst. Master Power BI dashboards, advanced SQL queries and DAX formulas using real-world business datasets — the skills every employer is hiring for right now.',
+  { id:'5', title:'Power BI & SQL for Data Analysts', slug:'power-bi-sql-data-analysts', category:'Data Analytics', instructor:{name:'Rahul Verma',avatar:'https://ui-avatars.com/api/?name=Rahul+Verma&background=059669&color=fff&size=40',title:'Senior Data Analyst',bio:'8 years in data analytics. Ex-Deloitte & KPMG. Trained 15,000+ analysts.',rating:4.8,students:14000,courses:7}, thumbnail:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80', price:21999, originalPrice:43999, discount:50, rating:4.8, reviewCount:4100, enrolledCount:14000, duration:'3 months', level:'Beginner to Intermediate', badge:'Bestseller', featured:true, trending:true, cohortStartDate:'10th Sept 2026', skills:['Power BI','SQL','DAX','Data Modelling','Tableau','Excel'], highlights:['Build executive dashboards in Power BI','Advanced SQL for analytics','DAX formulas & data modelling','Real business datasets','Microsoft certification prep'], description:'Become a job-ready Data Analyst. Master Power BI dashboards, advanced SQL queries and DAX formulas using real-world business datasets — the skills every employer is hiring for right now.',
   curriculum:[
     {section:'MONTH 1 — SQL Foundations',lessons:[{title:'',duration:'',type:'divider'}]},
     {section:'Week 1 — SQL Basics to Intermediate (6 hrs)',lessons:[
@@ -2009,7 +2080,7 @@ const COURSES = [
     ]}
   ]},
 
-  { id:'7', title:'Data Science with Python', slug:'data-science-python', category:'Data Science', instructor:{name:'Sneha Patel',avatar:'https://ui-avatars.com/api/?name=Sneha+Patel&background=0891b2&color=fff&size=40',title:'Lead Data Scientist',bio:'Ex-Google Data Scientist. MS in Statistics from Stanford.',rating:4.8,students:22000,courses:9}, thumbnail:'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80', price:34999, originalPrice:69999, discount:50, rating:4.8, reviewCount:6800, enrolledCount:22000, duration:'4 months', level:'Beginner to Advanced', badge:'Bestseller', featured:true, trending:false, cohortStartDate:'1st Sept 2026', skills:['Python','Pandas','NumPy','Matplotlib','Scikit-learn','Statistics'], highlights:['Complete data science lifecycle','EDA & data visualisation','ML model building & evaluation','12+ real-world projects','IBM-partnered certificate'], description:'Master Data Science from scratch using Python. Covers statistics, data wrangling, exploratory data analysis, machine learning and data storytelling with 12+ hands-on projects.',
+  { id:'7', title:'Data Science with Python', slug:'data-science-python', category:'Data Science', instructor:{name:'Sneha Patel',avatar:'https://ui-avatars.com/api/?name=Sneha+Patel&background=0891b2&color=fff&size=40',title:'Lead Data Scientist',bio:'Ex-Google Data Scientist. MS in Statistics from Stanford.',rating:4.8,students:22000,courses:9}, thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80', price:34999, originalPrice:69999, discount:50, rating:4.8, reviewCount:6800, enrolledCount:22000, duration:'4 months', level:'Beginner to Advanced', badge:'Bestseller', featured:true, trending:false, cohortStartDate:'1st Sept 2026', skills:['Python','Pandas','NumPy','Matplotlib','Scikit-learn','Statistics'], highlights:['Complete data science lifecycle','EDA & data visualisation','ML model building & evaluation','12+ real-world projects','IBM-partnered certificate'], description:'Master Data Science from scratch using Python. Covers statistics, data wrangling, exploratory data analysis, machine learning and data storytelling with 12+ hands-on projects.',
   curriculum:[
     {section:'MONTH 1 — Python & Stats',lessons:[{title:'',duration:'',type:'divider'}]},
     {section:'Week 1 — Python for Data Science (6 hrs)',lessons:[
@@ -2833,7 +2904,15 @@ function getLmsBase() {
   const host = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
     ? location.hostname
     : '127.0.0.1';
-  return `${location.protocol}//${host}:8080`;
+  return `${location.protocol}//${host}:8000`;
+}
+
+function getApiBase() {
+  // API server runs on port 5001
+  const host = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+    ? location.hostname
+    : '127.0.0.1';
+  return `${location.protocol}//${host}:5001`;
 }
 
 function parseLessonMinutes(duration) {
@@ -3327,7 +3406,14 @@ function curriculumToLms(c) {
         content = LESSON_CONTENT.video(title, section.section, courseSkills);
       }
 
-      topicLessons.push({ id: lid, title, type, duration, content, video: '' });
+      // Extract YouTube video ID from videoUrl if present
+      let videoId = '';
+      if (l.videoUrl) {
+        const match = l.videoUrl.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\?]+)/);
+        if (match) videoId = match[1];
+      }
+      
+      topicLessons.push({ id: lid, title, type, duration, content, video: videoId });
     });
 
     // Get week-specific quiz questions
@@ -3475,28 +3561,45 @@ async function startLearning(courseId) {
     const payload = curriculumToLms(c);
     payload.category = c.category || '';
     payload.duration = c.duration || '';
+    
+    console.log('📦 Course payload:', {
+      name: payload.name,
+      topicsCount: payload.topics?.length,
+      lessonsCount: payload.topics?.reduce((sum, t) => sum + (t.lessons?.length || 0), 0),
+      payloadSize: JSON.stringify(payload).length
+    });
 
     // Save on marketing origin (for same-origin tools)
     const store = JSON.parse(localStorage.getItem('lf_lms') || '{}');
     store[c.id] = payload;
     localStorage.setItem('lf_lms', JSON.stringify(store));
 
-    const base = getLmsBase();
+    const lmsBase = getLmsBase();
+    const apiBase = getApiBase();
     // Seed LMS server DB — localStorage on :8080 is NOT visible on :8000
     try {
-      const res = await fetch(`${base}/api/lms/${encodeURIComponent(c.id)}`, {
+      console.log('💾 Saving to API:', `${apiBase}/api/lms/${c.id}`);
+      const res = await fetch(`${apiBase}/api/lms/${encodeURIComponent(c.id)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      if (!res.ok) console.warn('LMS seed HTTP', res.status);
+      console.log('📡 API Response:', res.status, res.statusText);
+      if (!res.ok) {
+        console.warn('LMS seed HTTP', res.status);
+        const text = await res.text();
+        console.warn('Response body:', text);
+      } else {
+        console.log('✅ Course data saved successfully');
+      }
     } catch (err) {
-      console.warn('LMS API seed failed, opening player anyway', err);
+      console.error('❌ LMS API seed failed:', err);
+      showToast('Warning: Could not save to server. Using local storage only.');
     }
 
     const user = encodeURIComponent(currentUser.name || 'Learner');
     const title = encodeURIComponent(c.title);
-    window.location.assign(`${base}/lms.html?course=${title}&cid=${c.id}&user=${user}`);
+    window.location.assign(`${lmsBase}/lms.html?course=${title}&cid=${c.id}&user=${user}`);
   } catch (err) {
     console.error(err);
     showToast('Could not open learning player. Is the LMS running on port 8000?');
@@ -4184,7 +4287,7 @@ const PROJECTS = [
    stack:['Python','LangChain','OpenAI','FAISS','FastAPI','Docker'],duration:'4 weeks',
    icon:'🏥',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
    outcomes:['Build a full RAG pipeline on medical literature','Integrate with EHR data schemas','Deploy as a secure REST API','Implement HIPAA-aware data handling'],
-   github:true,thumbnail:'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&q=80'},
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160482-2fae9f0d3c39?w=600&q=80'},
 
   {id:'p2',featured:false,title:'Real-Time Fraud Detection Engine',domain:'Banking',
    desc:'Design and deploy a streaming fraud detection system using ML models trained on transaction data. Integrate with Kafka and serve predictions via a real-time REST API.',
@@ -4192,7 +4295,7 @@ const PROJECTS = [
    stack:['Python','Kafka','XGBoost','FastAPI','Redis','Docker'],duration:'3 weeks',
    icon:'🏦',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
    outcomes:['Train fraud detection models on imbalanced data','Build Kafka streaming pipeline','Serve <10ms predictions via REST API','Deploy with monitoring dashboard'],
-   github:true,thumbnail:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80'},
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'},
 
   {id:'p3',featured:false,title:'E-Commerce Recommendation Engine',domain:'E-Commerce',
    desc:'Build a collaborative + content-based hybrid recommendation system. Integrate with a product catalog API and serve personalized product recommendations in real time.',
@@ -4200,7 +4303,7 @@ const PROJECTS = [
    stack:['Python','PyTorch','FastAPI','PostgreSQL','Redis','React'],duration:'3 weeks',
    icon:'🛒',color:'#D97706',bg:'#FFFBEB',border:'#FDE68A',
    outcomes:['Build hybrid recommendation model','A/B test recommendation strategies','Serve personalized results <50ms','Build admin analytics dashboard'],
-   github:true,thumbnail:'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80'},
+   github:true,thumbnail:'https://images.unsplash.com/photo-1549887534-7ef5d8fd0808?w=600&q=80'},
 
   {id:'p4',featured:false,title:'Telecom Churn Prediction & Retention',domain:'Telecom',
    desc:'Predict customer churn 30 days in advance using call records and usage patterns. Build a retention workflow that auto-triggers offers to at-risk customers.',
@@ -4208,7 +4311,7 @@ const PROJECTS = [
    stack:['Python','scikit-learn','Airflow','PostgreSQL','Streamlit'],duration:'2 weeks',
    icon:'📡',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
    outcomes:['Feature engineer CDR and usage data','Train & evaluate churn models','Build Airflow pipeline for daily scoring','Build Streamlit dashboard for ops team'],
-   github:true,thumbnail:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+   github:true,thumbnail:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80'},
 
   {id:'p5',featured:false,title:'Retail Demand Forecasting System',domain:'Retail',
    desc:'Build a multi-store, multi-SKU demand forecasting pipeline using time-series models. Integrate external signals like weather and events to improve forecast accuracy.',
@@ -4216,7 +4319,7 @@ const PROJECTS = [
    stack:['Python','Prophet','XGBoost','Airflow','BigQuery','Looker'],duration:'3 weeks',
    icon:'🏪',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
    outcomes:['Build multi-variate time-series forecasting model','Integrate external signals (weather, promotions)','Automate weekly forecast pipeline','Build inventory optimization output'],
-   github:true,thumbnail:'https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?w=600&q=80'},
+   github:true,thumbnail:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80'},
 
   {id:'p6',featured:false,title:'IT Service Desk AI Classifier & Router',domain:'ITSM',
    desc:'Build an NLP pipeline that automatically classifies incoming IT support tickets, predicts priority, and routes them to the correct team — reducing mean-time-to-resolve by 40%.',
@@ -4240,7 +4343,7 @@ const PROJECTS = [
    stack:['Python','YOLOv8','OpenCV','FastAPI','React','AWS S3'],duration:'4 weeks',
    icon:'📦',color:'#EA580C',bg:'#FFF7ED',border:'#FED7AA',
    outcomes:['Fine-tune YOLOv8 on shelf images','Build OSA (on-shelf availability) detector','Create planogram compliance scoring','Deploy image upload & analysis pipeline'],
-   github:true,thumbnail:'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=600&q=80'},
+   github:true,thumbnail:'https://images.unsplash.com/photo-1559056199-641a0ac8b8d1?w=600&q=80'},
 
   {id:'p9',featured:false,title:'Healthcare NLP: Clinical Notes Summarizer',domain:'Healthcare',
    desc:'Build a production-grade NLP pipeline that summarizes long clinical notes into structured SOAP format using fine-tuned LLMs, with PHI redaction built in.',
@@ -4248,6 +4351,127 @@ const PROJECTS = [
    stack:['Python','Llama 3','Presidio','FastAPI','Docker','AWS'],duration:'4 weeks',
    icon:'📋',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
    outcomes:['Fine-tune LLM for clinical summarization','Build PHI redaction pipeline with Presidio','Evaluate with ROUGE and clinical accuracy','Deploy as HIPAA-compliant API'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454156613592-c1f9f7a90cb3?w=600&q=80'},
+
+  // 13 More Healthcare Case Studies
+  {id:'p9a',featured:false,title:'Apollo Hospitals - Clinical Intelligence',domain:'Healthcare',
+   desc:'Google Cloud powered clinical AI engine providing context-aware insights with next-best-action recommendations for clinicians.',
+   tags:['🏥 Healthcare','🔗 RAG','🧠 LLM','🔒 HIPAA'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Google Cloud','LLMs','Vertex AI','RAG','Python'],duration:'4 weeks',
+   icon:'🏥',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Implement Google Cloud healthcare foundation models','Build context-aware clinical insights','Integrate with EHR systems','Deploy with compliance audit trail'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160496-e100162cb6fe?w=600&q=80'},
+
+  {id:'p9b',featured:false,title:'Manipal Hospitals - Nurse Handover (90→20 min)',domain:'Healthcare',
+   desc:'Generative AI solution reducing nurse handover time from 90 to 20 minutes using Gemini 1.5 across 23 hospitals.',
+   tags:['🏥 Healthcare','⚡ GenAI','🎯 Workflow','✨ Gemini'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Gemini 1.5','Google Cloud','Python','FastAPI','Cloud Run'],duration:'4 weeks',
+   icon:'👩‍⚕️',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Deploy Gemini 1.5 for patient summarization','Automate consolidation of patient information','Scale across multiple hospital campuses','Measure time and accuracy improvements'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1532587191753-dfd61914e2a7?w=600&q=80'},
+
+  {id:'p9c',featured:false,title:'Max Healthcare - Clinical Copilot',domain:'Healthcare',
+   desc:'AI copilot for summarizing patient records and generating discharge summaries with source citations and RAG retrieval.',
+   tags:['🏥 Healthcare','💬 Copilot','🔗 RAG','✨ GenAI'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Azure OpenAI','RAG','Python','FastAPI','FHIR'],duration:'4 weeks',
+   icon:'💬',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build RAG system over patient records','Generate accurate discharge summaries','Implement proper source attribution','Deploy with feedback collection'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1631217314202-e4ff11b873d7?w=600&q=80'},
+
+  {id:'p9d',featured:false,title:'Microsoft Nuance - Ambient Docs',domain:'Healthcare',
+   desc:'Dragon Ambient eXperience generates clinical notes from patient-provider conversations automatically with clinical formatting.',
+   tags:['🏥 Healthcare','🎙️ Speech-to-Text','✨ GenAI','📝 NLP'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Speech AI','GenAI','LLMs','Azure','FastAPI'],duration:'4 weeks',
+   icon:'🎙️',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build speech-to-text for clinical conversations','Generate SOAP format notes automatically','Ensure clinical accuracy validation','Deploy HIPAA-compliant service'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80'},
+
+  {id:'p9e',featured:false,title:'Abridge - Medical Scribe AI',domain:'Healthcare',
+   desc:'Generative medical scribe transforming patient-provider conversations into accurate structured clinical documentation.',
+   tags:['🏥 Healthcare','🤖 Scribe','✨ GenAI','📝 Documentation'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Speech AI','GenAI','LLMs','Python','FastAPI'],duration:'4 weeks',
+   icon:'✍️',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build real-time speech recognition pipeline','Generate structured clinical notes','Validate medical accuracy','Integrate with EHR systems'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160649-112d4ae53169?w=600&q=80'},
+
+  {id:'p9f',featured:false,title:'Novo Nordisk - Research Agent',domain:'Healthcare',
+   desc:'Agentic AI reasoning system translating research requests into computational tasks, reducing weeks to minutes.',
+   tags:['🏥 Healthcare','🤖 Agent','🧪 Research','⚡ Reasoning'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Agentic AI','LLMs','Azure','Python','Analytics'],duration:'4 weeks',
+   icon:'🔬',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build reasoning agent for research tasks','Implement code execution capabilities','Parse complex research queries','Deploy with execution monitoring'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1579154204601-01d5fc4ea235?w=600&q=80'},
+
+  {id:'p9g',featured:false,title:'Fortis Healthcare - Patient Flow AI',domain:'Healthcare',
+   desc:'Multi-agent system coordinating appointment scheduling, bed allocation, and discharge planning for optimal patient flow.',
+   tags:['🏥 Healthcare','🤖 Multi-Agent','🎯 Optimization','⚡ Orchestration'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Azure OpenAI','Multi-Agent','Python','Optimization','APIs'],duration:'4 weeks',
+   icon:'🏥',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Design multi-agent orchestration framework','Build scheduling optimization','Implement bed management logic','Deploy workflow coordination system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80'},
+
+  {id:'p9h',featured:false,title:'Narayana Health - Knowledge Assistant',domain:'Healthcare',
+   desc:'Clinical knowledge assistant retrieving guidelines and approved reference information with source citations using RAG.',
+   tags:['🏥 Healthcare','🤖 Knowledge','🔗 RAG','📚 Guidelines'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['RAG','Vector Search','OpenAI','Python','FastAPI'],duration:'4 weeks',
+   icon:'📚',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build medical guideline vector database','Implement RAG retrieval pipeline','Ensure source attribution','Deploy with audit logging'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1521840375885-6d78c9c60faf?w=600&q=80'},
+
+  {id:'p9i',featured:false,title:'Aster DM - Patient Engagement',domain:'Healthcare',
+   desc:'Conversational patient service agent handling appointment bookings, Q&A, reminders, and intelligent case routing.',
+   tags:['🏥 Healthcare','💬 Conversational','🤖 Agent','📞 Voice'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Conversational AI','Voice AI','LLMs','Python','CRM APIs'],duration:'4 weeks',
+   icon:'💬',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build multi-turn conversational system','Implement appointment booking logic','Add intelligent case routing','Deploy with NLU fine-tuning'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80'},
+
+  {id:'p9j',featured:false,title:'GE HealthCare - AI Radiology',domain:'Healthcare',
+   desc:'Medical imaging AI workflow prioritizing urgent radiology findings and improving diagnostic workflow efficiency.',
+   tags:['🏥 Healthcare','👁️ CV','🩻 Radiology','🔍 Detection'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Medical Imaging','Deep Learning','DICOM','Python','Workflow APIs'],duration:'4 weeks',
+   icon:'🩻',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build image interpretation models','Implement urgent finding detection','Create measurement algorithms','Deploy with DICOM integration'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80'},
+
+  {id:'p9k',featured:false,title:'Mayo Clinic - AI Research Platform',domain:'Healthcare',
+   desc:'Multi-agent AI research platform for data analysis, pattern identification, disease prediction and research synthesis.',
+   tags:['🏥 Healthcare','🔬 Research','🤖 Multi-Agent','📊 Analytics'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['ML','Deep Learning','Medical Imaging','GenAI','Python'],duration:'4 weeks',
+   icon:'🔬',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build research data pipeline','Implement disease prediction models','Create analysis orchestration','Deploy with result visualization'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1631217314202-e4ff11b873d7?w=600&q=80'},
+
+  {id:'p9l',featured:false,title:'Kaiser Permanente - Ambient AI',domain:'Healthcare',
+   desc:'Abridge ambient AI reducing clinical documentation time while maintaining patient engagement during consultations.',
+   tags:['🏥 Healthcare','🎙️ Speech-to-Text','✨ GenAI','⏱️ Efficiency'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Speech AI','Clinical AI','LLMs','Python','Healthcare APIs'],duration:'4 weeks',
+   icon:'🎙️',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build ambient listening system','Generate real-time clinical notes','Maintain patient engagement metrics','Deploy HIPAA-compliant service'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160575-2173dba999ef?w=600&q=80'},
+
+  {id:'p9m',featured:false,title:'Insilico Medicine - Drug Discovery',domain:'Healthcare',
+   desc:'Generative AI for drug discovery identifying therapeutic targets and prioritizing candidate molecules.',
+   tags:['🏥 Healthcare','🧬 Biotech','✨ Generative','🔬 Drug Discovery'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Generative Models','ML','Bioinformatics','Python','Drug Databases'],duration:'4 weeks',
+   icon:'🧬',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build molecular generation models','Implement candidate evaluation','Create target identification pipeline','Deploy with hypothesis generation'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160496-e100162cb6fe?w=600&q=80'},
+
+  {id:'p9n',featured:false,title:'IQVIA - Clinical Trial Operations',domain:'Healthcare',
+   desc:'Multi-agent system managing clinical trials with protocol analysis, patient matching and enrollment optimization.',
+   tags:['🏥 Healthcare','🤖 Multi-Agent','📋 Trials','🎯 Optimization'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Multi-Agent AI','LLMs','Python','Optimization','Trial APIs'],duration:'4 weeks',
+   icon:'📋',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build trial protocol analyzer','Implement patient matching logic','Create enrollment forecasting','Deploy optimization system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&q=80'},
+
+  {id:'p9o',featured:false,title:'Oracle Health - EHR Copilot',domain:'Healthcare',
+   desc:'AI-powered EHR copilot navigating complex workflows with summarization, retrieval and decision support.',
+   tags:['🏥 Healthcare','💬 Copilot','🔗 RAG','✨ GenAI'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['GenAI','RAG','Oracle Cloud','FHIR','Python'],duration:'4 weeks',
+   icon:'💬',color:'#2563EB',bg:'#EFF6FF',border:'#BFDBFE',
+   outcomes:['Build EHR workflow navigator','Implement smart summarization','Create decision support queries','Deploy with audit trails'],
    github:true,thumbnail:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80'},
 
   {id:'p10',featured:false,title:'Stock Sentiment Analysis & Trading Signals',domain:'Banking',
@@ -4256,7 +4480,7 @@ const PROJECTS = [
    stack:['Python','FinBERT','Alpaca API','Pandas','Streamlit','PostgreSQL'],duration:'3 weeks',
    icon:'📈',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
    outcomes:['Build FinBERT sentiment pipeline on financial news','Combine NLP signals with technical indicators','Backtest strategy with Backtrader','Build real-time signal dashboard'],
-   github:true,thumbnail:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80'},
+   github:true,thumbnail:'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80'},
 
   {id:'p11',featured:false,title:'Smart Retail Pricing Engine',domain:'Retail',
    desc:'Build a dynamic pricing engine that adjusts product prices based on demand signals, competitor pricing, inventory levels, and time-of-day patterns.',
@@ -4264,7 +4488,7 @@ const PROJECTS = [
    stack:['Python','scikit-learn','Airflow','PostgreSQL','FastAPI','React'],duration:'3 weeks',
    icon:'💲',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
    outcomes:['Build demand elasticity models','Integrate competitor price scraping','Build real-time pricing API','A/B test pricing strategies'],
-   github:true,thumbnail:'https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&q=80'},
+   github:true,thumbnail:'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=600&q=80'},
 
   {id:'p12',featured:false,title:'Telecom Network Fault Predictor',domain:'Telecom',
    desc:'Predict network equipment failures 24 hours before they occur using LSTM models on telemetry time-series data. Auto-trigger maintenance work orders.',
@@ -4272,7 +4496,854 @@ const PROJECTS = [
    stack:['Python','TensorFlow','Kafka','InfluxDB','Grafana','Airflow'],duration:'4 weeks',
    icon:'📡',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
    outcomes:['Build LSTM model on network telemetry','Achieve >85% prediction accuracy','Build Kafka real-time scoring pipeline','Create Grafana monitoring dashboard'],
-   github:true,thumbnail:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'}
+   github:true,thumbnail:'https://images.unsplash.com/photo-1520869de2b68142c7f64d05be63e82c?w=600&q=80'},
+
+  // Banking (15 case studies: p13a-p13o)
+  {id:'p13a',featured:false,title:'JPMorgan Chase - AI Trading Bot',domain:'Banking',
+   desc:'Algorithmic trading system using deep reinforcement learning to optimize trade execution and minimize market impact.',
+   tags:['💳 Banking','🤖 RL','📈 Trading','🐍 Python'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','RL','AWS','PostgreSQL'],duration:'6 weeks',
+   icon:'💳',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build RL trading model','Optimize execution strategy','Backtest on historical data','Deploy with real-time monitoring'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1581092162562-40038f56c3a3?w=600&q=80'},
+
+  {id:'p13b',featured:false,title:'Goldman Sachs - Risk Analytics Engine',domain:'Banking',
+   desc:'Real-time credit and market risk assessment using multi-factor models and scenario analysis.',
+   tags:['💳 Banking','📊 Analytics','🔍 Risk','📈 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Apache Spark','PostgreSQL','Tableau','FastAPI'],duration:'6 weeks',
+   icon:'📊',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build risk assessment models','Implement scenario analysis','Create risk dashboards','Deploy monitoring system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1573496359142-b8d87d7ce4a1?w=600&q=80'},
+
+  {id:'p13c',featured:false,title:'Bank of America - Fraud Detection',domain:'Banking',
+   desc:'Graph neural networks detecting complex money laundering patterns in transaction networks.',
+   tags:['💳 Banking','🕸️ GNN','🔍 Fraud','🐍 Python'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','PyTorch','Graph Databases','Kafka','FastAPI'],duration:'6 weeks',
+   icon:'🔍',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build GNN fraud detection model','Analyze transaction graphs','Reduce false positives','Deploy real-time system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1581092162562-40038f56c3a3?w=600&q=80'},
+
+  {id:'p13d',featured:false,title:'Citibank - Credit Scoring Platform',domain:'Banking',
+   desc:'Alternative credit scoring using alternative data and explainable AI for financial inclusion.',
+   tags:['💳 Banking','🤖 ML','📊 XAI','📈 FinTech'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','scikit-learn','SHAP','FastAPI','PostgreSQL'],duration:'5 weeks',
+   icon:'⭐',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build alternative credit model','Implement explainability','Validate fairness','Deploy API'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552374196-c4e7b0d63d60?w=600&q=80'},
+
+  {id:'p13e',featured:false,title:'Wells Fargo - Customer Churn Predictor',domain:'Banking',
+   desc:'Predict customer attrition using behavioral analytics and personalized retention strategies.',
+   tags:['💳 Banking','👥 Churn','📊 Analytics','🎯 Retention'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','Airflow','Postgres','Tableau'],duration:'4 weeks',
+   icon:'👥',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build churn prediction model','Design retention strategies','Measure impact','Create dashboards'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1622630998477-20aa696ecb8f?w=600&q=80'},
+
+  {id:'p13f',featured:false,title:'HSBC - FX Forecasting',domain:'Banking',
+   desc:'Multi-timeframe forex prediction using ensemble methods and macroeconomic indicators.',
+   tags:['💳 Banking','📈 Forex','🤖 Ensemble','📊 Economics'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','LightGBM','Airflow','Redis','FastAPI'],duration:'5 weeks',
+   icon:'💱',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build multi-timeframe model','Integrate macro data','Validate predictions','Deploy trading system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=600&q=80'},
+
+  {id:'p13g',featured:false,title:'Deutsche Bank - Portfolio Optimization',domain:'Banking',
+   desc:'AI-driven portfolio allocation using modern portfolio theory and deep learning.',
+   tags:['💳 Banking','💼 Portfolio','🤖 Optimization','📊 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','PyTorch','CVXPY','AWS','FastAPI'],duration:'6 weeks',
+   icon:'💼',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build portfolio model','Optimize allocations','Backtest strategies','Deploy rebalancing system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454707842246-c63bed479ebe?w=600&q=80'},
+
+  {id:'p13h',featured:false,title:'Barclays - Sentiment Trading Signals',domain:'Banking',
+   desc:'NLP-based sentiment analysis on financial news, earnings calls, and social media for trading signals.',
+   tags:['💳 Banking','📰 NLP','🎯 Signals','📈 Trading'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','FinBERT','Airflow','PostgreSQL','FastAPI'],duration:'5 weeks',
+   icon:'📰',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build sentiment pipeline','Generate trading signals','Backtest strategy','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454707842246-c63bed479ebe?w=600&q=80'},
+
+  {id:'p13i',featured:false,title:'Standard Chartered - AML Compliance',domain:'Banking',
+   desc:'Automated anti-money laundering detection using entity resolution and behavior profiling.',
+   tags:['💳 Banking','🔐 AML','🕵️ Compliance','🤖 Detection'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Graph Databases','Kafka','FastAPI','PostgreSQL'],duration:'6 weeks',
+   icon:'🔐',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build entity resolution','Implement behavior profiling','Detect suspicious patterns','Deploy compliance system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&q=80'},
+
+  {id:'p13j',featured:false,title:'UBS - Market Impact Model',domain:'Banking',
+   desc:'Quantify market impact of large trades using gradient boosting and time-series analysis.',
+   tags:['💳 Banking','📊 Market','🤖 ML','📈 Trading'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','XGBoost','Redis','AWS','FastAPI'],duration:'5 weeks',
+   icon:'📊',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build impact model','Optimize execution','Reduce costs','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1554080221-cbf4a32ae9a3?w=600&q=80'},
+
+  {id:'p13k',featured:false,title:'Morgan Stanley - Interest Rate Forecasting',domain:'Banking',
+   desc:'Deep learning model for interest rate predictions combining economic indicators and market sentiment.',
+   tags:['💳 Banking','📈 Rates','🧠 DL','📊 Economics'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','Airflow','PostgreSQL','Tableau'],duration:'6 weeks',
+   icon:'📊',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build rate prediction model','Integrate indicators','Validate forecasts','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&q=80'},
+
+  {id:'p13l',featured:false,title:'BNY Mellon - Regulatory Reporting Automation',domain:'Banking',
+   desc:'NLP and RPA for automated regulatory reporting and compliance documentation.',
+   tags:['💳 Banking','📋 Compliance','🤖 RPA','📝 NLP'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','RPA','NLP','FastAPI','PostgreSQL'],duration:'4 weeks',
+   icon:'📋',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build automation pipelines','Generate reports','Ensure compliance','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80'},
+
+  {id:'p13m',featured:false,title:'Credit Suisse - Client Segmentation',domain:'Banking',
+   desc:'Advanced clustering and personalization engine for wealth management client segmentation.',
+   tags:['💳 Banking','👥 Clustering','🎯 Personalization','💼 Wealth'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','PostgreSQL','Tableau','FastAPI'],duration:'4 weeks',
+   icon:'👥',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build segmentation model','Personalize offerings','Create dashboards','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80'},
+
+  {id:'p13n',featured:false,title:'RBC - Loan Default Predictor',domain:'Banking',
+   desc:'Gradient boosting model for residential and commercial loan default prediction.',
+   tags:['💳 Banking','📊 Credit','🤖 ML','⚠️ Risk'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','PostgreSQL','Airflow','FastAPI'],duration:'4 weeks',
+   icon:'⚠️',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build default prediction model','Optimize underwriting','Reduce losses','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80'},
+
+  {id:'p13o',featured:false,title:'Scotiabank - Cross-Sell Intelligence',domain:'Banking',
+   desc:'Machine learning recommendation engine for intelligent cross-selling and upselling.',
+   tags:['💳 Banking','🎯 Recommendations','💼 Sales','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Collaborative Filtering','PostgreSQL','FastAPI','Airflow'],duration:'4 weeks',
+   icon:'💡',color:'#DC2626',bg:'#FEF2F2',border:'#FECACA',
+   outcomes:['Build recommendation model','Optimize cross-sell','Measure revenue','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&q=80'},
+
+  // E-Commerce (15 case studies: p14a-p14o)
+  {id:'p14a',featured:false,title:'Amazon - Price Optimization Engine',domain:'E-Commerce',
+   desc:'Dynamic pricing engine using demand elasticity, competitor pricing, and inventory levels.',
+   tags:['🛒 E-Commerce','💲 Pricing','📊 ML','📈 Revenue'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','LightGBM','Kafka','DynamoDB','FastAPI'],duration:'5 weeks',
+   icon:'💲',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build pricing model','Optimize revenue','Reduce competition','Deploy real-time system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1563062348-c0ddb87a8b6e?w=600&q=80'},
+
+  {id:'p14b',featured:false,title:'Shopify - Product Recommendation Engine',domain:'E-Commerce',
+   desc:'Collaborative filtering and deep learning recommendations for 40% increase in AOV.',
+   tags:['🛒 E-Commerce','🎯 Recommendations','🧠 DL','📈 AOV'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','Elasticsearch','Kafka','FastAPI'],duration:'5 weeks',
+   icon:'🎁',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build recommendation model','Increase AOV','Personalize experience','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1549887534-7ef5d8fd0808?w=600&q=80'},
+
+  {id:'p14c',featured:false,title:'Alibaba - Fraud Detection',domain:'E-Commerce',
+   desc:'Graph-based fraud detection for transaction and seller fraud prevention.',
+   tags:['🛒 E-Commerce','🔍 Fraud','🕸️ GNN','🔐 Security'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','PyTorch','Graph Databases','Kafka','FastAPI'],duration:'6 weeks',
+   icon:'🔍',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build fraud detection model','Reduce chargeback rate','Protect sellers','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80'},
+
+  {id:'p14d',featured:false,title:'eBay - Demand Forecasting',domain:'E-Commerce',
+   desc:'ARIMA and Prophet models for inventory and demand forecasting across categories.',
+   tags:['🛒 E-Commerce','📈 Forecast','📊 Inventory','🐍 Python'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Prophet','Airflow','PostgreSQL','Tableau'],duration:'4 weeks',
+   icon:'📦',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build forecasting models','Optimize inventory','Reduce stockouts','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80'},
+
+  {id:'p14e',featured:false,title:'Etsy - Seller Growth AI',domain:'E-Commerce',
+   desc:'Personalized seller recommendations and growth guidance using behavioral analytics.',
+   tags:['🛒 E-Commerce','👥 Sellers','📊 Growth','🎯 Personalization'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','PostgreSQL','FastAPI','Tableau'],duration:'4 weeks',
+   icon:'📈',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build seller intelligence model','Provide growth recommendations','Increase revenue','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=600&q=80'},
+
+  {id:'p14f',featured:false,title:'Walmart - Customer Lifetime Value',domain:'E-Commerce',
+   desc:'Predict customer lifetime value and optimize marketing spend allocation.',
+   tags:['🛒 E-Commerce','💰 CLV','📊 Marketing','🎯 ROI'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','Airflow','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'💰',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build CLV model','Optimize marketing','Increase profitability','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=600&q=80'},
+
+  {id:'p14g',featured:false,title:'Target - Cart Abandonment Recovery',domain:'E-Commerce',
+   desc:'Predict abandoned carts and personalize recovery campaigns with NLP.',
+   tags:['🛒 E-Commerce','🛑 Abandonment','📧 Campaigns','🤖 Personalization'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','NLP','FastAPI','PostgreSQL'],duration:'3 weeks',
+   icon:'🛒',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build prediction model','Personalize messages','Recover revenue','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1527427337751-fdca2c3d432d?w=600&q=80'},
+
+  {id:'p14h',featured:false,title:'Best Buy - Product Search Ranking',domain:'E-Commerce',
+   desc:'Learning-to-rank model for improving e-commerce search relevance and conversions.',
+   tags:['🛒 E-Commerce','🔍 Search','🤖 Ranking','📊 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','LightLAMB','Elasticsearch','Kafka','FastAPI'],duration:'5 weeks',
+   icon:'🔍',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build ranking model','Improve search quality','Increase conversions','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80'},
+
+  {id:'p14i',featured:false,title:'Costco - Inventory Optimization',domain:'E-Commerce',
+   desc:'Supply chain optimization using ML for store inventory levels and warehouse allocation.',
+   tags:['🛒 E-Commerce','📦 Supply Chain','⚙️ Optimization','📊 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Optimization','Airflow','PostgreSQL','FastAPI'],duration:'6 weeks',
+   icon:'📦',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build optimization model','Reduce stockouts','Lower costs','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1563062348-c0ddb87a8b6e?w=600&q=80'},
+
+  {id:'p14j',featured:false,title:'Kroger - Personalized Promotions',domain:'E-Commerce',
+   desc:'AI-driven coupon and promotion personalization using collaborative filtering.',
+   tags:['🛒 E-Commerce','🎯 Promotions','📊 ML','💡 Personalization'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','PostgreSQL','FastAPI','Tableau'],duration:'4 weeks',
+   icon:'🎯',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build personalization model','Increase basket size','Improve loyalty','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1549887534-7ef5d8fd0808?w=600&q=80'},
+
+  {id:'p14k',featured:false,title:'Home Depot - Visual Search AI',domain:'E-Commerce',
+   desc:'Computer vision for visual product search and similar item recommendations.',
+   tags:['🛒 E-Commerce','👁️ Vision','🔍 Search','📊 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','PyTorch','Elasticsearch','FastAPI','Docker'],duration:'6 weeks',
+   icon:'👁️',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build visual search model','Improve search experience','Increase conversions','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=600&q=80'},
+
+  {id:'p14l',featured:false,title:'Gap - Customer Segmentation',domain:'E-Commerce',
+   desc:'Behavioral segmentation for targeted marketing and personalized product curation.',
+   tags:['🛒 E-Commerce','👥 Segmentation','🎯 Marketing','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','PostgreSQL','Tableau','FastAPI'],duration:'4 weeks',
+   icon:'👥',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build segmentation model','Personalize marketing','Increase revenue','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80'},
+
+  {id:'p14m',featured:false,title:'Nike - Size Recommendation Engine',domain:'E-Commerce',
+   desc:'ML model for predicting correct shoe and apparel sizes based on customer data.',
+   tags:['🛒 E-Commerce','📏 Sizing','📊 ML','🛍️ Retail'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','PostgreSQL','FastAPI','Airflow'],duration:'3 weeks',
+   icon:'👕',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build sizing model','Reduce returns','Improve satisfaction','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552149528-eb5dbb2f6b16?w=600&q=80'},
+
+  {id:'p14n',featured:false,title:'ASOS - Fashion Trend Forecasting',domain:'E-Commerce',
+   desc:'Predict fashion trends using social media data and historical sales patterns.',
+   tags:['🛒 E-Commerce','📈 Trends','👗 Fashion','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','NLP','Social APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'👗',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build trend prediction model','Optimize inventory','Increase sales','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=600&q=80'},
+
+  {id:'p14o',featured:false,title:'Shein - Supply Chain Forecasting',domain:'E-Commerce',
+   desc:'Deep learning forecasting for rapid supply chain decision-making and production.',
+   tags:['🛒 E-Commerce','📦 Supply Chain','📈 Forecast','🧠 DL'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','Airflow','PostgreSQL','FastAPI'],duration:'6 weeks',
+   icon:'🏭',color:'#0369A1',bg:'#F0F9FF',border:'#BAE6FD',
+   outcomes:['Build forecasting model','Optimize production','Reduce lead time','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=600&q=80'},
+
+  // Telecom (15 case studies: p15a-p15o)
+  {id:'p15a',featured:false,title:'AT&T - Network Optimization',domain:'Telecom',
+   desc:'AI-driven network optimization for spectrum allocation and coverage enhancement.',
+   tags:['📡 Telecom','🌐 Network','⚙️ Optimization','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','Apache Spark','Kafka','FastAPI'],duration:'6 weeks',
+   icon:'🌐',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build optimization model','Improve network quality','Reduce latency','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1533235710320-89b399cfe626?w=600&q=80'},
+
+  {id:'p15b',featured:false,title:'Verizon - Customer Churn Prediction',domain:'Telecom',
+   desc:'Predict customer churn using behavioral signals and design retention campaigns.',
+   tags:['📡 Telecom','👥 Churn','📊 Analytics','🎯 Retention'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','Airflow','PostgreSQL','Tableau'],duration:'4 weeks',
+   icon:'👥',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build churn prediction model','Design retention strategy','Measure impact','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=600&q=80'},
+
+  {id:'p15c',featured:false,title:'T-Mobile - Handset Recommendation',domain:'Telecom',
+   desc:'Personalized handset recommendations based on usage patterns and preferences.',
+   tags:['📡 Telecom','📱 Devices','🎯 Recommendations','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Collaborative Filtering','PostgreSQL','FastAPI','Airflow'],duration:'3 weeks',
+   icon:'📱',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build recommendation model','Increase upgrades','Improve satisfaction','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1506157786151-b8491531f063?w=600&q=80'},
+
+  {id:'p15d',featured:false,title:'Deutsche Telekom - Network Fault Prediction',domain:'Telecom',
+   desc:'LSTM models predicting network faults 24 hours in advance for preventive maintenance.',
+   tags:['📡 Telecom','⚡ LSTM','🔧 Predictive','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','Kafka','InfluxDB','Grafana'],duration:'5 weeks',
+   icon:'⚙️',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build LSTM model','Predict faults','Reduce downtime','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454707842246-c63bed479ebe?w=600&q=80'},
+
+  {id:'p15e',featured:false,title:'Orange - Customer Experience AI',domain:'Telecom',
+   desc:'NLP-based chatbot and AI agent for customer support and service requests.',
+   tags:['📡 Telecom','💬 ChatBot','🤖 NLP','🎯 Support'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LLMs','NLP','FastAPI','PostgreSQL'],duration:'4 weeks',
+   icon:'💬',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build chatbot','Improve support','Reduce costs','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80'},
+
+  {id:'p15f',featured:false,title:'Vodafone - Traffic Forecasting',domain:'Telecom',
+   desc:'Time-series forecasting for network traffic and capacity planning.',
+   tags:['📡 Telecom','📈 Forecast','📊 Analytics','⚙️ Capacity'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Prophet','Airflow','PostgreSQL','Tableau'],duration:'4 weeks',
+   icon:'📊',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build forecasting model','Optimize capacity','Reduce congestion','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1520869de2b68142c7f64d05be63e82c?w=600&q=80'},
+
+  {id:'p15g',featured:false,title:'SoftBank - Fraud Detection',domain:'Telecom',
+   desc:'Detect SIM swap fraud and subscription fraud using behavioral analysis.',
+   tags:['📡 Telecom','🔍 Fraud','🔐 Security','🤖 Detection'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','LightGBM','Graph Databases','Kafka','FastAPI'],duration:'5 weeks',
+   icon:'🔐',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build fraud detection model','Prevent losses','Protect customers','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=600&q=80'},
+
+  {id:'p15h',featured:false,title:'BT Group - Network Quality Scoring',domain:'Telecom',
+   desc:'Real-time network quality scoring and issue prediction for customer experience.',
+   tags:['📡 Telecom','📱 Quality','🤖 ML','⚠️ Alerts'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','Kafka','InfluxDB','FastAPI'],duration:'4 weeks',
+   icon:'⚠️',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build quality scoring model','Detect issues early','Improve experience','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1533235710320-89b399cfe626?w=600&q=80'},
+
+  {id:'p15i',featured:false,title:'Jio - Anomaly Detection',domain:'Telecom',
+   desc:'Unsupervised anomaly detection in network metrics for fault identification.',
+   tags:['📡 Telecom','🔍 Anomaly','🤖 ML','⚙️ Monitoring'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Isolation Forest','Kafka','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'🔍',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build anomaly detection model','Identify faults','Automate response','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454707842246-c63bed479ebe?w=600&q=80'},
+
+  {id:'p15j',featured:false,title:'Swisscom - Data Usage Prediction',domain:'Telecom',
+   desc:'Predict customer data usage and optimize plan recommendations.',
+   tags:['📡 Telecom','📊 Usage','📈 Forecast','💡 Plans'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','Airflow','PostgreSQL','FastAPI'],duration:'3 weeks',
+   icon:'📊',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build prediction model','Optimize plans','Increase revenue','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80'},
+
+  {id:'p15k',featured:false,title:'KPN - Network Slicing Optimization',domain:'Telecom',
+   desc:'AI-driven network slicing for 5G to optimize resource allocation by use case.',
+   tags:['📡 Telecom','🌐 5G','⚙️ Optimization','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Reinforcement Learning','Kafka','PostgreSQL','FastAPI'],duration:'6 weeks',
+   icon:'🌐',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build RL optimization model','Allocate resources','Maximize revenue','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+
+  {id:'p15l',featured:false,title:'Telefónica - Revenue Optimization',domain:'Telecom',
+   desc:'Dynamic pricing and plan optimization to maximize revenue per customer.',
+   tags:['📡 Telecom','💲 Pricing','📊 Revenue','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','LightGBM','Airflow','PostgreSQL','FastAPI'],duration:'5 weeks',
+   icon:'💲',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build pricing model','Optimize revenue','Segment customers','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+
+  {id:'p15m',featured:false,title:'Telenor - Customer Lifetime Value',domain:'Telecom',
+   desc:'Predict CLV and segment customers for targeted acquisition and retention.',
+   tags:['📡 Telecom','💰 CLV','👥 Segmentation','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','PostgreSQL','Tableau','FastAPI'],duration:'4 weeks',
+   icon:'💰',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build CLV model','Segment customers','Optimize marketing','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+
+  {id:'p15n',featured:false,title:'Celcom - Network Throughput Optimization',domain:'Telecom',
+   desc:'Optimize network routing and resource allocation for maximum throughput.',
+   tags:['📡 Telecom','🌐 Network','⚙️ Optimization','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Graph Neural Networks','Kafka','PostgreSQL','FastAPI'],duration:'6 weeks',
+   icon:'🚀',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build optimization model','Improve throughput','Reduce latency','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+
+  {id:'p15o',featured:false,title:'Airtel - QoS Prediction',domain:'Telecom',
+   desc:'Predict quality of service degradation and proactively address issues.',
+   tags:['📡 Telecom','📱 QoS','🤖 ML','⚠️ Alerts'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','Kafka','InfluxDB','FastAPI'],duration:'4 weeks',
+   icon:'⚠️',color:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE',
+   outcomes:['Build QoS prediction model','Prevent issues','Improve experience','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+
+  // Retail (15 case studies: p16a-p16o)
+  {id:'p16a',featured:false,title:'Starbucks - Store Traffic Optimization',domain:'Retail',
+   desc:'Forecast in-store traffic and optimize staffing levels using time-series ML.',
+   tags:['🏪 Retail','📊 Forecast','👥 Staffing','⚙️ Optimization'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Prophet','Airflow','PostgreSQL','Tableau'],duration:'4 weeks',
+   icon:'👥',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build forecasting model','Optimize staffing','Reduce labor costs','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1478860409698-8707f313ee8b?w=600&q=80'},
+
+  {id:'p16b',featured:false,title:'Sephora - Beauty Recommendation AI',domain:'Retail',
+   desc:'Personalized beauty product recommendations using content-based and collaborative filtering.',
+   tags:['🏪 Retail','💄 Beauty','🎯 Recommendations','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','FastAPI','PostgreSQL','Airflow'],duration:'4 weeks',
+   icon:'💄',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build recommendation model','Increase basket size','Improve satisfaction','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1441986300352-7bda60b8ce89?w=600&q=80'},
+
+  {id:'p16c',featured:false,title:'LEGO - Dynamic Pricing',domain:'Retail',
+   desc:'Optimize toy and brick set pricing based on demand, seasonality, and inventory.',
+   tags:['🏪 Retail','💲 Pricing','📊 ML','📈 Revenue'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','Airflow','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'💲',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build pricing model','Optimize revenue','Manage inventory','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552439773-d5fc56c45c1d?w=600&q=80'},
+
+  {id:'p16d',featured:false,title:'H&M - Trend Forecasting',domain:'Retail',
+   desc:'Predict fashion trends and customer preferences from social media and sales data.',
+   tags:['🏪 Retail','📈 Trends','👗 Fashion','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','NLP','Time Series','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'📈',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build trend model','Optimize inventory','Increase sales','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552149528-eb5dbb2f6b16?w=600&q=80'},
+
+  {id:'p16e',featured:false,title:'Uniqlo - Inventory Optimization',domain:'Retail',
+   desc:'ML-driven inventory optimization across stores to minimize stockouts and excess inventory.',
+   tags:['🏪 Retail','📦 Inventory','⚙️ Optimization','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Optimization','Apache Spark','PostgreSQL','FastAPI'],duration:'5 weeks',
+   icon:'📦',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build optimization model','Balance inventory','Reduce waste','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80'},
+
+  {id:'p16f',featured:false,title:'Zara - Fast Fashion Demand',domain:'Retail',
+   desc:'Rapid demand forecasting for fast fashion supply chain acceleration.',
+   tags:['🏪 Retail','📈 Forecast','👗 Fashion','⚡ Speed'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','Airflow','PostgreSQL','FastAPI'],duration:'5 weeks',
+   icon:'⚡',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build fast forecasting model','Reduce lead time','Increase relevance','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1549887534-7ef5d8fd0808?w=600&q=80'},
+
+  {id:'p16g',featured:false,title:'Forever 21 - Size Recommendation',domain:'Retail',
+   desc:'ML model for apparel size recommendation to reduce returns.',
+   tags:['🏪 Retail','📏 Sizing','📊 ML','🛍️ Returns'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','FastAPI','PostgreSQL','Airflow'],duration:'3 weeks',
+   icon:'👕',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build sizing model','Reduce returns','Improve satisfaction','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80'},
+
+  {id:'p16h',featured:false,title:'ASOS - Style Profile AI',domain:'Retail',
+   desc:'Create personalized style profiles and recommend outfits using computer vision.',
+   tags:['🏪 Retail','👗 Style','👁️ Vision','📊 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','PyTorch','Computer Vision','FastAPI','PostgreSQL'],duration:'6 weeks',
+   icon:'👗',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build style model','Personalize recommendations','Increase sales','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1478860409698-8707f313ee8b?w=600&q=80'},
+
+  {id:'p16i',featured:false,title:'Decathlon - Sport Activity Recommendation',domain:'Retail',
+   desc:'Recommend sports equipment based on activity preferences and usage patterns.',
+   tags:['🏪 Retail','⛹️ Sports','🎯 Recommendations','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Collaborative Filtering','FastAPI','PostgreSQL','Airflow'],duration:'4 weeks',
+   icon:'⛹️',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build recommendation model','Improve satisfaction','Increase sales','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1441986300352-7bda60b8ce89?w=600&q=80'},
+
+  {id:'p16j',featured:false,title:'Ikea - Interior Design AI',domain:'Retail',
+   desc:'Virtual interior design tool using AR and ML to help customers visualize furniture.',
+   tags:['🏪 Retail','🏠 Interior','👁️ AR/Vision','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','PyTorch','AR Platform','FastAPI','Docker'],duration:'8 weeks',
+   icon:'🏠',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build design model','Integrate AR','Improve experience','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&q=80'},
+
+  {id:'p16k',featured:false,title:'Foot Locker - Sneaker Release Predictor',domain:'Retail',
+   desc:'Predict sneaker release demand and optimize inventory and marketing.',
+   tags:['🏪 Retail','👟 Sneakers','📈 Demand','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','Social APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'👟',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build prediction model','Optimize inventory','Increase revenue','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1549887534-7ef5d8fd0808?w=600&q=80'},
+
+  {id:'p16l',featured:false,title:'Lululemon - Fabric Performance Recommendation',domain:'Retail',
+   desc:'Recommend athletic wear based on performance characteristics and activity type.',
+   tags:['🏪 Retail','👕 Athletic','🎯 Recommendations','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','FastAPI','PostgreSQL','Airflow'],duration:'4 weeks',
+   icon:'💪',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build recommendation model','Improve performance','Increase satisfaction','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1526304640581-d334cdbbf45b?w=600&q=80'},
+
+  {id:'p16m',featured:false,title:'Urban Outfitters - Customer Segmentation',domain:'Retail',
+   desc:'Segment customers by style preferences and lifestyle for targeted campaigns.',
+   tags:['🏪 Retail','👥 Segmentation','🎯 Marketing','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','PostgreSQL','Tableau','FastAPI'],duration:'4 weeks',
+   icon:'👥',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build segmentation model','Personalize marketing','Increase revenue','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1526304640581-d334cdbbf45b?w=600&q=80'},
+
+  {id:'p16n',featured:false,title:'J.Crew - Out-of-Stock Prediction',domain:'Retail',
+   desc:'Predict stockouts and optimize reordering to maintain product availability.',
+   tags:['🏪 Retail','📦 Inventory','🤖 ML','⚠️ Alerts'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','Airflow','PostgreSQL','FastAPI'],duration:'3 weeks',
+   icon:'⚠️',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build prediction model','Prevent stockouts','Improve availability','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1526304640581-d334cdbbf45b?w=600&q=80'},
+
+  {id:'p16o',featured:false,title:'Vans - Skate Culture Trend Prediction',domain:'Retail',
+   desc:'Track and predict skate and street culture trends for product development.',
+   tags:['🏪 Retail','📈 Trends','🎨 Culture','📊 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','NLP','Social APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'🎨',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build trend tracking model','Inform design','Increase relevance','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1526304640581-d334cdbbf45b?w=600&q=80'},
+
+  // ITSM (15 case studies: p17a-p17o)
+  {id:'p17a',featured:false,title:'ServiceNow - Incident Severity Classification',domain:'ITSM',
+   desc:'NLP-based classification of IT incidents to prioritize support queue efficiently.',
+   tags:['🔧 ITSM','📋 Incidents','🤖 NLP','📊 Classification'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','NLP','Transformers','FastAPI','PostgreSQL'],duration:'4 weeks',
+   icon:'🔧',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build classification model','Prioritize tickets','Improve SLA','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454707842246-c63bed479ebe?w=600&q=80'},
+
+  {id:'p17b',featured:false,title:'Atlassian - Issue Clustering',domain:'ITSM',
+   desc:'Cluster related IT tickets to identify root causes and automate resolution.',
+   tags:['🔧 ITSM','🔍 Clustering','🤖 ML','⚙️ Automation'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','FastAPI','PostgreSQL','Airflow'],duration:'4 weeks',
+   icon:'🔍',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build clustering model','Identify patterns','Automate solutions','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80'},
+
+  {id:'p17c',featured:false,title:'BMC - MTTR Optimization',domain:'ITSM',
+   desc:'Predict MTTR (Mean Time To Repair) to optimize resource allocation.',
+   tags:['🔧 ITSM','⏱️ MTTR','📊 ML','⚙️ Optimization'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','Airflow','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'⏱️',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build prediction model','Optimize resources','Reduce MTTR','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+
+  {id:'p17d',featured:false,title:'Jira - Epic Effort Estimation',domain:'ITSM',
+   desc:'Estimate software development effort using historical project data and ML.',
+   tags:['🔧 ITSM','📊 Estimation','🤖 ML','⏱️ Planning'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','FastAPI','PostgreSQL','Airflow'],duration:'4 weeks',
+   icon:'📊',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build estimation model','Improve planning','Reduce risk','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=600&q=80'},
+
+  {id:'p17e',featured:false,title:'Splunk - Anomaly Detection',domain:'ITSM',
+   desc:'Detect anomalies in application and infrastructure logs for early issue detection.',
+   tags:['🔧 ITSM','🔍 Anomaly','📊 Logs','🤖 Detection'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Isolation Forest','Kafka','FastAPI','PostgreSQL'],duration:'5 weeks',
+   icon:'🔍',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build anomaly detection model','Identify issues early','Reduce downtime','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1506157786151-b8491531f063?w=600&q=80'},
+
+  {id:'p17f',featured:false,title:'Datadog - Predictive Alerting',domain:'ITSM',
+   desc:'Predict infrastructure failures before they impact services using ML.',
+   tags:['🔧 ITSM','⚠️ Alerts','🤖 ML','📈 Predictive'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','Time Series','Kafka','FastAPI'],duration:'5 weeks',
+   icon:'⚠️',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build prediction model','Reduce incidents','Improve uptime','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80'},
+
+  {id:'p17g',featured:false,title:'PagerDuty - Escalation Optimization',domain:'ITSM',
+   desc:'Optimize incident escalation paths and on-call scheduling using ML.',
+   tags:['🔧 ITSM','📋 Escalation','⚙️ Scheduling','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','Optimization','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'📋',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build scheduling model','Optimize escalation','Improve efficiency','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'},
+
+  {id:'p17h',featured:false,title:'Opsgenie - Alert Correlation',domain:'ITSM',
+   desc:'Correlate related alerts to reduce alert fatigue and focus on root causes.',
+   tags:['🔧 ITSM','⚠️ Alerts','🔗 Correlation','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','Graph Algorithms','FastAPI','PostgreSQL'],duration:'4 weeks',
+   icon:'🔗',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build correlation model','Reduce alert noise','Improve focus','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=600&q=80'},
+
+  {id:'p17i',featured:false,title:'Prometheus - Capacity Planning',domain:'ITSM',
+   desc:'Forecast infrastructure capacity needs for proactive resource planning.',
+   tags:['🔧 ITSM','📦 Capacity','📈 Forecast','⚙️ Planning'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Prophet','Airflow','PostgreSQL','Tableau'],duration:'4 weeks',
+   icon:'📦',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build forecasting model','Plan capacity','Reduce costs','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80'},
+
+  {id:'p17j',featured:false,title:'Grafana - Performance Anomaly Detection',domain:'ITSM',
+   desc:'Detect performance anomalies in application metrics and dashboards.',
+   tags:['🔧 ITSM','📊 Performance','🔍 Anomaly','🤖 Detection'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','Time Series','Kafka','FastAPI'],duration:'5 weeks',
+   icon:'📊',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build anomaly detection model','Identify bottlenecks','Improve performance','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454707842246-c63bed479ebe?w=600&q=80'},
+
+  {id:'p17k',featured:false,title:'New Relic - Root Cause Analysis',domain:'ITSM',
+   desc:'Automate root cause analysis for production incidents using causal inference.',
+   tags:['🔧 ITSM','🔍 RCA','🤖 ML','📊 Analysis'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','CausalML','Graph Algorithms','FastAPI','PostgreSQL'],duration:'6 weeks',
+   icon:'🔍',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build RCA model','Automate analysis','Reduce MTTR','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1506157786151-b8491531f063?w=600&q=80'},
+
+  {id:'p17l',featured:false,title:'Elastic - Log Parsing Automation',domain:'ITSM',
+   desc:'Automatically parse and structure unstructured logs using NLP.',
+   tags:['🔧 ITSM','📝 Logs','🤖 NLP','⚙️ Automation'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','NLP','Transformers','FastAPI','PostgreSQL'],duration:'4 weeks',
+   icon:'📝',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build parsing model','Structure logs','Improve searchability','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'},
+
+  {id:'p17m',featured:false,title:'LogicMonitor - Threshold Optimization',domain:'ITSM',
+   desc:'Dynamically optimize alerting thresholds to reduce false positives.',
+   tags:['🔧 ITSM','⚠️ Alerts','🎯 Optimization','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Bayesian Optimization','PostgreSQL','FastAPI','Airflow'],duration:'4 weeks',
+   icon:'⚙️',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build optimization model','Improve accuracy','Reduce noise','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=600&q=80'},
+
+  {id:'p17n',featured:false,title:'VictorOps - Schedule Conflict Detection',domain:'ITSM',
+   desc:'Detect and resolve on-call scheduling conflicts using constraint programming.',
+   tags:['🔧 ITSM','📅 Scheduling','⚙️ Optimization','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Constraint Programming','PostgreSQL','FastAPI','Airflow'],duration:'4 weeks',
+   icon:'📅',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build scheduling model','Resolve conflicts','Improve fairness','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1551503132-f817fbe1d8d5?w=600&q=80'},
+
+  {id:'p17o',featured:false,title:'Incident.io - Auto-Remediation',domain:'ITSM',
+   desc:'Automatically execute remediation runbooks based on incident patterns.',
+   tags:['🔧 ITSM','⚙️ Automation','🤖 Remediation','📊 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','NLP','Workflow Orchestration','FastAPI','PostgreSQL'],duration:'5 weeks',
+   icon:'⚙️',color:'#EA580C',bg:'#FFF7ED',border:'#FEDBA7',
+   outcomes:['Build automation engine','Execute runbooks','Reduce MTTR','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80'},
+
+  // ERP (15 case studies: p18a-p18o)
+  {id:'p18a',featured:false,title:'SAP - Demand Planning AI',domain:'ERP',
+   desc:'AI-powered demand planning for inventory optimization across supply chain.',
+   tags:['📊 ERP','📈 Forecast','📦 Inventory','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Prophet','Apache Spark','SAP APIs','PostgreSQL'],duration:'6 weeks',
+   icon:'📊',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build planning model','Optimize inventory','Reduce costs','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1521737604893-6f3031224c94?w=600&q=80'},
+
+  {id:'p18b',featured:false,title:'Oracle - Procurement Optimization',domain:'ERP',
+   desc:'Optimize procurement processes and supplier selection using ML.',
+   tags:['📊 ERP','🤝 Procurement','⚙️ Optimization','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','LightGBM','Apache Spark','Oracle APIs','PostgreSQL'],duration:'6 weeks',
+   icon:'🤝',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build optimization model','Improve efficiency','Reduce costs','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'},
+
+  {id:'p18c',featured:false,title:'NetSuite - Financial Forecasting',domain:'ERP',
+   desc:'Predict financial metrics and cash flow using time-series and ML models.',
+   tags:['📊 ERP','💰 Finance','📈 Forecast','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','TensorFlow','Time Series','NetSuite APIs','PostgreSQL'],duration:'6 weeks',
+   icon:'💰',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build forecasting model','Improve planning','Reduce risk','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552374196-c4e7b0d63d60?w=600&q=80'},
+
+  {id:'p18d',featured:false,title:'Infor - Production Scheduling',domain:'ERP',
+   desc:'Optimize production scheduling and resource allocation using ML.',
+   tags:['📊 ERP','⚙️ Production','🔧 Scheduling','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Constraint Programming','Apache Spark','Infor APIs','PostgreSQL'],duration:'6 weeks',
+   icon:'⚙️',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build scheduling model','Optimize efficiency','Reduce waste','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&q=80'},
+
+  {id:'p18e',featured:false,title:'IFS - Predictive Maintenance',domain:'ERP',
+   desc:'Predict equipment failures for proactive maintenance scheduling.',
+   tags:['📊 ERP','🔧 Maintenance','📈 Predictive','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','LSTM','Time Series','IFS APIs','PostgreSQL'],duration:'6 weeks',
+   icon:'🔧',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build prediction model','Schedule maintenance','Reduce downtime','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80'},
+
+  {id:'p18f',featured:false,title:'Microsoft Dynamics - Customer Analytics',domain:'ERP',
+   desc:'Analyze customer interactions and predict lifetime value for targeted engagement.',
+   tags:['📊 ERP','👥 Customers','💰 CLV','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','Azure Synapse','Dynamics APIs','PostgreSQL'],duration:'5 weeks',
+   icon:'👥',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build CLV model','Segment customers','Personalize engagement','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454707842246-c63bed479ebe?w=600&q=80'},
+
+  {id:'p18g',featured:false,title:'Epicor - Quality Prediction',domain:'ERP',
+   desc:'Predict product defects and quality issues for manufacturing plants.',
+   tags:['📊 ERP','🏭 Manufacturing','🤖 Quality','⚠️ Alerts'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','Manufacturing APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'🏭',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build quality model','Predict defects','Reduce waste','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1521737604893-6f3031224c94?w=600&q=80'},
+
+  {id:'p18h',featured:false,title:'Plex - Labor Optimization',domain:'ERP',
+   desc:'Optimize labor allocation and workforce scheduling for manufacturing.',
+   tags:['📊 ERP','👥 Labor','📅 Scheduling','⚙️ Optimization'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Constraint Programming','Plex APIs','PostgreSQL','FastAPI'],duration:'5 weeks',
+   icon:'👥',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build scheduling model','Optimize labor','Reduce costs','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'},
+
+  {id:'p18i',featured:false,title:'Aptean - Supplier Risk Analysis',domain:'ERP',
+   desc:'Analyze supplier data to predict supply chain disruption risks.',
+   tags:['📊 ERP','🤝 Suppliers','⚠️ Risk','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','Risk Models','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'⚠️',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build risk model','Identify risks','Mitigate disruptions','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552374196-c4e7b0d63d60?w=600&q=80'},
+
+  {id:'p18j',featured:false,title:'UNIT4 - Expense Automation',domain:'ERP',
+   desc:'Automate expense recognition and categorization using NLP and OCR.',
+   tags:['📊 ERP','💰 Finance','🤖 Automation','📝 NLP'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','NLP','OCR','FastAPI','PostgreSQL'],duration:'4 weeks',
+   icon:'💰',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build automation system','Process expenses','Reduce errors','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=600&q=80'},
+
+  {id:'p18k',featured:false,title:'Ramco - Route Optimization',domain:'ERP',
+   desc:'Optimize delivery routes and logistics for transportation efficiency.',
+   tags:['📊 ERP','🚚 Logistics','⚙️ Optimization','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Graph Algorithms','Route Optimization','Logistics APIs','FastAPI'],duration:'6 weeks',
+   icon:'🚚',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build optimization model','Reduce distance','Improve efficiency','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'},
+
+  {id:'p18l',featured:false,title:'Exact - Project Cost Prediction',domain:'ERP',
+   desc:'Predict project costs and resources needed for better project management.',
+   tags:['📊 ERP','💼 Projects','💰 Costs','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','Project APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'💼',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build prediction model','Improve planning','Control costs','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80'},
+
+  {id:'p18m',featured:false,title:'Agile - Resource Forecasting',domain:'ERP',
+   desc:'Forecast resource requirements and utilization for workforce planning.',
+   tags:['📊 ERP','👥 Resources','📈 Forecast','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Prophet','Resource APIs','PostgreSQL','Tableau'],duration:'4 weeks',
+   icon:'📈',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build forecasting model','Plan resources','Optimize allocation','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80'},
+
+  {id:'p18n',featured:false,title:'Made2Manage - Anomaly Detection',domain:'ERP',
+   desc:'Detect anomalies in manufacturing data for quality and process control.',
+   tags:['📊 ERP','🔍 Anomaly','🏭 Manufacturing','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Isolation Forest','Manufacturing APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'🔍',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build detection model','Identify anomalies','Improve quality','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80'},
+
+  {id:'p18o',featured:false,title:'SYSPRO - Material Optimization',domain:'ERP',
+   desc:'Optimize material usage and waste reduction in manufacturing.',
+   tags:['📊 ERP','♻️ Sustainability','⚙️ Optimization','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Optimization','Manufacturing APIs','PostgreSQL','FastAPI'],duration:'5 weeks',
+   icon:'♻️',color:'#8B5CF6',bg:'#F5F3FF',border:'#E9D5FF',
+   outcomes:['Build optimization model','Reduce waste','Improve sustainability','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80'},
+
+  // CPG (15 case studies: p19a-p19o)
+  {id:'p19a',featured:false,title:'Coca-Cola - Market Mix Modeling',domain:'CPG',
+   desc:'Optimize marketing spend allocation across channels using MMM and ML.',
+   tags:['🥤 CPG','📊 Marketing','💰 ROI','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Bayesian MMM','Apache Spark','CPG APIs','PostgreSQL'],duration:'6 weeks',
+   icon:'📊',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build MMM model','Optimize spend','Maximize ROI','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1441986300352-7bda60b8ce89?w=600&q=80'},
+
+  {id:'p19b',featured:false,title:'PepsiCo - Demand Sensing',domain:'CPG',
+   desc:'Real-time demand sensing using retail POS data for supply chain agility.',
+   tags:['🥤 CPG','📊 Demand','📈 Sensing','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','LightGBM','Kafka','Retail APIs','PostgreSQL'],duration:'6 weeks',
+   icon:'📈',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build sensing system','Improve agility','Reduce stockouts','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1557804506-669714cf53d1?w=600&q=80'},
+
+  {id:'p19c',featured:false,title:'Nestle - Price Elasticity',domain:'CPG',
+   desc:'Model price elasticity by category and region for dynamic pricing.',
+   tags:['🥤 CPG','💲 Pricing','📊 Analytics','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Econometrics','scikit-learn','CPG APIs','PostgreSQL'],duration:'5 weeks',
+   icon:'💲',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build elasticity model','Optimize pricing','Maximize revenue','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1559056199-641a0ac8b8d1?w=600&q=80'},
+
+  {id:'p19d',featured:false,title:'Unilever - Trade Promotion ROI',domain:'CPG',
+   desc:'Measure and optimize trade promotion effectiveness and ROI.',
+   tags:['🥤 CPG','🎯 Promotions','💰 ROI','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Causal Inference','Optimization','CPG APIs','PostgreSQL'],duration:'6 weeks',
+   icon:'🎯',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build ROI model','Optimize promotions','Maximize impact','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'},
+
+  {id:'p19e',featured:false,title:'Kraft Heinz - Consumer Segmentation',domain:'CPG',
+   desc:'Segment consumers by behavior and preferences for targeted campaigns.',
+   tags:['🥤 CPG','👥 Consumers','📊 Segmentation','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','CPG APIs','PostgreSQL','Tableau'],duration:'4 weeks',
+   icon:'👥',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build segmentation model','Personalize marketing','Increase loyalty','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80'},
+
+  {id:'p19f',featured:false,title:'Reckitt Benckiser - Category Insights',domain:'CPG',
+   desc:'Extract category trends and insights from market data using ML.',
+   tags:['🥤 CPG','📊 Analytics','📈 Trends','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Time Series','NLP','Market APIs','PostgreSQL'],duration:'4 weeks',
+   icon:'📈',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build analytics model','Extract insights','Guide strategy','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552374196-c4e7b0d63d60?w=600&q=80'},
+
+  {id:'p19g',featured:false,title:'Campbell - Product Innovation Predictor',domain:'CPG',
+   desc:'Predict success of new product launches using consumer and market data.',
+   tags:['🥤 CPG','🚀 Innovation','📊 Prediction','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','XGBoost','CPG APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'🚀',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build prediction model','Reduce risk','Guide launches','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1452860872886-cb72ea27fef4?w=600&q=80'},
+
+  {id:'p19h',featured:false,title:'General Mills - Supply Chain Optimization',domain:'CPG',
+   desc:'Optimize supply chain for CPG distribution and warehouse operations.',
+   tags:['🥤 CPG','📦 Supply Chain','⚙️ Optimization','🤖 ML'],difficulty:'Advanced',diffClass:'diff-adv',
+   stack:['Python','Optimization','Constraint Programming','Logistics APIs','PostgreSQL'],duration:'6 weeks',
+   icon:'📦',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build optimization model','Reduce costs','Improve efficiency','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1557804506-669714cf53d1?w=600&q=80'},
+
+  {id:'p19i',featured:false,title:'Mondelēz - Shelf Space Allocation',domain:'CPG',
+   desc:'Optimize retail shelf space allocation for SKU maximization.',
+   tags:['🥤 CPG','🛍️ Retail','⚙️ Optimization','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Integer Programming','Retail APIs','PostgreSQL','FastAPI'],duration:'5 weeks',
+   icon:'🛍️',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build allocation model','Maximize revenue','Optimize space','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1441986300352-7bda60b8ce89?w=600&q=80'},
+
+  {id:'p19j',featured:false,title:'Danone - Sustainability Forecasting',domain:'CPG',
+   desc:'Forecast and optimize sustainability metrics across operations.',
+   tags:['🥤 CPG','♻️ Sustainability','📊 Forecast','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Time Series','Sustainability APIs','PostgreSQL','Tableau'],duration:'4 weeks',
+   icon:'♻️',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build forecasting model','Track metrics','Improve sustainability','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1559056199-641a0ac8b8d1?w=600&q=80'},
+
+  {id:'p19k',featured:false,title:'Beiersdorf - SKU Rationalization',domain:'CPG',
+   desc:'Use ML to rationalize SKU portfolio and identify low-performers.',
+   tags:['🥤 CPG','📦 SKU','📊 Analytics','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','scikit-learn','CPG APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'📦',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build analytics model','Identify SKUs to cut','Improve margins','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80'},
+
+  {id:'p19l',featured:false,title:'Ferrero - Consumer Loyalty',domain:'CPG',
+   desc:'Predict consumer loyalty and lifetime value for retention strategies.',
+   tags:['🥤 CPG','💝 Loyalty','💰 CLV','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','LightGBM','CPG APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'💝',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build CLV model','Improve retention','Maximize lifetime value','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&q=80'},
+
+  {id:'p19m',featured:false,title:'Conagra - Competitive Pricing',domain:'CPG',
+   desc:'Monitor competitor pricing and optimize pricing strategy in real-time.',
+   tags:['🥤 CPG','💲 Pricing','🔍 Competition','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Web Scraping','Price APIs','PostgreSQL','FastAPI'],duration:'4 weeks',
+   icon:'🔍',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build competitive analysis system','Monitor prices','Optimize strategy','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1452860872886-cb72ea27fef4?w=600&q=80'},
+
+  {id:'p19n',featured:false,title:'Henkel - Sales Forecasting',domain:'CPG',
+   desc:'Forecast sales by product, region, and channel with high accuracy.',
+   tags:['🥤 CPG','📈 Sales','📊 Forecast','🤖 ML'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','Prophet','ARIMA','CPG APIs','PostgreSQL'],duration:'4 weeks',
+   icon:'📈',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build forecasting model','Improve accuracy','Better planning','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1557804506-669714cf53d1?w=600&q=80'},
+
+  {id:'p19o',featured:false,title:'Colgate-Palmolive - Customer Experience',domain:'CPG',
+   desc:'Improve customer experience with sentiment analysis and feedback automation.',
+   tags:['🥤 CPG','😊 Experience','🤖 NLP','💬 Feedback'],difficulty:'Medium',diffClass:'diff-med',
+   stack:['Python','NLP','Transformers','CPG APIs','PostgreSQL'],duration:'4 weeks',
+   icon:'😊',color:'#059669',bg:'#ECFDF5',border:'#A7F3D0',
+   outcomes:['Build sentiment model','Improve satisfaction','Enhance experience','Deploy system'],
+   github:true,thumbnail:'https://images.unsplash.com/photo-1559056199-641a0ac8b8d1?w=600&q=80'}
 ];
 
 const PROJ_DOMAINS = ['All Industries','Healthcare','Banking','E-Commerce','Telecom','Retail','ITSM','ERP','CPG'];
@@ -4307,6 +5378,12 @@ function renderProjects() {
 
   let list = [...PROJECTS];
   if(projActiveFilter !== 'All Industries') list = list.filter(p => p.domain === projActiveFilter);
+  
+  // For Healthcare, remove first 2 production projects (keep only 15 case studies)
+  if(projActiveFilter === 'Healthcare') {
+    list = list.filter(p => p.id !== 'p1' && p.id !== 'p2');
+  }
+  
   if(search) list = list.filter(p =>
     p.title.toLowerCase().includes(search) ||
     p.desc.toLowerCase().includes(search) ||
@@ -4346,6 +5423,8 @@ function renderProjects() {
     if(count) count.innerHTML = `<strong>0</strong> <span>projects</span>`;
   } else {
     grid.style.display = 'grid';
+    grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+    grid.style.gap = '24px';
     empty.style.display = 'none';
     if(count) count.innerHTML = `<strong>${list.length}</strong> <span>project${list.length!==1?'s':''}${projActiveFilter!=='All Industries'?' · '+projActiveFilter:''}</span>`;
     grid.innerHTML = list.map(p => projectCardHtml(p)).join('');
@@ -4353,36 +5432,119 @@ function renderProjects() {
 }
 
 function projectCardHtml(p) {
-  const lvl = DIFF_LEVEL[p.difficulty] || 2;
-  const bars = [1,2,3,4].map(i => `<i class="${i<=lvl?'on':''}"></i>`).join('');
-  const code = DOMAIN_CODE[p.domain] || p.domain.slice(0,2).toUpperCase();
+  // Extract company name from title
+  const titleParts = p.title.split(' - ');
+  const companyName = titleParts.length > 1 ? titleParts[0].trim() : p.title;
+  const projectName = titleParts.length > 1 ? titleParts[1].trim() : p.title;
+  
+  // Company logos - improved mapping
+  const companyLogos = {
+    'Apollo Hospitals': '🏥', 'Manipal Hospitals': '🏥', 'Max Healthcare': '🏥',
+    'Microsoft Nuance': '🎙️', 'Abridge': '✍️', 'Novo Nordisk': '🧬',
+    'Fortis Healthcare': '🏥', 'Narayana Health': '🏥', 'Aster DM': '💬',
+    'GE HealthCare': '🩻', 'Mayo Clinic': '🔬', 'Kaiser Permanente': '👑',
+    'Insilico Medicine': '🧪', 'IQVIA': '📊', 'Oracle Health': '💻',
+    // Banking
+    'JPMorgan Chase': '🏦', 'Goldman Sachs': '💼', 'Bank of America': '🏦', 'Citibank': '💳',
+    'Wells Fargo': '🏦', 'HSBC': '🌍', 'Deutsche Bank': '🏦', 'Barclays': '💷',
+    'Standard Chartered': '🏦', 'UBS': '💎', 'Morgan Stanley': '📈', 'BNY Mellon': '🏦',
+    'Credit Suisse': '🇨🇭', 'RBC': '🇨🇦', 'Scotiabank': '🏦',
+    // E-Commerce
+    'Amazon': '📦', 'Shopify': '🛒', 'Alibaba': '🇨🇳', 'eBay': '🛍️', 'Etsy': '🎨',
+    'Walmart': '🏪', 'Target': '🎯', 'Best Buy': '🎮', 'Costco': '📦', 'Kroger': '🛒',
+    'Home Depot': '🏠', 'Gap': '👕', 'Nike': '👟', 'ASOS': '👗', 'Shein': '✨',
+    // Telecom
+    'AT&T': '📡', 'Verizon': '📱', 'T-Mobile': '📱', 'Deutsche Telekom': '🌐', 'Orange': '🟠',
+    'Vodafone': '🔴', 'SoftBank': '🇯🇵', 'BT Group': '🇬🇧', 'Jio': '🇮🇳', 'Swisscom': '🇨🇭',
+    'KPN': '🇳🇱', 'Telefónica': '🇪🇸', 'Telenor': '🇳🇴', 'Celcom': '🇲🇾', 'Airtel': '🇮🇳',
+    // Retail
+    'Starbucks': '☕', 'Sephora': '💄', 'LEGO': '🧱', 'H&M': '👔', 'Uniqlo': '👕',
+    'Zara': '👗', 'Forever 21': '👜', 'ASOS': '👗', 'Decathlon': '⛹️', 'Ikea': '🏠',
+    'Foot Locker': '👟', 'Lululemon': '💪', 'Urban Outfitters': '🎨', 'J.Crew': '🧥', 'Vans': '🛹',
+    // ITSM
+    'ServiceNow': '🔧', 'Atlassian': '🔧', 'BMC': '⚙️', 'Jira': '🎯', 'Splunk': '📊',
+    'Datadog': '📈', 'PagerDuty': '🚨', 'Opsgenie': '🔔', 'Prometheus': '📊', 'Grafana': '📉',
+    'New Relic': '📊', 'Elastic': '🔍', 'LogicMonitor': '📡', 'VictorOps': '🚨', 'Incident.io': '⚠️',
+    // ERP
+    'SAP': '📊', 'Oracle': '🔷', 'NetSuite': '☁️', 'Infor': '⚙️', 'IFS': '🔧',
+    'Microsoft Dynamics': '💻', 'Epicor': '🏭', 'Plex': '☁️', 'Aptean': '⚙️', 'UNIT4': '📊',
+    'Ramco': '🚚', 'Exact': '📋', 'Agile': '🔄', 'Made2Manage': '🏭', 'SYSPRO': '⚙️',
+    // CPG
+    'Coca-Cola': '🥤', 'PepsiCo': '🥤', 'Nestle': '🍫', 'Unilever': '🧴', 'Kraft Heinz': '🍯',
+    'Reckitt Benckiser': '🧹', 'Campbell': '🍲', 'General Mills': '🌾', 'Mondelēz': '🍪', 'Danone': '🥛',
+    'Beiersdorf': '🧴', 'Ferrero': '🍫', 'Conagra': '🍝', 'Henkel': '🧼', 'Colgate-Palmolive': '🪥'
+  };
+  
+  // Tech icons - comprehensive mapping
+  const techIcons = {
+    'Google Cloud': '☁️', 'LLMs': '🧠', 'Vertex AI': '🤖', 'RAG': '🔗', 'Python': '🐍',
+    'Gemini 1.5': '✨', 'Cloud Run': '🚀', 'Azure OpenAI': '🔷', 'FastAPI': '⚡',
+    'FHIR': '📋', 'Speech AI': '🎙️', 'GenAI': '✨', 'Azure': '🔷',
+    'Multi-Agent': '🤖', 'Optimization': '📈', 'APIs': '🔌', 'Analytics': '📊',
+    'Agentic AI': '🦾', 'Vector Search': '🔍', 'OpenAI': '🔮', 'Voice AI': '📞',
+    'CRM APIs': '🔗', 'Conversational AI': '💬', 'Medical Imaging': '🩻', 'Deep Learning': '🧠',
+    'DICOM': '📁', 'Workflow APIs': '⚙️', 'ML': '🤖', 'Drug Databases': '💾',
+    'Bioinformatics': '🧬', 'Generative Models': '✨', 'Healthcare APIs': '🔌',
+    'Trial APIs': '📋', 'Optimization': '⚙️', 'InfluxDB': '📊', 'Kafka': '🔗',
+    'FinBERT': '📊', 'Backtrader': '📈', 'Alpaca API': '💹', 'Streamlit': '🎨',
+    'PostgreSQL': '🗄️', 'Airflow': '🔄', 'scikit-learn': '🤖', 'React': '⚛️',
+    'TensorFlow': '🧠', 'Grafana': '📈', 'InfluxDB': '📊'
+  };
+  
+  const companyLogo = companyLogos[companyName] || '🏢';
+  console.log(`Project: ${p.id}, Company: "${companyName}", Logo: ${companyLogo}`);
+  
   return `
-  <div class="proj-card" onclick="openProject('${p.id}')">
-    <div class="proj-card-accent" style="background:${p.color}"></div>
-    <div class="proj-card-body">
-      <div class="proj-card-top">
-        <div class="proj-domain">
-          <div class="proj-mono" style="background:${p.bg};color:${p.color};border:1px solid ${p.border}">${code}</div>
-          <div class="proj-domain-meta">
-            <strong>${p.domain}</strong>
-            <span>${p.github?'GitHub-ready brief':'Project brief'}</span>
-          </div>
-        </div>
-        <span class="proj-tag ${p.diffClass}">${p.difficulty}</span>
+  <div class="proj-card" onclick="openProject('${p.id}')" style="display:flex;flex-direction:column;height:100%;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.08);transition:transform 0.3s ease,box-shadow 0.3s ease;cursor:pointer;border:1px solid #f0f0f0">
+    
+    <!-- Large Background Image Section -->
+    <div style="height:200px;background-image:url('${p.thumbnail}');background-size:cover;background-position:center;position:relative;display:flex;align-items:flex-end;justify-content:flex-start;padding:16px">
+      <!-- Overlay gradient for better contrast -->
+      <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.1) 100%)"></div>
+      
+      <!-- Company Logo Badge -->
+      <div style="position:relative;z-index:10;background:#fff;width:56px;height:56px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px;box-shadow:0 3px 12px rgba(0,0,0,0.12);border:1px solid #f0f0f0;font-family:var(--font-emoji)">
+        ${companyLogo}
       </div>
-      <h3>${p.title}</h3>
-      <p class="brief">${p.desc.substring(0,120)}…</p>
-      <div class="proj-stack">
-        ${p.stack.slice(0,4).map(s=>`<span>${s}</span>`).join('')}
-        ${p.stack.length>4?`<span class="more">+${p.stack.length-4}</span>`:''}
+    </div>
+    
+    <!-- Content Section -->
+    <div style="padding:18px;display:flex;flex-direction:column;flex-grow:1">
+      
+      <!-- Healthcare Badge -->
+      <div style="margin-bottom:12px;font-family:var(--font-emoji)">
+        <span style="background:#7c5cdb;color:#fff;font-size:10px;font-weight:700;padding:5px 12px;border-radius:16px;display:inline-flex;align-items:center;gap:5px;font-family:var(--font-emoji)">
+          <span>🏥</span> Healthcare
+        </span>
       </div>
-      <div class="proj-card-foot">
-        <div class="proj-meter">
-          <div class="bars">${bars}</div>
-          <span class="dur">${p.duration}</span>
-        </div>
-        <button class="cta" onclick="event.stopPropagation();openProject('${p.id}')">View brief</button>
+      
+      <!-- Company Name (in smaller text) -->
+      <p style="font-size:11px;color:#888;margin:0 0 6px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">${companyName}</p>
+      
+      <!-- Project Title -->
+      <h3 style="font-size:15px;font-weight:700;color:#1a2b3c;margin:0 0 10px;line-height:1.3">${projectName}</h3>
+      
+      <!-- Description -->
+      <p style="font-size:12px;color:#666;margin:0 0 12px;line-height:1.5;flex-grow:1">${p.desc.substring(0,80)}…</p>
+      
+      <!-- Tech Stack with Icons (max 6 items) -->
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #eee">
+        ${p.stack.slice(0,6).map(t => {
+          const icon = techIcons[t] || '🔧';
+          return `<span style="background:#f5f5f5;color:#555;padding:5px 9px;border-radius:6px;font-size:10px;font-weight:600;display:flex;align-items:center;gap:3px;font-family:var(--font-emoji)" title="${t}">
+            <span style="font-size:12px;font-family:var(--font-emoji)">${icon}</span><span style="white-space:nowrap">${t}</span>
+          </span>`;
+        }).join('')}
       </div>
+      
+      <!-- Duration + Buttons Footer -->
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span style="font-size:12px;color:#666;font-weight:600;display:flex;align-items:center;gap:4px;white-space:nowrap;font-family:var(--font-emoji)">
+          <span>📅</span> ${p.duration}
+        </span>
+        <button style="background:#0b5fff;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:11px;transition:all 0.2s;white-space:nowrap" onclick="event.stopPropagation();openProject('${p.id}')">Read Case Study</button>
+      </div>
+      
     </div>
   </div>`;
 }

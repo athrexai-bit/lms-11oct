@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LMS Diagnostic Test</title>
+    <style>
+        body { font-family: system-ui; padding: 40px; max-width: 900px; margin: 0 auto; }
+        .test { background: #f0f9ff; border: 2px solid #0ea5e9; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .success { background: #dcfce7; border-color: #10b981; }
+        .error { background: #fee2e2; border-color: #ef4444; }
+        pre { background: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 6px; overflow-x: auto; }
+        button { background: #0ea5e9; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-size: 16px; margin: 10px 5px 0 0; }
+        button:hover { background: #0284c7; }
+    </style>
+</head>
+<body>
+    <h1>🔬 LMS Diagnostic Test</h1>
+    <p>This page tests if the LMS can load and display course data properly.</p>
+    
+    <div class="test">
+        <h3>Step 1: Fetch Course Data from API</h3>
+        <button onclick="testAPI()">Test API</button>
+        <div id="api-result"></div>
+    </div>
+    
+    <div class="test">
+        <h3>Step 2: Load First Lesson</h3>
+        <button onclick="testLesson()">Test Lesson Display</button>
+        <div id="lesson-result"></div>
+    </div>
+    
+    <div class="test">
+        <h3>Step 3: Force Clear & Reload LMS</h3>
+        <button onclick="clearAndReload()">Clear Cache & Open LMS</button>
+        <p style="color: #64748b; font-size: 14px;">This will clear all localStorage and open the LMS with fresh data.</p>
+    </div>
+
+    <script>
+        async function testAPI() {
+            const result = document.getElementById('api-result');
+            result.innerHTML = '<p>⏳ Fetching from API...</p>';
+            
+            try {
+                const res = await fetch('http://127.0.0.1:5001/api/lms');
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+                }
+                
+                const data = await res.json();
+                const course = data['2'];
+                
+                if (!course) {
+                    result.innerHTML = '<p class="error">❌ Course ID "2" not found in API response</p>';
+                    return;
+                }
+                
+                const topic = course.topics[0];
+                const lesson = topic.lessons[0];
+                
+                result.innerHTML = `
+                    <p style="color: #10b981; font-weight: bold;">✅ API Working!</p>
+                    <pre>${JSON.stringify({
+                        courseName: course.name,
+                        topics: course.topics.length,
+                        firstTopic: topic.title,
+                        firstLesson: lesson.title,
+                        hasContent: !!lesson.content,
+                        contentLength: lesson.content?.length || 0,
+                        hasVideo: !!lesson.video,
+                        videoId: lesson.video
+                    }, null, 2)}</pre>
+                `;
+            } catch (err) {
+                result.innerHTML = `<p class="error">❌ Error: ${err.message}</p>`;
+            }
+        }
+        
+        async function testLesson() {
+            const result = document.getElementById('lesson-result');
+            result.innerHTML = '<p>⏳ Loading lesson data...</p>';
+            
+            try {
+                const res = await fetch('http://127.0.0.1:5001/api/lms');
+                const data = await res.json();
+                const course = data['2'];
+                const lesson = course.topics[0].lessons[0];
+                
+                result.innerHTML = `
+                    <p style="color: #10b981; font-weight: bold;">✅ Lesson Data Loaded!</p>
+                    <h4 style="margin-top: 20px;">${lesson.title}</h4>
+                    <div style="background: white; padding: 20px; border-radius: 6px; margin-top: 15px;">
+                        ${lesson.content}
+                    </div>
+                    ${lesson.video ? `
+                        <div style="margin-top: 20px;">
+                            <h4>📹 Video Player</h4>
+                            <iframe width="560" height="315" 
+                                src="https://www.youtube.com/embed/${lesson.video}" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    ` : ''}
+                `;
+            } catch (err) {
+                result.innerHTML = `<p class="error">❌ Error: ${err.message}</p>`;
+            }
+        }
+        
+        function clearAndReload() {
+            if (confirm('This will clear all LMS data from localStorage and open a fresh LMS page. Continue?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                window.open('http://127.0.0.1:8000/lms.html?course=Generative%20AI%20with%20Agents&cid=2&user=Test&t=' + Date.now(), '_blank');
+            }
+        }
+    </script>
+</body>
+</html>

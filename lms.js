@@ -54,27 +54,49 @@ function pickFromLocalStore() {
 }
 
 async function loadCourseData() {
-  let data = pickFromLocalStore();
-  if (!data && urlCourseId) {
+  // Always try API first, then localStorage
+  let data = null;
+  if (urlCourseId) {
     try {
-      const res = await fetch('/api/lms');
+      console.log('🔍 Fetching course from API:', urlCourseId);
+      const res = await fetch('http://127.0.0.1:5001/api/lms');
       if (res.ok) {
         const all = await res.json();
+        console.log('📚 Available courses in DB:', Object.keys(all));
         if (all[urlCourseId]) {
           data = all[urlCourseId];
           courseId = urlCourseId;
+          console.log('✅ Loaded course from API:', {
+            name: data.name,
+            topics: data.topics?.length,
+            firstLesson: data.topics?.[0]?.lessons?.[0]?.title
+          });
           // Mirror into localStorage on LMS origin for progress tools
           const store = JSON.parse(localStorage.getItem('lf_lms') || '{}');
           store[urlCourseId] = data;
           localStorage.setItem('lf_lms', JSON.stringify(store));
+        } else {
+          console.warn('⚠️ Course not found in API, trying localStorage');
+          data = pickFromLocalStore();
         }
       }
     } catch (e) {
-      console.warn('Could not fetch LMS API', e);
+      console.error('❌ Could not fetch LMS API', e);
+      data = pickFromLocalStore();
     }
+  } else {
+    data = pickFromLocalStore();
   }
+  
   courseData = data || demoCourseData();
   if (!courseId) courseId = urlCourseId || 'demo';
+  
+  console.log('📖 Final course data:', {
+    source: data ? 'API/localStorage' : 'demo',
+    name: courseData.name,
+    topics: courseData.topics?.length,
+    totalLessons: courseData.topics?.reduce((sum, t) => sum + (t.lessons?.length || 0), 0)
+  });
 
   const saved = JSON.parse(localStorage.getItem(`lf_progress_${courseId}`) || '[]');
   saved.forEach(id => completed.add(id));
@@ -733,9 +755,22 @@ function escapeHtml(text) {
 
 // ===== LOAD LESSON =====
 function loadLesson(ti, li) {
+  console.log('🎯 loadLesson CALLED:', { ti, li });
+  
   currentLesson = { topicIdx: ti, lessonIdx: li };
   const topic = courseData.topics[ti];
   const lesson = topic.lessons[li];
+  
+  console.log('📄 Loading lesson:', {
+    topicIndex: ti,
+    lessonIndex: li,
+    topicTitle: topic.title,
+    lessonTitle: lesson.title,
+    hasContent: !!lesson.content,
+    contentLength: lesson.content?.length || 0,
+    hasVideo: !!lesson.video,
+    videoId: lesson.video
+  });
 
   document.querySelectorAll('.tree-lesson').forEach(el => el.classList.remove('active'));
   document.getElementById(`tl-${ti}-${li}`)?.classList.add('active');
@@ -743,7 +778,20 @@ function loadLesson(ti, li) {
   document.getElementById('lessonBreadcrumb').textContent = `${topic.title} › Lesson ${li + 1}`;
   document.getElementById('lessonTitle').textContent = lesson.title;
   document.getElementById('videoLabel').textContent = lesson.video ? '▶ Click to play' : `▶ ${lesson.title}`;
-  document.getElementById('lessonBody').innerHTML = buildLessonBlog(lesson, topic, li, ti);
+  
+  const lessonBody = document.getElementById('lessonBody');
+  const htmlContent = buildLessonBlog(lesson, topic, li, ti);
+  
+  console.log('🎨 Setting innerHTML:', {
+    lessonBodyExists: !!lessonBody,
+    htmlContentLength: htmlContent.length,
+    htmlPreview: htmlContent.substring(0, 200)
+  });
+  
+  lessonBody.innerHTML = htmlContent;
+  
+  console.log('✅ innerHTML set successfully');
+  
   updateProgress();
 
   // Render mermaid diagrams if any
@@ -755,7 +803,10 @@ function loadLesson(ti, li) {
     
     // Initialize video player if present
     if (lesson.video) {
+      console.log('🎬 Initializing video player for:', lesson.video);
       currentVideoPlayer = initVideoPlayer(lesson.id, lesson.video);
+    } else {
+      console.log('⚠️ No video ID found for this lesson');
     }
   }, 100);
 }
